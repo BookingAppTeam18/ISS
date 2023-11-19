@@ -1,12 +1,12 @@
-package rs.ac.uns.ftn.informatika.rest.service;
+package rest.service;
 
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import rs.ac.uns.ftn.informatika.rest.domain.Greeting;
-import rs.ac.uns.ftn.informatika.rest.repository.InMemoryGreetingRepository;
+import rest.domain.Greeting;
+import rest.repository.InMemoryGreetingRepository;
 
 @Service
 public class GreetingServiceImpl implements GreetingService {

@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.informatika.rest.repository;
+package rest.repository;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Repository;
 
-import rs.ac.uns.ftn.informatika.rest.domain.Greeting;
+import rest.domain.Greeting;
 
 @Repository
 public class InMemoryGreetingRepository implements GreetingRepository {

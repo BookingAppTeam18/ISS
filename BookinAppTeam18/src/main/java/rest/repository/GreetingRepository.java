@@ -1,8 +1,8 @@
-package rs.ac.uns.ftn.informatika.rest.repository;
+package rest.repository;
 
 import java.util.Collection;
 
-import rs.ac.uns.ftn.informatika.rest.domain.Greeting;
+import rest.domain.Greeting;
 
 public interface GreetingRepository {
 

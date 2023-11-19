@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.informatika.rest.controller;
+package rest.controller;
 
 import java.util.Collection;
 
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import rs.ac.uns.ftn.informatika.rest.domain.Greeting;
-import rs.ac.uns.ftn.informatika.rest.service.GreetingService;
+import rest.domain.Greeting;
+import rest.service.GreetingService;
 
 /*
  * @RestController je anotacija nastala od @Controller tako da predstavlja bean komponentu.

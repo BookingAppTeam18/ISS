@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.informatika.rest.domain;
+package rest.domain;
 
 public class Greeting {
 	

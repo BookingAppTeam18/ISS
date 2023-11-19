@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.informatika.rest;
+package rest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
