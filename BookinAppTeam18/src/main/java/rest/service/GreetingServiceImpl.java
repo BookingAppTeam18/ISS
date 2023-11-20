@@ -9,7 +9,7 @@ import rest.domain.Greeting;
 import rest.repository.InMemoryGreetingRepository;
 
 @Service
-public class GreetingServiceImpl implements GreetingService {
+public class GreetingServiceImpl implements IService<Greeting> {
 
 	@Autowired
 	private InMemoryGreetingRepository greetingRepository;

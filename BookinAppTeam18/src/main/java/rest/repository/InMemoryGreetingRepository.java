@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import rest.domain.Greeting;
 
 @Repository
-public class InMemoryGreetingRepository implements GreetingRepository {
+public class InMemoryGreetingRepository implements IRepository<Greeting> {
 
 	private static AtomicLong counter = new AtomicLong();
 

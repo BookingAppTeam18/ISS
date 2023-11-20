@@ -4,15 +4,15 @@ import java.util.Collection;
 
 import rest.domain.Greeting;
 
-public interface GreetingRepository {
+public interface IRepository<T> {
 
 	Collection<Greeting> findAll();
 
-	Greeting create(Greeting greeting);
+	T create(T object);
 
-	Greeting findOne(Long id);
-	
-	Greeting update(Greeting greeting);
+	T findOne(Long id);
+
+	T update(T object);
 
 	void delete(Long id);
 
