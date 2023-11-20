@@ -2,18 +2,53 @@ package rest.service;
 
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import rest.domain.Greeting;
+import rest.repository.InMemoryGreetingRepository;
 
-public interface GreetingService {
+@Service
+public class GreetingService implements IService<Greeting> {
 
-	Collection<Greeting> findAll();
+	@Autowired
+	private InMemoryGreetingRepository greetingRepository;
 
-	Greeting findOne(Long id);
+	@Override
+	public Collection<Greeting> findAll() {
+		Collection<Greeting> greetings = greetingRepository.findAll();
+		return greetings;
+	}
 
-	Greeting create(Greeting greeting) throws Exception;
+	@Override
+	public Greeting findOne(Long id) {
+		Greeting greeting = greetingRepository.findOne(id);
+		return greeting;
+	}
 
-	Greeting update(Greeting greeting) throws Exception;
+	@Override
+	public Greeting create(Greeting greeting) throws Exception {
+		if (greeting.getId() != null) {
+			throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
+		}
+		Greeting savedGreeting = greetingRepository.create(greeting);
+		return savedGreeting;
+	}
 
-	void delete(Long id);
-	
+	@Override
+	public Greeting update(Greeting greeting) throws Exception {
+		Greeting greetingToUpdate = findOne(greeting.getId());
+		if (greetingToUpdate == null) {
+			throw new Exception("Trazeni entitet nije pronadjen.");
+		}
+		greetingToUpdate.setText(greeting.getText());
+		Greeting updatedGreeting = greetingRepository.create(greetingToUpdate);
+		return updatedGreeting;
+	}
+
+	@Override
+	public void delete(Long id) {
+		greetingRepository.delete(id);
+	}
+
 }
