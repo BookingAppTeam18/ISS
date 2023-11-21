@@ -1,8 +1,10 @@
 package rest.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rest.domain.Accommodation;
+import rest.domain.DTO.AccommodationDTO;
 import rest.repository.AccommodationRepository;
 
 import java.util.Collection;
@@ -12,6 +14,9 @@ public class AccommodationService implements IService<Accommodation> {
 
     @Autowired
     private AccommodationRepository accommodationRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public Collection<Accommodation> findAll() {
@@ -45,5 +50,17 @@ public class AccommodationService implements IService<Accommodation> {
     @Override
     public void delete(Long id) {
         accommodationRepository.delete(id);
+    }
+
+    private AccommodationDTO convertEntityToDto(Accommodation accommodation){
+        AccommodationDTO accommodationDTO = new AccommodationDTO();
+        accommodationDTO = modelMapper.map(accommodation, AccommodationDTO.class);
+        return accommodationDTO;
+    }
+
+    private Accommodation convertDtoToEntity(AccommodationDTO accommodationDTO){
+        Accommodation accommodation = new Accommodation();
+        accommodation = modelMapper.map(accommodationDTO, Accommodation.class);
+        return accommodation;
     }
 }
