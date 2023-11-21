@@ -1,18 +1,23 @@
 package rest.domain;
 
+
+import rest.domain.enumerations.Page;
+
 public class Comment {
     private Long id;
     private String message;
     private int rate;
     private long writtenById;
+    private long writtenTo;
+    private Page page;
 
-    //private long accountTo;
-
-    public Comment(Long id, String message, int rate, long writtenById) {
+    public Comment(Long id, String message, int rate, long writtenById,long writtenTo, Page page) {
         this.id = id;
         this.message = message;
         this.rate = rate;
         this.writtenById = writtenById;
+        this.writtenTo = writtenTo;
+        this.page = page;
     }
 
     public Long getId() {
@@ -53,4 +58,19 @@ public class Comment {
         this.writtenById = comment.writtenById;
     }
 
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
+    }
+
+    public long getWrittenTo() {
+        return writtenTo;
+    }
+
+    public void setWrittenTo(long writtenTo) {
+        this.writtenTo = writtenTo;
+    }
 }

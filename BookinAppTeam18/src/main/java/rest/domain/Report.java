@@ -1,13 +1,13 @@
 package rest.domain;
 
-public class ReportRequest {
+public class Report {
     private Long id;
     private String Description;
     private long reportedUserId;
     private long reportedById;
     private long reportedComment;
 
-    public ReportRequest(Long id, String description, long reportedUserId, long reportedById, long reportedComment) {
+    public Report(Long id, String description, long reportedUserId, long reportedById, long reportedComment) {
         this.id = id;
         Description = description;
         this.reportedUserId = reportedUserId;

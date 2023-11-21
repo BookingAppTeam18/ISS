@@ -39,7 +39,7 @@ public class CommentService implements IService<Comment>{
             throw new Exception("Not Found.");
         }
         commentToUpdate.copyValues(comment);
-        return commentRepository.create(commentToUpdate);
+        return commentToUpdate;
     }
 
     @Override
@@ -47,8 +47,10 @@ public class CommentService implements IService<Comment>{
         commentRepository.delete(id);
     }
 
-    public Collection<Comment> findPageComments(long pageId) {
-        return commentRepository.findPageComments(pageId);
+    public Collection<Comment> findAccommodationComments(Long accommodationId) {
+        return commentRepository.findAccommodatioComments(accommodationId);
     }
-
+    public Collection<Comment> findAccountComments(Long accountId) {
+        return commentRepository.findAccountComments(accountId);
+    }
 }
