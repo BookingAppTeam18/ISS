@@ -1,11 +1,12 @@
 package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import rest.domain.AccommodationRequest;
 import rest.repository.AccommodationRequestRepository;
 
 import java.util.Collection;
-
+@Service
 public class AccommodationRequestService implements IService<AccommodationRequest> {
 
     @Autowired
