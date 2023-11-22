@@ -1,6 +1,7 @@
 package rest.domain;
 
-import rest.domain.enumerations.AccommodetionType;
+import rest.domain.DTO.AccommodationDTO;
+import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class Accommodation {
     private int maxNumOfGuests;
     private List<String> gallery;
     private List<Benefit> benefits;
-    private AccommodetionType accommodetionType;
+    private AccommodationType accommodetionType;
 
     public Accommodation(){
         this.id = null;
@@ -34,7 +35,7 @@ public class Accommodation {
         this.benefits = new ArrayList<Benefit>();
         this.accommodetionType = null;
     }
-    public Accommodation(Long id, Long ownerId, String name, String location, double activePrice, HashMap<Date, Double> priceList, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodetionType accommodetionType) {
+    public Accommodation(Long id, Long ownerId, String name, String location, double activePrice, HashMap<Date, Double> priceList, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType) {
         this.id = id;
         this.ownerId = ownerId;
         this.name = name;
@@ -46,6 +47,20 @@ public class Accommodation {
         this.gallery = gallery;
         this.benefits = benefits;
         this.accommodetionType = accommodetionType;
+    }
+
+    public Accommodation(AccommodationDTO accommodationDTO) {
+        this.id = accommodationDTO.getId();
+        this.ownerId = accommodationDTO.getOwnerId();
+        this.name = accommodationDTO.getName();
+        this.location = accommodationDTO.getLocation();
+        this.activePrice = accommodationDTO.getActivePrice();
+        this.priceList = new HashMap<>();
+        this.minNumOfGuests = accommodationDTO.getMinNumOfGuests();
+        this.maxNumOfGuests = accommodationDTO.getMaxNumOfGuests();
+        this.gallery = new ArrayList<>();
+        this.benefits = new ArrayList<>();
+        this.accommodetionType = accommodationDTO.getAccommodetionType();
     }
 
     public Long getId() {
@@ -128,11 +143,11 @@ public class Accommodation {
         this.benefits = benefits;
     }
 
-    public AccommodetionType getAccommodetionType() {
+    public AccommodationType getAccommodetionType() {
         return accommodetionType;
     }
 
-    public void setAccommodetionType(AccommodetionType accommodetionType) {
+    public void setAccommodetionType(AccommodationType accommodetionType) {
         this.accommodetionType = accommodetionType;
     }
 

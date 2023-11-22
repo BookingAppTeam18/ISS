@@ -33,4 +33,16 @@ public class AccommodationRequestDTO {
     public AccommodationState getAccommodationState() {
         return accommodationState;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setAccommodationId(Long accommodationId) {
+        this.accommodationId = accommodationId;
+    }
+
+    public void setAccommodationState(AccommodationState accommodationState) {
+        this.accommodationState = accommodationState;
+    }
 }

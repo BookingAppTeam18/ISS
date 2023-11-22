@@ -11,7 +11,7 @@ import rest.repository.AccommodationRequestRepository;
 
 import java.util.Collection;
 @Service
-public class AccommodationRequestService implements IService<AccommodationRequest> {
+public class AccommodationRequestService implements IService<AccommodationRequestDTO> {
 
     @Autowired
     private AccommodationRequestRepository accommodationRequestRepository;
@@ -20,32 +20,37 @@ public class AccommodationRequestService implements IService<AccommodationReques
     private ModelMapper modelMapper;
 
     @Override
-    public Collection<AccommodationRequest> findAll() {
-        return accommodationRequestRepository.findAll();
+    public Collection<AccommodationRequestDTO> findAll() {
+
+//        return accommodationRequestRepository.findAll();
+        return null;
     }
 
     @Override
-    public AccommodationRequest findOne(Long id) {
-        return accommodationRequestRepository.findOne(id);
+    public AccommodationRequestDTO findOne(Long id) {
+
+//        return accommodationRequestRepository.findOne(id);
+        return null;
     }
 
     @Override
-    public AccommodationRequest create(AccommodationRequest accommodationRequest) throws Exception {
-        if (accommodationRequest.getId() != null){
+    public AccommodationRequestDTO create(AccommodationRequestDTO accommodationRequestDTO) throws Exception {
+        if (accommodationRequestDTO.getId() != null){
         throw new Exception("Id not null");
         }
-        return accommodationRequestRepository.create(accommodationRequest);
-
+//        return accommodationRequestRepository.create(accommodationRequestDTO);
+        return null;
     }
 
     @Override
-    public AccommodationRequest update(AccommodationRequest accommodationRequest) throws Exception {
-        AccommodationRequest accommodationToUpdate = findOne(accommodationRequest.getId());
+    public AccommodationRequestDTO update(AccommodationRequestDTO accommodationRequestDTO) throws Exception {
+        AccommodationRequestDTO accommodationToUpdate = findOne(accommodationRequestDTO.getId());
         if(accommodationToUpdate == null){
         throw new Exception("Accommodation request not found");
         }
-        accommodationToUpdate.copyValues(accommodationRequest);
-        return accommodationRequestRepository.create(accommodationToUpdate);
+//        accommodationToUpdate.copyValues(accommodationRequestDTO);
+//        return accommodationRequestRepository.create(accommodationToUpdate);
+        return null;
     }
 
     @Override

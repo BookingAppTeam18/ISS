@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import rest.domain.AccommodationRequest;
+import rest.domain.DTO.AccommodationRequestDTO;
 import rest.service.AccommodationRequestService;
 
 @RestController
@@ -26,47 +27,45 @@ public class AccommodationRequestController {
     private AccommodationRequestService accommodationRequestService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccommodationRequest>> getAccommodationRequests() {
-        Collection<AccommodationRequest> accommodationRequests = accommodationRequestService.findAll();
-        return new ResponseEntity<Collection<AccommodationRequest>>(accommodationRequests, HttpStatus.OK);
+    public ResponseEntity<Collection<AccommodationRequestDTO>> getAccommodationRequests() {
+        Collection<AccommodationRequestDTO> accommodationRequests = accommodationRequestService.findAll();
+        return new ResponseEntity<Collection<AccommodationRequestDTO>>(accommodationRequests, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationRequest> getAccommodationRequest(@PathVariable("id") Long id) {
-        AccommodationRequest accommodationRequest = accommodationRequestService.findOne(id);
+    public ResponseEntity<AccommodationRequestDTO> getAccommodationRequest(@PathVariable("id") Long id) {
+        AccommodationRequestDTO accommodationRequest = accommodationRequestService.findOne(id);
 
         if (accommodationRequest == null) {
-            return new ResponseEntity<AccommodationRequest>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<AccommodationRequestDTO>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<AccommodationRequest>(accommodationRequest, HttpStatus.OK);
+        return new ResponseEntity<AccommodationRequestDTO>(accommodationRequest, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationRequest> createAccommodationRequest(@RequestBody AccommodationRequest accommodationRequest) throws Exception {
-        AccommodationRequest savedAccommodationRequest = accommodationRequestService.create(accommodationRequest);
-        return new ResponseEntity<AccommodationRequest>(savedAccommodationRequest, HttpStatus.CREATED);
+    public ResponseEntity<AccommodationRequestDTO> createAccommodationRequest(@RequestBody AccommodationRequestDTO accommodationRequest) throws Exception {
+        AccommodationRequestDTO savedAccommodationRequest = accommodationRequestService.create(accommodationRequest);
+        return new ResponseEntity<AccommodationRequestDTO>(savedAccommodationRequest, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationRequest> updateAccommodationRequest(@RequestBody AccommodationRequest accommodationRequest, @PathVariable Long id)
+    public ResponseEntity<AccommodationRequestDTO> updateAccommodationRequest(@RequestBody AccommodationRequestDTO accommodationRequest, @PathVariable Long id)
             throws Exception {
-        AccommodationRequest accommodationRequestForUpdate = accommodationRequestService.findOne(id);
-        accommodationRequestForUpdate.copyValues(accommodationRequest);
-
-        AccommodationRequest updatedAccommodationRequest = accommodationRequestService.update(accommodationRequestForUpdate);
+        accommodationRequest.setId(id);
+        AccommodationRequestDTO updatedAccommodationRequest = accommodationRequestService.update(accommodationRequest);
 
         if (updatedAccommodationRequest == null) {
-            return new ResponseEntity<AccommodationRequest>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<AccommodationRequestDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<AccommodationRequest>(updatedAccommodationRequest, HttpStatus.OK);
+        return new ResponseEntity<AccommodationRequestDTO>(updatedAccommodationRequest, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<AccommodationRequest> deleteAccommodationRequest(@PathVariable("id") Long id) {
+    public ResponseEntity<AccommodationRequestDTO> deleteAccommodationRequest(@PathVariable("id") Long id) {
         accommodationRequestService.delete(id);
-        return new ResponseEntity<AccommodationRequest>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<AccommodationRequestDTO>(HttpStatus.NO_CONTENT);
     }
 
 }
