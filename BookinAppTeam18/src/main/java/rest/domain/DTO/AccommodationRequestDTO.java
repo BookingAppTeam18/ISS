@@ -1,14 +1,36 @@
 package rest.domain.DTO;
 
+import rest.domain.AccommodationRequest;
 import rest.domain.enumerations.AccommodationState;
 
-import java.text.ParseException;
-
-//@Data
 public class AccommodationRequestDTO {
     private Long id;
     private Long accommodationId;
     private AccommodationState accommodationState;
 
-    //Treba seter za enum mozda
+    public AccommodationRequestDTO(){
+
+    }
+
+    public AccommodationRequestDTO(Long id, Long accommodationId, AccommodationState accommodationState) {
+        this.id = id;
+        this.accommodationId = accommodationId;
+        this.accommodationState = accommodationState;
+    }
+
+    public AccommodationRequestDTO(AccommodationRequest accommodationRequest){
+        this(accommodationRequest.getId(), accommodationRequest.getAccommodationId(), accommodationRequest.getAccommodationState());
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getAccommodationId() {
+        return accommodationId;
+    }
+
+    public AccommodationState getAccommodationState() {
+        return accommodationState;
+    }
 }
