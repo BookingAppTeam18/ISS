@@ -6,7 +6,7 @@ import rest.domain.Greeting;
 
 public interface IRepository<T> {
 
-	Collection<Greeting> findAll();
+	Collection<T> findAll();
 
 	T create(T object);
 
