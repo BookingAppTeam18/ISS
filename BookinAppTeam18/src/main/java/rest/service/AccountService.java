@@ -3,42 +3,52 @@ package rest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rest.domain.Account;
+import rest.domain.DTO.AccountDTO;
 import rest.repository.AccountRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
-public class AccountService implements IService<Account> {
+public class AccountService implements IService<AccountDTO> {
 
     @Autowired
     private AccountRepository accountRepository;
 
     @Override
-    public Collection<Account> findAll() {
-        return accountRepository.findAll();
+    public Collection<AccountDTO> findAll(){
+        List<AccountDTO> accountDTOList = new ArrayList<>();
+        Collection<Account> accounts = accountRepository.findAll();
+        for(Account account : accounts){
+            accountDTOList.add(new AccountDTO(account));
+        }
+        return accountDTOList;
     }
 
     @Override
-    public Account findOne(Long id) {
-        return accountRepository.findOne(id);
+    public AccountDTO findOne(Long id){
+        return new AccountDTO(accountRepository.findOne(id));
     }
 
-    @Override
-    public Account create(Account account) throws Exception {
-        if (account.getId() != null) {
+
+    public AccountDTO create(AccountDTO accountDTO) throws Exception{
+        if (accountDTO.getId() != null) {
             throw new Exception("Id mora biti null prilikom perzistencije novog entiteta.");
         }
-        return accountRepository.create(account);
+        Account account = new Account(accountDTO);
+        Account savedAccount = accountRepository.create(account);
+        return new AccountDTO(savedAccount);
     }
 
     @Override
-    public Account update(Account account) throws Exception {
-        Account accountToUpdate = findOne(account.getId());
+    public AccountDTO update(AccountDTO accountDTO) throws Exception {
+        Account accountToUpdate = accountRepository.findOne(accountDTO.getId());
         if (accountToUpdate == null) {
             throw new Exception("Trazeni entitet nije pronadjen.");
         }
 
-        return accountToUpdate;
+        return new AccountDTO(accountToUpdate);
     }
 
     @Override
