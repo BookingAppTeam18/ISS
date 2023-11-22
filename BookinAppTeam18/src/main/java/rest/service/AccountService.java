@@ -3,6 +3,7 @@ package rest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rest.domain.Account;
+import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
 import rest.repository.AccountRepository;
 
@@ -49,6 +50,13 @@ public class AccountService implements IService<AccountDTO> {
         }
 
         return new AccountDTO(accountToUpdate);
+    }
+    public Collection<AccommodationDTO> findFavourite(Long id){
+        return null;
+    }
+
+    public AccommodationDTO addInFavourites(AccommodationDTO accommodationDTO){
+        return null;
     }
 
     @Override
