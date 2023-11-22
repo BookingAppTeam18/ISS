@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import rest.domain.Greeting;
 import rest.repository.InMemoryGreetingRepository;
-import rest.service.IService;
 
 @Service
 public class GreetingService implements IService<Greeting> {

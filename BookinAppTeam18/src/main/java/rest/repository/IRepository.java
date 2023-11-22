@@ -1,10 +1,10 @@
 package rest.repository;
 
 import java.util.Collection;
+import rest.domain.Greeting;
 
 public interface IRepository<T> {
-
-    Collection<T> findAll();
+	Collection<T> findAll();
 
     T create(T object);
 
@@ -13,4 +13,5 @@ public interface IRepository<T> {
     T update(T object);
 
     void delete(Long id);
+
 }
