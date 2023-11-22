@@ -1,15 +1,17 @@
 package rest.service;
-
-import rest.domain.Comment;
-import rest.domain.Greeting;
-
 import java.util.Collection;
 
 public interface IService<T> {
+
 	Collection<T> findAll();
+
 	T findOne(Long id);
-	T create(T object) throws Exception;
-	T update(T object) throws Exception;
+
+	T create(T greeting) throws Exception;
+
+	T update(T greeting) throws Exception;
+
 	void delete(Long id);
 	
 }
+
