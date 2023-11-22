@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
+import rest.domain.enumerations.AccommodationType;
 import rest.repository.AccommodationRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
-public class AccommodationService implements IService<Accommodation> {
+public class AccommodationService implements IService<AccommodationDTO> {
 
     @Autowired
     private AccommodationRepository accommodationRepository;
@@ -19,37 +21,45 @@ public class AccommodationService implements IService<Accommodation> {
     private ModelMapper modelMapper;
 
     @Override
-    public Collection<Accommodation> findAll() {
-        return accommodationRepository.findAll();
+    public Collection<AccommodationDTO> findAll() {
+        ArrayList<AccommodationDTO> accommodationDTOS = new ArrayList<AccommodationDTO>();
+        for (Accommodation a : accommodationRepository.findAll()){
+            accommodationDTOS.add(new AccommodationDTO(a));
+        }
+        return accommodationDTOS;
     }
 
     @Override
-    public Accommodation findOne(Long id) {
-        return accommodationRepository.findOne(id);
+    public AccommodationDTO findOne(Long id) {
+        return new AccommodationDTO(accommodationRepository.findOne(id));
     }
 
     @Override
-    public Accommodation create(Accommodation accommodation) throws Exception {
-        if (accommodation.getId() != null){
+    public AccommodationDTO create(AccommodationDTO accommodationDTO) throws Exception {
+        if (accommodationDTO.getId() != null){
             throw new Exception("Id not null");
         }
-        return accommodationRepository.create(accommodation);
+        return new AccommodationDTO(accommodationRepository.create(new Accommodation(accommodationDTO)));
 
     }
 
     @Override
-    public Accommodation update(Accommodation accommodation) throws Exception {
-        Accommodation accommodationToUpdate = findOne(accommodation.getId());
+    public AccommodationDTO update(AccommodationDTO accommodationDTO) throws Exception {
+        Accommodation accommodationToUpdate = accommodationRepository.findOne(accommodationDTO.getId());
         if(accommodationToUpdate == null){
             throw new Exception("Accommodation not found");
         }
-        accommodationToUpdate.copyValues(accommodation);
-        return accommodationRepository.create(accommodationToUpdate);
+        accommodationToUpdate.copyValues(new Accommodation(accommodationDTO));
+        return new AccommodationDTO(accommodationToUpdate);
     }
 
     @Override
     public void delete(Long id) {
         accommodationRepository.delete(id);
+    }
+
+    public Collection<AccommodationDTO> findByFilter(AccommodationType accommodationType){
+        return null;
     }
 
     private AccommodationDTO convertEntityToDto(Accommodation accommodation){

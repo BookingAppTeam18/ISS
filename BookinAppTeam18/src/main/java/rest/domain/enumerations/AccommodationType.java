@@ -1,6 +1,6 @@
 package rest.domain.enumerations;
 
-public enum AccommodetionType {
+public enum AccommodationType {
     ROOM,
     APARTMENT,
     STUDIO,

@@ -1,5 +1,6 @@
 package rest.domain;
 
+import rest.domain.DTO.AccommodationRequestDTO;
 import rest.domain.enumerations.AccommodationState;
 
 public class AccommodationRequest {
@@ -16,6 +17,12 @@ public class AccommodationRequest {
         this.id = id;
         this.accommodationId = accommodationId;
         this.accommodationState = accommodationState;
+    }
+
+    public AccommodationRequest(AccommodationRequestDTO ardto) {
+        this.id = ardto.getId();
+        this.accommodationId = ardto.getAccommodationId();
+        this.accommodationState = ardto.getAccommodationState();
     }
 
     public Long getId() {
