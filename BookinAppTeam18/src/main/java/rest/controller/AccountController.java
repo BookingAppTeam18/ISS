@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rest.domain.Account;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
 import rest.service.AccountService;
@@ -58,7 +57,7 @@ public class AccountController {
 
     //Delete account
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<AccountDTO> deleteComment(@PathVariable("id") Long id) {
+    public ResponseEntity<AccountDTO> deleteAccount(@PathVariable("id") Long id) {
         accountService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -72,14 +71,14 @@ public class AccountController {
 
     //Add accommodation in favourites (Post?)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationDTO> createAccount(@RequestBody AccommodationDTO accommodationDTO) throws Exception{
+    public ResponseEntity<AccommodationDTO> addInFavourites(@RequestBody AccommodationDTO accommodationDTO) throws Exception{
 
         return new ResponseEntity<>(accountService.addInFavourites(accommodationDTO), HttpStatus.CREATED);
     }
 
     //Delete favourite accommodation (remove from list)
     @DeleteMapping(value = "/{userId}/favourite/{favouriteId}")
-    public ResponseEntity<AccommodationDTO> deleteComment(@PathVariable("userId") Long userId, @PathVariable("favouriteId") Long favouriteId) {
+    public ResponseEntity<AccommodationDTO> removeFromFavourites(@PathVariable("userId") Long userId, @PathVariable("favouriteId") Long favouriteId) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
