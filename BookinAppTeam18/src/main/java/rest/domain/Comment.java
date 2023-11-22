@@ -1,6 +1,7 @@
 package rest.domain;
 
 
+import rest.domain.DTO.CommentDTO;
 import rest.domain.enumerations.Page;
 
 public class Comment {
@@ -18,6 +19,14 @@ public class Comment {
         this.writtenById = writtenById;
         this.writtenTo = writtenTo;
         this.page = page;
+    }
+    public Comment(CommentDTO commentDTO) {
+        this.id = commentDTO.getId();
+        this.message = commentDTO.getMessage();
+        this.rate = commentDTO.getRate();
+        this.writtenById = commentDTO.getWrittenById();
+        this.writtenTo = commentDTO.getWrittenTo();
+        this.page = commentDTO.getPage();
     }
 
     public Long getId() {

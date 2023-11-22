@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rest.domain.Report;
+import rest.domain.DTO.ReportDTO;
 import rest.service.ReportService;
 
 import java.util.Collection;
@@ -17,15 +17,17 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
+    //ALL reports
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<Report>> getReports() {
-        Collection<Report> reports = reportService.findAll();
+    public ResponseEntity<Collection<ReportDTO>> getReports() {
+        Collection<ReportDTO> reports = reportService.findAll();
         return new ResponseEntity<>(reports, HttpStatus.OK);
     }
 
+    //report by id
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Report> getReport(@PathVariable("id") Long id) {
-        Report report = reportService.findOne(id);
+    public ResponseEntity<ReportDTO> getReport(@PathVariable("id") Long id) {
+        ReportDTO report = reportService.findOne(id);
 
         if (report == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -33,17 +35,41 @@ public class ReportController {
         return new ResponseEntity<>(report, HttpStatus.OK);
     }
 
+    //reports for account
+    @GetMapping(value = "account/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReportDTO>> getAccountReports(@PathVariable("id") Long accountId) {
+        Collection<ReportDTO> report = reportService.findAccountReports(accountId);
+
+        if (report == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(report, HttpStatus.OK);
+    }
+
+    //reports for comment
+    @GetMapping(value = "comment/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReportDTO>> getCommentReports(@PathVariable("id") Long accountId) {
+        Collection<ReportDTO> report = reportService.findCommentReports(accountId);
+
+        if (report == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(report, HttpStatus.OK);
+    }
+
+    //create report
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Report> createReport(@RequestBody Report report) throws Exception {
-        Report savedReport = reportService.create(report);
+    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO report) throws Exception {
+        ReportDTO savedReport = reportService.create(report);
         return new ResponseEntity<>(savedReport, HttpStatus.CREATED);
     }
 
+    //update report
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Report> updateReport(@RequestBody Report report, @PathVariable Long id)
+    public ResponseEntity<ReportDTO> updateReport(@RequestBody ReportDTO report, @PathVariable Long id)
             throws Exception {
         report.setId(id);
-        Report updatedReport = reportService.update(report);
+        ReportDTO updatedReport = reportService.update(report);
 
         if (updatedReport == null) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -51,8 +77,9 @@ public class ReportController {
         return new ResponseEntity<>(updatedReport, HttpStatus.OK);
     }
 
+    //delete report
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Report> deleteReport(@PathVariable("id") Long id) {
+    public ResponseEntity<ReportDTO> deleteReport(@PathVariable("id") Long id) {
         reportService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

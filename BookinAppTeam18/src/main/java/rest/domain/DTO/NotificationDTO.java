@@ -1,23 +1,24 @@
-package rest.domain;
+package rest.domain.DTO;
 
-import rest.domain.DTO.NotificationDTO;
+import rest.domain.Notification;
 
-public class Notification {
+public class NotificationDTO {
 
     private Long id;
     private String message;
     private long accountId;
 
 
-    public Notification(Long id, String message, long accountId) {
+    public NotificationDTO(Long id, String message, long accountId) {
         this.id = id;
         this.message = message;
         this.accountId = accountId;
     }
-    public Notification(NotificationDTO notificationDTO) {
-        this.id = notificationDTO.getId();
-        this.message = notificationDTO.getMessage();
-        this.accountId = notificationDTO.getAccountId();
+
+    public NotificationDTO(Notification notification) {
+        this.id = notification.getId();
+        this.message = notification.getMessage();
+        this.accountId = notification.getAccountId();
     }
 
     public Long getId() {

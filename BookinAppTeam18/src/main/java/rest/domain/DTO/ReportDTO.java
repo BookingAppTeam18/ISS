@@ -1,15 +1,15 @@
-package rest.domain;
+package rest.domain.DTO;
 
-import rest.domain.DTO.ReportDTO;
+import rest.domain.Report;
 
-public class Report {
+public class ReportDTO {
     private Long id;
     private String Description;
     private long reportedUserId;
     private long reportedById;
     private long reportedComment;
 
-    public Report(Long id, String description, long reportedUserId, long reportedById, long reportedComment) {
+    public ReportDTO(Long id, String description, long reportedUserId, long reportedById, long reportedComment) {
         this.id = id;
         Description = description;
         this.reportedUserId = reportedUserId;
@@ -17,12 +17,12 @@ public class Report {
         this.reportedComment = reportedComment;
     }
 
-    public Report(ReportDTO reportDTO) {
-        this.id = reportDTO.getId();
-        Description = reportDTO.getDescription();
-        this.reportedUserId = reportDTO.getReportedUserId();
-        this.reportedById = reportDTO.getReportedById();
-        this.reportedComment = reportDTO.getReportedComment();
+    public ReportDTO(Report report) {
+        this.id = report.getId();
+        Description = report.getDescription();
+        this.reportedUserId = report.getReportedUserId();
+        this.reportedById = report.getReportedById();
+        this.reportedComment = report.getReportedComment();
     }
 
     public Long getId() {

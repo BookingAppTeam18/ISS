@@ -1,9 +1,11 @@
 package rest.repository;
 
+import org.springframework.stereotype.Repository;
 import rest.domain.Report;
 
 import java.util.Collection;
 
+@Repository
 public class ReportRepository implements IRepository<Report>{
     @Override
     public Collection<Report> findAll() {
