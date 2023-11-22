@@ -1,4 +1,5 @@
 package rest.service;
+
 import java.util.Collection;
 
 public interface IService<T> {
@@ -14,4 +15,3 @@ public interface IService<T> {
 	void delete(Long id);
 	
 }
-
