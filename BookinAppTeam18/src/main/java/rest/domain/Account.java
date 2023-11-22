@@ -1,5 +1,6 @@
 package rest.domain;
 
+import rest.domain.DTO.AccountDTO;
 import rest.domain.enumerations.UserState;
 import rest.domain.enumerations.UserType;
 
@@ -31,7 +32,20 @@ public class Account {
     }
 
     public Account(){
-        
+
+    }
+
+    public Account(AccountDTO accountDTO) {
+        this(accountDTO.getId(), accountDTO.getFirstName(), accountDTO.getLastName(), accountDTO.getEmail(), accountDTO.getAddress(), accountDTO.getPhone());
+    }
+
+    public Account(Long id, String firstName, String lastName, String email, String address, String phone) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.phone = phone;
     }
 
     public Long getId() {
