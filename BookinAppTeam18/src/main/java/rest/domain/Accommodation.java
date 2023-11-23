@@ -60,7 +60,7 @@ public class Accommodation {
         this.maxNumOfGuests = accommodationDTO.getMaxNumOfGuests();
         this.gallery = new ArrayList<>();
         this.benefits = new ArrayList<>();
-        this.accommodetionType = accommodationDTO.getAccommodetionType();
+        this.accommodetionType = accommodationDTO.getAccommodationType();
     }
 
     public Long getId() {

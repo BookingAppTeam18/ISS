@@ -1,7 +1,5 @@
 package rest.repository;
 
-import rest.domain.DTO.ReservationDTO;
-import rest.domain.Greeting;
 import rest.domain.Reservation;
 
 import java.util.Collection;

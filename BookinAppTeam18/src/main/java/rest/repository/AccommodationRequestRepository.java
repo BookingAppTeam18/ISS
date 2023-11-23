@@ -1,9 +1,7 @@
 package rest.repository;
 
 import org.springframework.stereotype.Repository;
-import rest.domain.Accommodation;
 import rest.domain.AccommodationRequest;
-import rest.domain.Greeting;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;

@@ -34,6 +34,12 @@ public class AccountController {
         }
         return new ResponseEntity<>(accountDTO, HttpStatus.OK);
     }
+    //Get favourite accommodation for specific user
+    @GetMapping(value="/favorites/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getFavoriteAccommodations(@PathVariable("userId") Long accountId){
+        Collection<AccommodationDTO> accommodationDTOS = accountService.findFavourite(accountId);
+        return new ResponseEntity<>(accommodationDTOS, HttpStatus.OK);
+    }
 
     //Create account
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,6 +47,12 @@ public class AccountController {
         return new ResponseEntity<>(accountService.create(accountDTO), HttpStatus.CREATED);
     }
 
+    //Add accommodation in favourites (Post?)
+    @PostMapping(value="addFavorites",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationDTO> addInFavourites(@RequestBody AccommodationDTO accommodationDTO) throws Exception{
+
+        return new ResponseEntity<>(accountService.addInFavourites(accommodationDTO), HttpStatus.CREATED);
+    }
 
     //Update account
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -62,19 +74,7 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //Get favourite accommodation for specific user
-    @GetMapping(value="/favorites/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccommodationDTO>> getFavoriteAccommodations(@PathVariable("userId") Long accountId){
-        Collection<AccommodationDTO> accommodationDTOS = accountService.findFavourite(accountId);
-        return new ResponseEntity<>(accommodationDTOS, HttpStatus.OK);
-    }
 
-    //Add accommodation in favourites (Post?)
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationDTO> addInFavourites(@RequestBody AccommodationDTO accommodationDTO) throws Exception{
-
-        return new ResponseEntity<>(accountService.addInFavourites(accommodationDTO), HttpStatus.CREATED);
-    }
 
     //Delete favourite accommodation (remove from list)
     @DeleteMapping(value = "/{userId}/favourite/{favouriteId}")

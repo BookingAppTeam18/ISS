@@ -17,7 +17,7 @@ public class AccommodationDTO {
     private int maxNumOfGuests;
     private List<String> gallery;
     private List<Benefit> benefits;
-    private AccommodationType accommodetionType;
+    private AccommodationType accommodationType;
 
     public AccommodationDTO(){
 
@@ -33,10 +33,10 @@ public class AccommodationDTO {
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
         this.gallery = new ArrayList<String>();
         this.benefits = new ArrayList<Benefit>();
-        this.accommodetionType = accommodation.getAccommodetionType();
+        this.accommodationType = accommodation.getAccommodetionType();
     }
 
-    public AccommodationDTO(Long id, Long ownerId, String name, String location, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType) {
+    public AccommodationDTO(Long id, Long ownerId, String name, String location, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodationType) {
         this.id = id;
         this.ownerId = ownerId;
         this.name = name;
@@ -46,7 +46,7 @@ public class AccommodationDTO {
         this.maxNumOfGuests = maxNumOfGuests;
         this.gallery = gallery;
         this.benefits = benefits;
-        this.accommodetionType = accommodetionType;
+        this.accommodationType = accommodationType;
     }
 
     public Long getId() {
@@ -85,8 +85,8 @@ public class AccommodationDTO {
         return benefits;
     }
 
-    public AccommodationType getAccommodetionType() {
-        return accommodetionType;
+    public AccommodationType getAccommodationType() {
+        return accommodationType;
     }
 
     public void setId(Long id) {
@@ -125,7 +125,7 @@ public class AccommodationDTO {
         this.benefits = benefits;
     }
 
-    public void setAccommodetionType(AccommodationType accommodetionType) {
-        this.accommodetionType = accommodetionType;
+    public void setAccommodationType(AccommodationType accommodationType) {
+        this.accommodationType = accommodationType;
     }
 }

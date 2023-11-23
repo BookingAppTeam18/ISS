@@ -12,7 +12,7 @@ import rest.service.CommentService;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping("/api/comments")
 public class CommentController {
 
     @Autowired

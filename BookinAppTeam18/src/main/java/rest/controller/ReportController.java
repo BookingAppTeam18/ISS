@@ -11,7 +11,7 @@ import rest.service.ReportService;
 import java.util.Collection;
 
 @RestController
-@RequestMapping("/api/report")
+@RequestMapping("/api/reports")
 public class ReportController {
 
     @Autowired

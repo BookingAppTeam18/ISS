@@ -13,7 +13,7 @@ import java.util.Collection;
 
 
 @RestController
-@RequestMapping("/api/notification")
+@RequestMapping("/api/notifications")
 public class NotificationController {
 
     @Autowired

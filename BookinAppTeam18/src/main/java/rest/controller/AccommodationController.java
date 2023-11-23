@@ -44,7 +44,7 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "filtered/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationByFilter(@PathVariable("id") AccommodationType type) {
         Collection<AccommodationDTO> accommodationDTOs = accommodationService.findByFilter(type);
 
