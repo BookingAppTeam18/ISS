@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import rest.domain.DTO.CommentDTO;
 import rest.domain.DTO.LoginDTO;
 import rest.service.LogInService;
 

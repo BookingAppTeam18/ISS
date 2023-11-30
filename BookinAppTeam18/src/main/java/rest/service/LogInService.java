@@ -1,9 +1,11 @@
 package rest.service;
 
+import org.springframework.stereotype.Service;
 import rest.domain.DTO.LoginDTO;
 
 import java.util.Collection;
 
+@Service
 public class LogInService implements IService<LoginDTO> {
     @Override
     public Collection<LoginDTO> findAll() {
