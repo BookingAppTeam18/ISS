@@ -5,6 +5,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import rest.domain.DTO.NotificationDTO;
+import rest.domain.Notification;
 import rest.domain.Report;
 import rest.domain.DTO.ReportDTO;
 import rest.domain.DTO.ReportDTO;
@@ -100,6 +102,21 @@ public class ReportService implements IService<ReportDTO>{
     public void deleteAll() {
         reportRepository.deleteAll();
         reportRepository.flush();
+    }
+    public Collection<ReportDTO> findAccountReports(Long accountId) {
+        ArrayList<ReportDTO>  accountReports= new ArrayList<>();
+        for(Report accountReport:reportRepository.findAccountReports(accountId)){
+            accountReports.add(new ReportDTO(accountReport));
+        }
+        return accountReports;
+    }
+
+    public Collection<ReportDTO> findCommentReports(Long accountId) {
+        ArrayList<ReportDTO>  commentReports= new ArrayList<>();
+        for(Report commentReport:reportRepository.findCommentReports(accountId)){
+            commentReports.add(new ReportDTO(commentReport));
+        }
+        return commentReports;
     }
 
 }

@@ -2,7 +2,15 @@ package rest.domain;
 
 import rest.domain.DTO.ReportDTO;
 
-public class Report {
+import javax.persistence.*;
+
+
+@Entity
+@Table(name="report")
+public class Report{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id",length = 5)
     private Long id;
     private String Description;
     private long reportedUserId;
@@ -23,6 +31,10 @@ public class Report {
         this.reportedUserId = reportDTO.getReportedUserId();
         this.reportedById = reportDTO.getReportedById();
         this.reportedComment = reportDTO.getReportedComment();
+    }
+
+    public Report() {
+
     }
 
     public Long getId() {
