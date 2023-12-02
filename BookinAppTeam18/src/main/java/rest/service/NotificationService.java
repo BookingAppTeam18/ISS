@@ -97,4 +97,47 @@ public class NotificationService implements IService<NotificationDTO> {
         notificationRepository.deleteAll();
         notificationRepository.flush();
     }
+
+    public Collection<NotificationDTO> findAccountUnseenNotifications(Long accountId) {
+        ArrayList<NotificationDTO>  unseenNotitications= new ArrayList<>();
+        for(Notification unseenNotification:notificationRepository.findUnseenNotifications(accountId)){
+            unseenNotitications.add(new NotificationDTO(unseenNotification));
+        }
+        return unseenNotitications;
+    }
+
+    public Collection<NotificationDTO> findAccountNotifications(Long accountId) {
+        ArrayList<NotificationDTO>  accountNotifications= new ArrayList<>();
+        for(Notification accountNotification:notificationRepository.findAccountNotifications(accountId)){
+            accountNotifications.add(new NotificationDTO(accountNotification));
+        }
+        return accountNotifications;
+    }
+
+    public NotificationDTO setSeen(Long notificationId) {
+        Notification notificationToUpdate;
+        try {
+            notificationToUpdate = new Notification(findOne(notificationId)); // this will throw ResponseStatusException if student is not found
+            notificationToUpdate.setSeen(true);
+            notificationRepository.save(notificationToUpdate);
+            notificationRepository.flush();
+            return new NotificationDTO(notificationToUpdate);
+        } catch (RuntimeException ex) {
+            Throwable e = ex;
+            Throwable c = null;
+            while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) {
+                e = (RuntimeException) c;
+            }
+            if ((c != null) && (c instanceof ConstraintViolationException)) {
+                ConstraintViolationException c2 = (ConstraintViolationException) c;
+                Set<ConstraintViolation<?>> errors = c2.getConstraintViolations();
+                StringBuilder sb = new StringBuilder(1000);
+                for (ConstraintViolation<?> error : errors) {
+                    sb.append(error.getMessage() + "\n");
+                }
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, sb.toString());
+            }
+            throw ex;
+        }
+    }
 }

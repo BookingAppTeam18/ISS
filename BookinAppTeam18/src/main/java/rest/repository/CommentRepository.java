@@ -10,6 +10,6 @@ import java.util.Collection;
 public interface CommentRepository extends JpaRepository<Comment,Long> {
     @Query("select c from Comment c where c.page= ?1 and c.writtenTo=?2")
     public Collection<Comment> findAccommodationComments(Page page,Long accommodationId);
-    @Query("select c from Comment c where c.page= ?1 and c.writtenTo=?2")
+    @Query("select c from Comment c where  c.page= ?1 and c.writtenTo=?2")
     public Collection<Comment> findAccountComments(Page page,Long accommodationId);
 }
