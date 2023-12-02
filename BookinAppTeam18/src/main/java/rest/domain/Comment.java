@@ -4,13 +4,26 @@ package rest.domain;
 import rest.domain.DTO.CommentDTO;
 import rest.domain.enumerations.Page;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name="comments")
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id",length = 5)
     private Long id;
     private String message;
     private int rate;
     private long writtenById;
     private long writtenTo;
+
+    @Enumerated(EnumType.STRING)
     private Page page;
+
+    public Comment() {
+
+    }
 
     public Comment(Long id, String message, int rate, long writtenById,long writtenTo, Page page) {
         this.id = id;
@@ -28,6 +41,7 @@ public class Comment {
         this.writtenTo = commentDTO.getWrittenTo();
         this.page = commentDTO.getPage();
     }
+
 
     public Long getId() {
         return id;

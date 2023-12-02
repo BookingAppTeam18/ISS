@@ -29,7 +29,7 @@ public class ReservationService implements IService<ReservationDTO> {
     }
 
     @Override
-    public ReservationDTO create(ReservationDTO greeting) throws Exception {
+    public ReservationDTO insert(ReservationDTO greeting) throws Exception {
         return null;
     }
 
@@ -39,7 +39,12 @@ public class ReservationService implements IService<ReservationDTO> {
     }
 
     @Override
-    public void delete(Long id) {
+    public ReservationDTO delete(Long id) {
+        return null;
+    }
+
+    @Override
+    public void deleteAll() {
 
     }
 }

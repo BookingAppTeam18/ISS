@@ -60,7 +60,7 @@ public class ReportController {
     //create report
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO report) throws Exception {
-        ReportDTO savedReport = reportService.create(report);
+        ReportDTO savedReport = reportService.insert(report);
         return new ResponseEntity<>(savedReport, HttpStatus.CREATED);
     }
 

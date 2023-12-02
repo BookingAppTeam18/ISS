@@ -44,7 +44,7 @@ public class AccountController {
     //Create account
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountDTO> createAccount(@RequestBody AccountDTO accountDTO) throws Exception{
-        return new ResponseEntity<>(accountService.create(accountDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(accountService.insert(accountDTO), HttpStatus.CREATED);
     }
 
     //Add accommodation in favourites (Post?)

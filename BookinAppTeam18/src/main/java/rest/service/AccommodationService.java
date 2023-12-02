@@ -35,13 +35,10 @@ public class AccommodationService implements IService<AccommodationDTO> {
     }
 
     @Override
-    public AccommodationDTO create(AccommodationDTO accommodationDTO) throws Exception {
-        if (accommodationDTO.getId() != null){
-            throw new Exception("Id not null");
-        }
-        return new AccommodationDTO(accommodationRepository.create(new Accommodation(accommodationDTO)));
-
+    public AccommodationDTO insert(AccommodationDTO greeting) throws Exception {
+        return null;
     }
+
 
     @Override
     public AccommodationDTO update(AccommodationDTO accommodationDTO) throws Exception {
@@ -54,9 +51,15 @@ public class AccommodationService implements IService<AccommodationDTO> {
     }
 
     @Override
-    public void delete(Long id) {
-        accommodationRepository.delete(id);
+    public AccommodationDTO delete(Long id) {
+        return null;
     }
+
+    @Override
+    public void deleteAll() {
+
+    }
+
 
     public Collection<AccommodationDTO> findByFilter(AccommodationType accommodationType){
         return null;

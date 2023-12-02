@@ -25,7 +25,7 @@ public class NotificationService implements IService<NotificationDTO> {
     }
 
     @Override
-    public NotificationDTO create(NotificationDTO object) throws Exception {
+    public NotificationDTO insert(NotificationDTO object) throws Exception {
         return null;
     }
 
@@ -35,7 +35,13 @@ public class NotificationService implements IService<NotificationDTO> {
     }
 
     @Override
-    public void delete(Long id) {
+    public NotificationDTO delete(Long id) {
+        return null;
+    }
+
+
+    @Override
+    public void deleteAll() {
 
     }
 

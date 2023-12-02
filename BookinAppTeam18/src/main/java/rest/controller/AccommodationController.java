@@ -57,7 +57,7 @@ public class AccommodationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody AccommodationDTO accommodationDto) throws Exception {
-        AccommodationDTO savedAccommodation = accommodationService.create(accommodationDto);
+        AccommodationDTO savedAccommodation = accommodationService.insert(accommodationDto);
         return new ResponseEntity<AccommodationDTO>(savedAccommodation, HttpStatus.CREATED);
     }
 
