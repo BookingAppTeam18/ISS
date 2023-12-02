@@ -36,8 +36,14 @@ public class ReportService implements IService<ReportDTO>{
     }
 
     @Override
-    public void delete(Long id) {
+    public ReportDTO delete(Long id) {
+        return null;
+    }
 
+
+    @Override
+    public void deleteAll() {
+        
     }
 
     public Collection<ReportDTO> findAccountReports(Long accountId) {
