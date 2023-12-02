@@ -34,6 +34,11 @@ public class NotificationService implements IService<NotificationDTO> {
         return null;
     }
 
+    @Override
+    public NotificationDTO delete(Long id) {
+        return null;
+    }
+
 
     @Override
     public void deleteAll() {
