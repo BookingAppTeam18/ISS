@@ -32,6 +32,11 @@ public class AccountService implements IService<AccountDTO> {
         return new AccountDTO(accountRepository.findOne(id));
     }
 
+    @Override
+    public AccountDTO insert(AccountDTO greeting) throws Exception {
+        return null;
+    }
+
 
     public AccountDTO create(AccountDTO accountDTO) throws Exception{
         if (accountDTO.getId() != null) {
@@ -51,6 +56,12 @@ public class AccountService implements IService<AccountDTO> {
 
         return new AccountDTO(accountToUpdate);
     }
+
+    @Override
+    public AccountDTO delete(Long id) {
+        return null;
+    }
+
     public Collection<AccommodationDTO> findFavourite(Long id){
         return null;
     }
@@ -59,9 +70,10 @@ public class AccountService implements IService<AccountDTO> {
         return null;
     }
 
+
     @Override
-    public void delete(Long id) {
-        accountRepository.delete(id);
+    public void deleteAll() {
+
     }
 
 }

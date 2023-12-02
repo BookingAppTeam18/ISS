@@ -26,7 +26,7 @@ public class ReportService implements IService<ReportDTO>{
     }
 
     @Override
-    public ReportDTO create(ReportDTO object) throws Exception {
+    public ReportDTO insert(ReportDTO object) throws Exception {
         return null;
     }
 

@@ -52,7 +52,7 @@ public class ReservationController {
     // Create reservation
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) throws Exception{
-        return new ResponseEntity<>(reservationService.create(reservationDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(reservationService.insert(reservationDTO), HttpStatus.CREATED);
     }
 
     //Update reservation

@@ -25,7 +25,7 @@ public class NotificationService implements IService<NotificationDTO> {
     }
 
     @Override
-    public NotificationDTO create(NotificationDTO object) throws Exception {
+    public NotificationDTO insert(NotificationDTO object) throws Exception {
         return null;
     }
 

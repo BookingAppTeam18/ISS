@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/BookinAppTeam18/BookingAppTeam18.iml" filepath="$PROJECT_DIR$/BookinAppTeam18/BookingAppTeam18.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ISS.iml" filepath="$PROJECT_DIR$/.idea/ISS.iml" />
     </modules>
   </component>

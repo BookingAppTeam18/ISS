@@ -78,7 +78,7 @@ public class NotificationController {
     //Create Notification
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NotificationDTO> createNotification(@RequestBody NotificationDTO notification) throws Exception {
-        NotificationDTO savedNotification = notificationService.create(notification);
+        NotificationDTO savedNotification = notificationService.insert(notification);
         return new ResponseEntity<>(savedNotification, HttpStatus.CREATED);
     }
 

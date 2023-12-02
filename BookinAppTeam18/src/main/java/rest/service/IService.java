@@ -8,10 +8,11 @@ public interface IService<T> {
 
 	T findOne(Long id);
 
-	T create(T greeting) throws Exception;
+	T insert(T greeting) throws Exception;
 
 	T update(T greeting) throws Exception;
 
-	void delete(Long id);
-	
+	T delete(Long id);
+
+	void deleteAll();
 }
