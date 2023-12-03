@@ -19,7 +19,7 @@ public class CommentService implements IService<CommentDTO>{
 
     @Autowired
     private CommentRepository commentRepository;
-    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
+//    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
     @Override
     public Collection<CommentDTO> findAll() {
 
@@ -34,10 +34,10 @@ public class CommentService implements IService<CommentDTO>{
     public CommentDTO findOne(Long id)
     {
         Optional<Comment> found = commentRepository.findById(id);
-        if (found.isEmpty()) {
-            String value = bundle.getString("notFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-        }
+//        if (found.isEmpty()) {
+//            String value = bundle.getString("notFound");
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+//        }
         return new CommentDTO(found.get());
     }
 

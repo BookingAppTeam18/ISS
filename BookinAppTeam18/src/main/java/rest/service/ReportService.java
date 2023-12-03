@@ -24,7 +24,7 @@ public class ReportService implements IService<ReportDTO>{
 
     @Autowired
     private ReportRepository reportRepository;
-    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
+//    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
     @Override
     public Collection<ReportDTO> findAll() {
 
@@ -39,10 +39,10 @@ public class ReportService implements IService<ReportDTO>{
     public ReportDTO findOne(Long id)
     {
         Optional<Report> found = reportRepository.findById(id);
-        if (found.isEmpty()) {
-            String value = bundle.getString("notFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-        }
+//        if (found.isEmpty()) {
+//            String value = bundle.getString("notFound");
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+//        }
         return new ReportDTO(found.get());
     }
 

@@ -1,6 +1,6 @@
 package rest.service;
 
-import org.modelmapper.ModelMapper;
+//import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rest.domain.Accommodation;
@@ -16,8 +16,8 @@ public class AccommodationRequestService implements IService<AccommodationReques
     @Autowired
     private AccommodationRequestRepository accommodationRequestRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+//    @Autowired
+//    private ModelMapper modelMapper;
 
     @Override
     public Collection<AccommodationRequestDTO> findAll() {
@@ -61,15 +61,15 @@ public class AccommodationRequestService implements IService<AccommodationReques
     }
 
 
-    private AccommodationRequestDTO convertEntityToDto(AccommodationRequest accommodationRequest){
-        AccommodationRequestDTO accommodationRequestDTO = new AccommodationRequestDTO();
-        accommodationRequestDTO = modelMapper.map(accommodationRequest, AccommodationRequestDTO.class);
-        return accommodationRequestDTO;
-    }
-
-    private AccommodationRequest convertDtoToEntity(AccommodationRequestDTO accommodationRequestDTO){
-        AccommodationRequest accommodationRequest = new AccommodationRequest();
-        accommodationRequest = modelMapper.map(accommodationRequestDTO, AccommodationRequest.class);
-        return accommodationRequest;
-    }
+//    private AccommodationRequestDTO convertEntityToDto(AccommodationRequest accommodationRequest){
+//        AccommodationRequestDTO accommodationRequestDTO = new AccommodationRequestDTO();
+//        accommodationRequestDTO = modelMapper.map(accommodationRequest, AccommodationRequestDTO.class);
+//        return accommodationRequestDTO;
+//    }
+//
+//    private AccommodationRequest convertDtoToEntity(AccommodationRequestDTO accommodationRequestDTO){
+//        AccommodationRequest accommodationRequest = new AccommodationRequest();
+//        accommodationRequest = modelMapper.map(accommodationRequestDTO, AccommodationRequest.class);
+//        return accommodationRequest;
+//    }
 }

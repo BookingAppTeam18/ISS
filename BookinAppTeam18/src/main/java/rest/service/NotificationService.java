@@ -18,7 +18,7 @@ public class NotificationService implements IService<NotificationDTO> {
 
     @Autowired
     private NotificationRepository notificationRepository;
-    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
+//    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
     @Override
     public Collection<NotificationDTO> findAll() {
 
@@ -33,10 +33,10 @@ public class NotificationService implements IService<NotificationDTO> {
     public NotificationDTO findOne(Long id)
     {
         Optional<Notification> found = notificationRepository.findById(id);
-        if (found.isEmpty()) {
-            String value = bundle.getString("notFound");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-        }
+//        if (found.isEmpty()) {
+//            String value = bundle.getString("notFound");
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+//        }
         return new NotificationDTO(found.get());
     }
 

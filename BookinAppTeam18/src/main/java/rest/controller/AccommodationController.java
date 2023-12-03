@@ -1,19 +1,13 @@
 package rest.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
@@ -44,15 +38,22 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value = "filtered/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationByFilter(@PathVariable("id") AccommodationType type) {
-        Collection<AccommodationDTO> accommodationDTOs = accommodationService.findByFilter(type);
-
-        if (accommodationDTOs == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping(value ="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationByFilter(
+            @RequestParam(name = "longitude", required = false) double longitude,
+            @RequestParam(name = "latitude", required = false) double latitude,
+            @RequestParam(name = "type", required = false) AccommodationType type
+            // Add more filter parameters as needed
+    ) {
+        Collection<AccommodationDTO> filteredAccommodations = new ArrayList<>();
+        if (longitude != 0.0 && latitude != 0.0) {
+            // Pozivamo filter koji kombinuje sve parametre
+            filteredAccommodations = accommodationService.filterAccommodationsLocation(longitude, latitude);
+        } else if (type != null) {
+            // Pozivamo filter samo po tipu
+            filteredAccommodations = accommodationService.filterAccommodationsType(type);
         }
-
-        return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOs, HttpStatus.OK);
+        return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

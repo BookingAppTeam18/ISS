@@ -11,7 +11,8 @@ public class AccommodationDTO {
     private Long id;
     private Long ownerId;
     private String name;
-    private String location;
+    private double longitude;
+    private double latitude;
     private double activePrice;
     private int minNumOfGuests;
     private int maxNumOfGuests;
@@ -27,26 +28,16 @@ public class AccommodationDTO {
         this.id = accommodation.getId();
         this.ownerId = accommodation.getOwnerId();
         this.name = accommodation.getName();
-        this.location = accommodation.getLocation();
+        this.longitude = accommodation.getLongitude();
+        this.latitude = accommodation.getLatitude();
         this.activePrice = accommodation.getActivePrice();
         this.minNumOfGuests = accommodation.getMinNumOfGuests();
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
         this.gallery = new ArrayList<String>();
+        this.gallery = accommodation.getGallery();
         this.benefits = new ArrayList<Benefit>();
+        this.benefits = accommodation.getBenefits();
         this.accommodationType = accommodation.getAccommodetionType();
-    }
-
-    public AccommodationDTO(Long id, Long ownerId, String name, String location, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodationType) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.name = name;
-        this.location = location;
-        this.activePrice = activePrice;
-        this.minNumOfGuests = minNumOfGuests;
-        this.maxNumOfGuests = maxNumOfGuests;
-        this.gallery = gallery;
-        this.benefits = benefits;
-        this.accommodationType = accommodationType;
     }
 
     public Long getId() {
@@ -61,8 +52,12 @@ public class AccommodationDTO {
         return name;
     }
 
-    public String getLocation() {
-        return location;
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
     }
 
     public double getActivePrice() {
@@ -101,8 +96,12 @@ public class AccommodationDTO {
         this.name = name;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
     public void setActivePrice(double activePrice) {

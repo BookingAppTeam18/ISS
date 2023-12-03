@@ -3,9 +3,17 @@ package rest.domain;
 import rest.domain.DTO.AccommodationRequestDTO;
 import rest.domain.enumerations.AccommodationState;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name="accommodationRequests")
 public class AccommodationRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id",length = 5)
     private Long id;
     private Long accommodationId;
+    @Enumerated(EnumType.STRING)
     private AccommodationState accommodationState;
 
     public AccommodationRequest(){

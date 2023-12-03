@@ -1,15 +1,22 @@
 package rest.service;
 
-import org.modelmapper.ModelMapper;
+//import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Accommodation;
+import rest.domain.Comment;
 import rest.domain.DTO.AccommodationDTO;
+import rest.domain.DTO.CommentDTO;
 import rest.domain.enumerations.AccommodationType;
+import rest.domain.enumerations.Page;
 import rest.repository.AccommodationRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.*;
 
 @Service
 public class AccommodationService implements IService<AccommodationDTO> {
@@ -17,8 +24,7 @@ public class AccommodationService implements IService<AccommodationDTO> {
     @Autowired
     private AccommodationRepository accommodationRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+//    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
 
     @Override
     public Collection<AccommodationDTO> findAll() {
@@ -31,49 +37,99 @@ public class AccommodationService implements IService<AccommodationDTO> {
 
     @Override
     public AccommodationDTO findOne(Long id) {
-        return new AccommodationDTO(accommodationRepository.findOne(id));
+        Optional<Accommodation> accommodation = accommodationRepository.findById(id);
+//        if (accommodation.isEmpty()) {
+////            String value = bundle.getString("NotFound");
+////            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+//        }
+        return new AccommodationDTO(accommodation.get());
     }
 
     @Override
-    public AccommodationDTO insert(AccommodationDTO greeting) throws Exception {
-        return null;
+    public AccommodationDTO insert(AccommodationDTO accommodationDTO) throws Exception {
+        Accommodation accommodation = new Accommodation(accommodationDTO);
+        try {
+            accommodationRepository.save(accommodation);
+            accommodationRepository.flush();
+            return accommodationDTO;
+        } catch (ConstraintViolationException ex) {
+            Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
+            StringBuilder sb = new StringBuilder(1000);
+            for (ConstraintViolation<?> error : errors) {
+                sb.append(error.getMessage() + "\n");
+            }
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, sb.toString());
+        }
     }
 
 
     @Override
     public AccommodationDTO update(AccommodationDTO accommodationDTO) throws Exception {
-        Accommodation accommodationToUpdate = accommodationRepository.findOne(accommodationDTO.getId());
-        if(accommodationToUpdate == null){
-            throw new Exception("Accommodation not found");
+        Accommodation accommodationToUpdate = new Accommodation(accommodationDTO);
+        try {
+            findOne(accommodationDTO.getId()); // this will throw ResponseStatusException if student is not found
+            accommodationRepository.save(accommodationToUpdate);
+            accommodationRepository.flush();
+            return accommodationDTO;
+        } catch (RuntimeException ex) {
+            Throwable e = ex;
+            Throwable c = null;
+            while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) {
+                e = (RuntimeException) c;
+            }
+            if ((c != null) && (c instanceof ConstraintViolationException)) {
+                ConstraintViolationException c2 = (ConstraintViolationException) c;
+                Set<ConstraintViolation<?>> errors = c2.getConstraintViolations();
+                StringBuilder sb = new StringBuilder(1000);
+                for (ConstraintViolation<?> error : errors) {
+                    sb.append(error.getMessage() + "\n");
+                }
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, sb.toString());
+            }
+            throw ex;
         }
-        accommodationToUpdate.copyValues(new Accommodation(accommodationDTO));
-        return new AccommodationDTO(accommodationToUpdate);
     }
 
     @Override
     public AccommodationDTO delete(Long id) {
-        return null;
+        Accommodation accommodation = new Accommodation(findOne(id)); // this will throw StudentNotFoundException if student is not found
+        accommodationRepository.delete(accommodation);
+        accommodationRepository.flush();
+        return new AccommodationDTO(accommodation);
     }
 
     @Override
     public void deleteAll() {
-
+        accommodationRepository.deleteAll();
+        accommodationRepository.flush();
     }
 
 
-    public Collection<AccommodationDTO> findByFilter(AccommodationType accommodationType){
-        return null;
+public Collection<AccommodationDTO> filterAccommodationsType(AccommodationType type){
+    ArrayList<AccommodationDTO>  accommodationType= new ArrayList<>();
+    for(Accommodation a :accommodationRepository.findAccommodationType(type)){
+        accommodationType.add(new AccommodationDTO(a));
     }
+    return accommodationType;
+}
 
-    private AccommodationDTO convertEntityToDto(Accommodation accommodation){
-        AccommodationDTO accommodationDTO = new AccommodationDTO();
-        accommodationDTO = modelMapper.map(accommodation, AccommodationDTO.class);
-        return accommodationDTO;
+public Collection<AccommodationDTO> filterAccommodationsLocation(double longitude, double latitude){
+    ArrayList<AccommodationDTO>  accommodationType= new ArrayList<>();
+    for(Accommodation a :accommodationRepository.findAccommodationLocation(longitude, latitude)){
+        accommodationType.add(new AccommodationDTO(a));
     }
+    return accommodationType;
+}
 
-    private Accommodation convertDtoToEntity(AccommodationDTO accommodationDTO){
-        Accommodation accommodation = new Accommodation();
-        accommodation = modelMapper.map(accommodationDTO, Accommodation.class);
-        return accommodation;
-    }
+//    private AccommodationDTO convertEntityToDto(Accommodation accommodation){
+//        AccommodationDTO accommodationDTO = new AccommodationDTO();
+//        accommodationDTO = modelMapper.map(accommodation, AccommodationDTO.class);
+//        return accommodationDTO;
+//    }
+//
+//    private Accommodation convertDtoToEntity(AccommodationDTO accommodationDTO){
+//        Accommodation accommodation = new Accommodation();
+//        accommodation = modelMapper.map(accommodationDTO, Accommodation.class);
+//        return accommodation;
+//    }
 }
