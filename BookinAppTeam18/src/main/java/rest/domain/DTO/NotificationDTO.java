@@ -7,18 +7,21 @@ public class NotificationDTO {
     private Long id;
     private String message;
     private long accountId;
+    private Boolean Seen;
 
 
-    public NotificationDTO(Long id, String message, long accountId) {
+    public NotificationDTO(Long id, String message, long accountId, Boolean seen) {
         this.id = id;
         this.message = message;
         this.accountId = accountId;
+        Seen = seen;
     }
 
-    public NotificationDTO(Notification notification) {
+    public NotificationDTO(Notification notification ) {
         this.id = notification.getId();
         this.message = notification.getMessage();
         this.accountId = notification.getAccountId();
+        Seen = notification.getSeen();
     }
 
     public Long getId() {
@@ -51,5 +54,13 @@ public class NotificationDTO {
                 "id=" + id +
                 ", message='" + message + '\'' +
                 '}';
+    }
+
+    public Boolean getSeen() {
+        return Seen;
+    }
+
+    public void setSeen(Boolean seen) {
+        Seen = seen;
     }
 }
