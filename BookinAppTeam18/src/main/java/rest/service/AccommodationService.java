@@ -24,8 +24,6 @@ public class AccommodationService implements IService<AccommodationDTO> {
     @Autowired
     private AccommodationRepository accommodationRepository;
 
-//    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
-
     @Override
     public Collection<AccommodationDTO> findAll() {
         ArrayList<AccommodationDTO> accommodationDTOS = new ArrayList<AccommodationDTO>();
@@ -38,10 +36,9 @@ public class AccommodationService implements IService<AccommodationDTO> {
     @Override
     public AccommodationDTO findOne(Long id) {
         Optional<Accommodation> accommodation = accommodationRepository.findById(id);
-//        if (accommodation.isEmpty()) {
-////            String value = bundle.getString("NotFound");
-////            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-//        }
+        if (accommodation.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         return new AccommodationDTO(accommodation.get());
     }
 
@@ -104,32 +101,19 @@ public class AccommodationService implements IService<AccommodationDTO> {
         accommodationRepository.flush();
     }
 
-
-public Collection<AccommodationDTO> filterAccommodationsType(AccommodationType type){
-    ArrayList<AccommodationDTO>  accommodationType= new ArrayList<>();
-    for(Accommodation a :accommodationRepository.findAccommodationType(type)){
-        accommodationType.add(new AccommodationDTO(a));
+    public Collection<AccommodationDTO> filterAccommodationsType(AccommodationType type){
+        ArrayList<AccommodationDTO>  accommodationType= new ArrayList<>();
+        for(Accommodation a :accommodationRepository.findAccommodationType(type)){
+            accommodationType.add(new AccommodationDTO(a));
+        }
+        return accommodationType;
     }
-    return accommodationType;
-}
 
-public Collection<AccommodationDTO> filterAccommodationsLocation(double longitude, double latitude){
-    ArrayList<AccommodationDTO>  accommodationType= new ArrayList<>();
-    for(Accommodation a :accommodationRepository.findAccommodationLocation(longitude, latitude)){
-        accommodationType.add(new AccommodationDTO(a));
+    public Collection<AccommodationDTO> filterAccommodationsLocation(double longitude, double latitude){
+        ArrayList<AccommodationDTO>  accommodationType= new ArrayList<>();
+        for(Accommodation a :accommodationRepository.findAccommodationLocation(longitude, latitude)){
+            accommodationType.add(new AccommodationDTO(a));
+        }
+        return accommodationType;
     }
-    return accommodationType;
-}
-
-//    private AccommodationDTO convertEntityToDto(Accommodation accommodation){
-//        AccommodationDTO accommodationDTO = new AccommodationDTO();
-//        accommodationDTO = modelMapper.map(accommodation, AccommodationDTO.class);
-//        return accommodationDTO;
-//    }
-//
-//    private Accommodation convertDtoToEntity(AccommodationDTO accommodationDTO){
-//        Accommodation accommodation = new Accommodation();
-//        accommodation = modelMapper.map(accommodationDTO, Accommodation.class);
-//        return accommodation;
-//    }
 }
