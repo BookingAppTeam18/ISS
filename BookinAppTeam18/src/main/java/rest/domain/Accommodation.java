@@ -21,9 +21,9 @@ public class Accommodation {
     private double longitude;
     private double latitude;
     private double activePrice;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "accommodation_id")
-    private List<Price> prices;
+    private List<Price> prices = new ArrayList<>();
     private int minNumOfGuests;
     private int maxNumOfGuests;
     @ElementCollection
@@ -76,6 +76,7 @@ public class Accommodation {
         this.longitude = accommodationDTO.getLongitude();
         this.latitude = accommodationDTO.getLatitude();
         this.activePrice = accommodationDTO.getActivePrice();
+//        this.prices = new ArrayList<Price>();
         Price newPrice = new Price();
         newPrice.setPrice(activePrice);
         this.prices.add(newPrice);
