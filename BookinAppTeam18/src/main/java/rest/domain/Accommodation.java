@@ -76,7 +76,9 @@ public class Accommodation {
         this.longitude = accommodationDTO.getLongitude();
         this.latitude = accommodationDTO.getLatitude();
         this.activePrice = accommodationDTO.getActivePrice();
-//        this.priceList = new HashMap<>();
+        Price newPrice = new Price();
+        newPrice.setPrice(activePrice);
+        this.prices.add(newPrice);
         this.minNumOfGuests = accommodationDTO.getMinNumOfGuests();
         this.maxNumOfGuests = accommodationDTO.getMaxNumOfGuests();
         this.gallery = new ArrayList<>();
