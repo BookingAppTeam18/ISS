@@ -59,7 +59,9 @@ public class Accommodation {
         this.longitude = longitude;
         this.latitude = latitude;
         this.activePrice = activePrice;
-//        this.pri = priceList;
+        Price newPrice = new Price();
+        newPrice.setPrice(activePrice);
+        this.prices.add(newPrice);
         this.minNumOfGuests = minNumOfGuests;
         this.maxNumOfGuests = maxNumOfGuests;
         this.gallery = gallery;
