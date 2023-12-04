@@ -21,11 +21,9 @@ public class Accommodation {
     private double longitude;
     private double latitude;
     private double activePrice;
-//    @ElementCollection
-//    @CollectionTable(name = "price_list_mapping", joinColumns = @JoinColumn(name = "accommodation_id"))
-//    @MapKeyTemporal(TemporalType.DATE)
-//    @Column(name = "price")
-//    private HashMap<Date, double> priceList;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "accommodation_id")
+    private List<Price> prices;
     private int minNumOfGuests;
     private int maxNumOfGuests;
     @ElementCollection
@@ -47,7 +45,7 @@ public class Accommodation {
         this.longitude = 0.0;
         this.latitude = 0.0;
         this.activePrice = 0.0;
-//        this.priceList = new HashMap<Date, double>();
+        this.prices = new ArrayList<Price>();
         this.minNumOfGuests = 0;
         this.maxNumOfGuests = 0;
         this.gallery = new ArrayList<String>();
@@ -61,7 +59,7 @@ public class Accommodation {
         this.longitude = longitude;
         this.latitude = latitude;
         this.activePrice = activePrice;
-//        this.priceList = priceList;
+//        this.pri = priceList;
         this.minNumOfGuests = minNumOfGuests;
         this.maxNumOfGuests = maxNumOfGuests;
         this.gallery = gallery;
@@ -132,13 +130,13 @@ public class Accommodation {
         this.activePrice = activePrice;
     }
 
-//    public HashMap<Date, Double> getPriceList() {
-//        return priceList;
-//    }
-//
-//    public void setPriceList(HashMap<Date, Double> priceList) {
-//        this.priceList = priceList;
-//    }
+    public List<Price> getPrices() {
+        return prices;
+    }
+
+    public void setPrices(List<Price> prices) {
+        this.prices = prices;
+    }
 
     public int getMinNumOfGuests() {
         return minNumOfGuests;
@@ -188,7 +186,7 @@ public class Accommodation {
         this.longitude = accommodation.getLongitude();
         this.latitude = accommodation.getLatitude();
         this.activePrice = accommodation.getActivePrice();
-//        this.priceList = accommodation.getPriceList();
+        this.prices = accommodation.getPrices();
         this.minNumOfGuests = accommodation.getMinNumOfGuests();
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
         this.gallery = accommodation.getGallery();
