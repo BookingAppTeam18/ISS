@@ -14,7 +14,9 @@ public class NotificationDTO {
         this.id = id;
         this.message = message;
         this.accountId = accountId;
-        Seen = seen;
+        this.Seen = seen;
+        if(seen == null)
+            this.Seen = false;
     }
 
     public NotificationDTO(Notification notification ) {

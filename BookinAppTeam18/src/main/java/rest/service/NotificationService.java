@@ -44,9 +44,9 @@ public class NotificationService implements IService<NotificationDTO> {
     public NotificationDTO insert(NotificationDTO NotificationDTO){
         Notification notification = new Notification(NotificationDTO);
         try {
-            notificationRepository.save(notification);
+            Notification savedNotification = notificationRepository.save(notification);
             notificationRepository.flush();
-            return NotificationDTO;
+            return new NotificationDTO(savedNotification);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
             StringBuilder sb = new StringBuilder(1000);
