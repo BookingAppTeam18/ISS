@@ -10,6 +10,8 @@ public class CommentDTO {
     private long writtenById;
     private long writtenTo;
     private Page page;
+    public CommentDTO( ) {
+    }
 
     public Long getId() {
         return id;
