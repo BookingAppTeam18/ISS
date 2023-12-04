@@ -6,8 +6,6 @@ import rest.domain.enumerations.Benefit;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 @Entity
 @Table(name="accommodations")
@@ -21,8 +19,8 @@ public class Accommodation {
     private double longitude;
     private double latitude;
     private double activePrice;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "accommodation_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "price_id")
     private List<Price> prices = new ArrayList<>();
     private int minNumOfGuests;
     private int maxNumOfGuests;
@@ -45,7 +43,7 @@ public class Accommodation {
         this.longitude = 0.0;
         this.latitude = 0.0;
         this.activePrice = 0.0;
-        this.prices = new ArrayList<Price>();
+//        this.prices = new ArrayList<Price>();
         this.minNumOfGuests = 0;
         this.maxNumOfGuests = 0;
         this.gallery = new ArrayList<String>();
@@ -61,7 +59,7 @@ public class Accommodation {
         this.activePrice = activePrice;
         Price newPrice = new Price();
         newPrice.setPrice(activePrice);
-        this.prices.add(newPrice);
+//        this.prices.add(newPrice);
         this.minNumOfGuests = minNumOfGuests;
         this.maxNumOfGuests = maxNumOfGuests;
         this.gallery = gallery;
@@ -76,7 +74,6 @@ public class Accommodation {
         this.longitude = accommodationDTO.getLongitude();
         this.latitude = accommodationDTO.getLatitude();
         this.activePrice = accommodationDTO.getActivePrice();
-//        this.prices = new ArrayList<Price>();
         Price newPrice = new Price();
         newPrice.setPrice(activePrice);
         this.prices.add(newPrice);

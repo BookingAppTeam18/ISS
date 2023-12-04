@@ -1,10 +1,7 @@
 package rest.domain;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -17,8 +14,10 @@ public class Price {
     private Date end;
     private double price;
 
+
     public Price() {
     }
+
 
     public Price(Date start, Date end, double value) {
         this.start = start;
