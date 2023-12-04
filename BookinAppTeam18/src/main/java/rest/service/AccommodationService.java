@@ -2,16 +2,12 @@ package rest.service;
 
 //import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Accommodation;
-import rest.domain.Comment;
 import rest.domain.DTO.AccommodationDTO;
-import rest.domain.DTO.CommentDTO;
 import rest.domain.enumerations.AccommodationType;
-import rest.domain.enumerations.Page;
 import rest.repository.AccommodationRepository;
 
 import javax.validation.ConstraintViolation;

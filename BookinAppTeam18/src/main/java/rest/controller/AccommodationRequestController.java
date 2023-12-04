@@ -1,22 +1,19 @@
 package rest.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import rest.domain.AccommodationRequest;
+import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationRequestDTO;
+import rest.domain.enumerations.AccommodationState;
+import rest.domain.enumerations.AccommodationType;
 import rest.service.AccommodationRequestService;
 
 @RestController
@@ -41,6 +38,19 @@ public class AccommodationRequestController {
         }
 
         return new ResponseEntity<AccommodationRequestDTO>(accommodationRequest, HttpStatus.OK);
+    }
+
+    @GetMapping(value ="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationRequestDTO>> getAccommodationRequestByState(
+            @RequestParam(name = "type", required = false) AccommodationState state
+            // Add more filter parameters as needed
+    ) {
+        Collection<AccommodationRequestDTO> filteredAccommodations = new ArrayList<>();
+        if (state != null) {
+            // Pozivamo filter koji kombinuje sve parametre
+            filteredAccommodations = accommodationRequestService.filterAccommodationRequestByState(state);
+        }
+        return new ResponseEntity<Collection<AccommodationRequestDTO>>(filteredAccommodations, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
