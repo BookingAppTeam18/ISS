@@ -5,13 +5,14 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-
+@Table(name = "price")
 public class Price {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id",length = 5)
     private Long id;
     private Date start;
-    private Date end;
+    private Date endDate;
     private double price;
 
 
@@ -21,7 +22,7 @@ public class Price {
 
     public Price(Date start, Date end, double value) {
         this.start = start;
-        this.end = end;
+        this.endDate = end;
         this.price = value;
     }
 
@@ -41,12 +42,12 @@ public class Price {
         this.start = start;
     }
 
-    public Date getEnd() {
-        return end;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setEnd(Date end) {
-        this.end = end;
+    public void setEndDate(Date end) {
+        this.endDate = end;
     }
 
     public double getPrice() {
