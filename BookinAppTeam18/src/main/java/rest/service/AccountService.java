@@ -104,14 +104,15 @@ public class AccountService implements IService<AccountDTO> {
 
 
 
-    public AccommodationDTO addInFavourites(AccommodationDTO accommodationDTO){
-        return null;
-    }
+//    public AccommodationDTO addInFavourites(AccommodationDTO accommodationDTO){
+//        return null;
+//    }
 
 
     @Override
     public void deleteAll() {
-
+        accountRepository.deleteAll();
+        accountRepository.flush();
     }
 
 }

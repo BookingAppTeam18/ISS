@@ -17,4 +17,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     public Collection<Accommodation> findFavouriteAccommodation(@Param("accountId") Long accountId);
 
 
+    //U odnosu na id usera dobiti njegovu listu accommodationa i onda dodati/ukloniti accommodation
+    // sa odredjenim idom (proslijediti id accommodationa i accounta)
+
+
 }
