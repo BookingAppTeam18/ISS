@@ -2,14 +2,21 @@ package rest.domain;
 
 import rest.domain.enumerations.ReservationStatus;
 
+import javax.persistence.*;
 import java.util.Date;
+@Entity
+@Table(name="reservations")
 public class Reservation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="reservation_id",length = 5)
     private Long id;
     private Date startDate;
     private Date endDate;
     private double price;
     private Long accountId;
     private Long accommodationId;
+    @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
     public Reservation(){
