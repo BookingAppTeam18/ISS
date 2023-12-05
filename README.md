@@ -5,7 +5,8 @@ Backend of Booking App
 #### Remove All Data
 
 ```diff
-@@select 'truncate "' || tablename || '" cascade;' from pg_tables where schemaname = 'public';@@
+select 'truncate "' || tablename || '" cascade;'
+from pg_tables where schemaname = 'public';
 ```
 
 
@@ -14,8 +15,9 @@ Backend of Booking App
 
 #### Drop all tables
 
-select 'drop table if exists "' || tablename || '" cascade;' 
-  from pg_tables
- where schemaname = 'public';
+```diff
+select 'drop table if exists "' || tablename || '" cascade;'
+from pg_tables where schemaname = 'public';
+```
 
 (run the script that it makes)
