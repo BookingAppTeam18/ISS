@@ -20,6 +20,10 @@ public class PriceDTO {
 
     }
 
+    public PriceDTO(){
+        
+    }
+
     public Long getId() {
         return id;
     }
