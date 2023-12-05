@@ -4,9 +4,9 @@ Backend of Booking App
 
 #### Remove All Data
 
-select 'truncate "' || tablename || '" cascade;' 
+<font color="purple">select 'truncate "' || tablename || '" cascade;' 
   from pg_tables
- where schemaname = 'public';
+ where schemaname = 'public';</font>
 
 
 (run the script that it makes)
