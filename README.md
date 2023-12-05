@@ -5,9 +5,7 @@ Backend of Booking App
 #### Remove All Data
 
 ```diff
-@@
-select 'truncate "' || tablename || '" cascade;' from pg_tables where schemaname = 'public';
-@@
+@@select 'truncate "' || tablename || '" cascade;' from pg_tables where schemaname = 'public';@@
 ```
 
 
