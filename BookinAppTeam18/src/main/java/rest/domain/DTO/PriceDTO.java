@@ -2,9 +2,6 @@ package rest.domain.DTO;
 
 import rest.domain.Accommodation;
 import rest.domain.Price;
-import rest.domain.enumerations.Benefit;
-
-import java.util.ArrayList;
 import java.util.Date;
 
 public class PriceDTO {
