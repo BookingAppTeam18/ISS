@@ -5,12 +5,13 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import rest.domain.Comment;
+import rest.domain.*;
 import rest.domain.DTO.CommentDTO;
-import rest.domain.Notification;
 import rest.domain.enumerations.Page;
+import rest.repository.AccommodationCommentRepository;
+import rest.repository.AccommodationRepository;
+import rest.repository.AccountCommentRepository;
 import rest.repository.AccountRepository;
-import rest.repository.CommentRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -20,17 +21,24 @@ import java.util.*;
 public class CommentService implements IService<CommentDTO>{
 
     @Autowired
-    private CommentRepository commentRepository;
+    private AccountCommentRepository accountCommentRepository;
+    @Autowired
+    private AccommodationCommentRepository accommodationCommentRepository;
 
     @Autowired
     private AccountRepository accountRepository;
-//    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
-    @Override
+
+    @Autowired
+    private AccommodationRepository accommodationRepository;
+   @Override
     public Collection<CommentDTO> findAll() {
 
         ArrayList<CommentDTO> commentsDTO = new ArrayList<>();
-        for(Comment comment:commentRepository.findAll()){
-            commentsDTO.add(new CommentDTO(comment));
+        for(AccommodationComment accommodationComment:accommodationCommentRepository.findAll()){
+            commentsDTO.add(new CommentDTO(accommodationComment));
+        }
+        for(AccountComment accountComment:accountCommentRepository.findAll()){
+            commentsDTO.add(new CommentDTO(accountComment));
         }
         return commentsDTO;
     }
@@ -38,23 +46,44 @@ public class CommentService implements IService<CommentDTO>{
     @Override
     public CommentDTO findOne(Long id)
     {
-        Optional<Comment> found = commentRepository.findById(id);
-//        if (found.isEmpty()) {
-//            String value = bundle.getString("notFound");
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-//        }
+        Optional<AccommodationComment> found = accommodationCommentRepository.findById(id);
+        if(found.isEmpty()){
+            Optional<AccountComment> found2 = accountCommentRepository.findById(id);
+            if (found2.isEmpty()) {
+                String value = "notFound";
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+            }
+            return new CommentDTO(found2.get());
+        }
         return new CommentDTO(found.get());
     }
 
     @Override
     public CommentDTO insert(CommentDTO commentDTO){
-        Comment comment = new Comment(commentDTO);
-        comment.setWrittenBy(accountRepository.getOne(commentDTO.getWrittenById()));
-        comment.setWrittenTo(accountRepository.getOne(commentDTO.getWrittenToId()));
         try {
-            Comment savedComment = commentRepository.save(comment);
-            commentRepository.flush();
+            if(commentDTO.getPage()== Page.ACCOMMODATION){
+                Accommodation accommodation = accommodationRepository.getOne(commentDTO.getWrittenToId());
+                Account writtenBy = accountRepository.getOne(commentDTO.getWrittenById());
+
+                AccommodationComment accommodationComment = new AccommodationComment(commentDTO);
+                accommodationComment.setAccommodation(accommodation);
+                accommodationComment.setWrittenBy(writtenBy);
+
+                AccommodationComment savedComment = accommodationCommentRepository.save(accommodationComment);
+                accommodationRepository.flush();
+                return new CommentDTO(savedComment);
+            }
+            Account account = accountRepository.getOne(commentDTO.getWrittenToId());
+            Account writtenBy = accountRepository.getOne(commentDTO.getWrittenById());
+
+            AccountComment accountComment = new AccountComment(commentDTO);
+            accountComment.setAccount(account);
+            accountComment.setWrittenBy(writtenBy);
+
+            AccountComment savedComment = accountCommentRepository.save(accountComment);
+            accountCommentRepository.flush();
             return new CommentDTO(savedComment);
+
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
             StringBuilder sb = new StringBuilder(1000);
@@ -67,12 +96,31 @@ public class CommentService implements IService<CommentDTO>{
 
     @Override
     public CommentDTO update(CommentDTO commentDTO) throws Exception {
-        Comment commentToUpdate = new Comment(commentDTO);
         try {
-            findOne(commentDTO.getId()); // this will throw ResponseStatusException if student is not found
-            commentRepository.save(commentToUpdate);
-            commentRepository.flush();
-            return commentDTO;
+            if(commentDTO.getPage()== Page.ACCOMMODATION){
+                Accommodation accommodation = accommodationRepository.getOne(commentDTO.getWrittenToId());
+                Account writtenBy = accountRepository.getOne(commentDTO.getWrittenById());
+
+                AccommodationComment accommodationCommentToUpdate = new AccommodationComment(commentDTO);
+                accommodationCommentToUpdate.setAccommodation(accommodation);
+                accommodationCommentToUpdate.setWrittenBy(writtenBy);
+
+                findOne(commentDTO.getId());
+                AccommodationComment updatedComment = accommodationCommentRepository.save(accommodationCommentToUpdate);
+                accommodationRepository.flush();
+                return new CommentDTO(updatedComment);
+            }
+            Account account = accountRepository.getOne(commentDTO.getWrittenToId());
+            Account writtenBy = accountRepository.getOne(commentDTO.getWrittenById());
+
+            AccountComment accountCommentToUpdate = new AccountComment(commentDTO);
+            accountCommentToUpdate.setAccount(account);
+            accountCommentToUpdate.setWrittenBy(writtenBy);
+
+            findOne(commentDTO.getId());
+            AccountComment updatedComment = accountCommentRepository.save(accountCommentToUpdate);
+            accountCommentRepository.flush();
+            return new CommentDTO(updatedComment);
         } catch (RuntimeException ex) {
             Throwable e = ex;
             Throwable c = null;
@@ -94,28 +142,48 @@ public class CommentService implements IService<CommentDTO>{
 
     @Override
     public CommentDTO delete(Long id) {
-        Comment found = new Comment(findOne(id)); // this will throw StudentNotFoundException if student is not found
-        commentRepository.delete(found);
-        commentRepository.flush();
-        return new CommentDTO(found);
+
+
+        CommentDTO found = findOne(id);
+        if(found.getPage()==Page.ACCOUNT){
+            Account account = accountRepository.getOne(found.getWrittenToId());
+
+            AccountComment commentToDelete = new AccountComment(found);
+            commentToDelete.setAccount(account);
+
+            accountCommentRepository.delete(commentToDelete);
+            accountCommentRepository.flush();
+            return found;
+        }
+        Accommodation accommodation = accommodationRepository.getOne(found.getWrittenToId());
+
+        AccommodationComment commentToDelete = new AccommodationComment(found);
+        commentToDelete.setAccommodation(accommodation);
+
+        accommodationCommentRepository.delete(commentToDelete);
+        accommodationCommentRepository.flush();
+        return found;
+
     }
 
     @Override
     public void deleteAll() {
-        commentRepository.deleteAll();
-        commentRepository.flush();
+        accountCommentRepository.deleteAll();
+        accountCommentRepository.flush();
+        accommodationCommentRepository.deleteAll();
+        accommodationCommentRepository.flush();
     }
 
     public Collection<CommentDTO> findAccommodationComments(Long accommodationId) {
         ArrayList<CommentDTO>  accommodationComments= new ArrayList<>();
-        for(Comment accommodationComment:commentRepository.findAccommodationComments(Page.ACCOMMODATION,accommodationId)){
+        for(AccommodationComment accommodationComment:accommodationCommentRepository.FindAccommodationComments(accommodationId)){
             accommodationComments.add(new CommentDTO(accommodationComment));
         }
         return accommodationComments;
     }
     public Collection<CommentDTO> findAccountComments(Long accountId) {
         ArrayList<CommentDTO>  accountComments= new ArrayList<>();
-        for(Comment accountComment:commentRepository.findAccountComments(Page.ACCOUNT,accountId)){
+        for(AccountComment accountComment:accountCommentRepository.FindAccommodationComments(accountId)){
             accountComments.add(new CommentDTO(accountComment));
         }
         return accountComments;

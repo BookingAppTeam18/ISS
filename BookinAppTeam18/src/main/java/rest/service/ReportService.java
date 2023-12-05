@@ -5,14 +5,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import rest.domain.DTO.NotificationDTO;
-import rest.domain.Notification;
 import rest.domain.Report;
 import rest.domain.DTO.ReportDTO;
-import rest.domain.DTO.ReportDTO;
-import rest.domain.Report;
-import rest.domain.enumerations.Page;
-import rest.repository.CommentRepository;
 import rest.repository.ReportRepository;
 
 import javax.validation.ConstraintViolation;
@@ -24,7 +18,6 @@ public class ReportService implements IService<ReportDTO>{
 
     @Autowired
     private ReportRepository reportRepository;
-//    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
     @Override
     public Collection<ReportDTO> findAll() {
 
@@ -39,10 +32,10 @@ public class ReportService implements IService<ReportDTO>{
     public ReportDTO findOne(Long id)
     {
         Optional<Report> found = reportRepository.findById(id);
-//        if (found.isEmpty()) {
-//            String value = bundle.getString("notFound");
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-//        }
+        if (found.isEmpty()) {
+            String value = "Not Found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+        }
         return new ReportDTO(found.get());
     }
 
@@ -68,9 +61,9 @@ public class ReportService implements IService<ReportDTO>{
         Report reportToUpdate = new Report(reportDTO);
         try {
             findOne(reportDTO.getId()); // this will throw ResponseStatusException if student is not found
-            reportRepository.save(reportToUpdate);
+            Report updatedReport = reportRepository.save(reportToUpdate);
             reportRepository.flush();
-            return reportDTO;
+            return new ReportDTO(updatedReport);
         } catch (RuntimeException ex) {
             Throwable e = ex;
             Throwable c = null;

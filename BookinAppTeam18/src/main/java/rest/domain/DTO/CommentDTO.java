@@ -1,5 +1,7 @@
 package rest.domain.DTO;
 
+import rest.domain.AccommodationComment;
+import rest.domain.AccountComment;
 import rest.domain.Comment;
 import rest.domain.enumerations.Page;
 
@@ -61,12 +63,19 @@ public class CommentDTO {
         this.page = page;
     }
 
-    public CommentDTO(Comment comment) {
+    public CommentDTO(AccommodationComment comment) {
         this.id = comment.getId();
         this.message = comment.getMessage();
         this.rate = comment.getRate();
-        this.writtenById = comment.getWrittenBy().getId();
-        this.writtenToId = comment.getWrittenTo().getId();
+        this.writtenById = comment.getAccommodation().getId();
+        this.page = comment.getPage();
+    }
+
+    public CommentDTO(AccountComment comment) {
+        this.id = comment.getId();
+        this.message = comment.getMessage();
+        this.rate = comment.getRate();
+        this.writtenById = comment.getAccount().getId();
         this.page = comment.getPage();
     }
 }

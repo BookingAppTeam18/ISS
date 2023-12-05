@@ -6,21 +6,18 @@ import rest.domain.enumerations.Page;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name="comments")
+@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id",length = 5)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_sequence")
+    @SequenceGenerator(name = "my_sequence", sequenceName = "my_sequence", allocationSize = 1)
     private Long id;
     private String message;
     private int rate;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "writtenById")
     private Account writtenBy;
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "writtenToId")
-    private Account writtenTo;
 
     @Enumerated(EnumType.STRING)
     private Page page;
@@ -89,11 +86,4 @@ public class Comment {
         this.page = page;
     }
 
-    public Account getWrittenTo() {
-        return writtenTo;
-    }
-
-    public void setWrittenTo(Account writtenTo) {
-        this.writtenTo = writtenTo;
-    }
 }

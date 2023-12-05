@@ -18,8 +18,7 @@ public class NotificationService implements IService<NotificationDTO> {
 
     @Autowired
     private NotificationRepository notificationRepository;
-//    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
-    @Override
+ @Override
     public Collection<NotificationDTO> findAll() {
 
         ArrayList<NotificationDTO> notificationsDTO = new ArrayList<>();
@@ -33,10 +32,10 @@ public class NotificationService implements IService<NotificationDTO> {
     public NotificationDTO findOne(Long id)
     {
         Optional<Notification> found = notificationRepository.findById(id);
-//        if (found.isEmpty()) {
-//            String value = bundle.getString("notFound");
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-//        }
+        if (found.isEmpty()) {
+            String value = "Not Found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+        }
         return new NotificationDTO(found.get());
     }
 
@@ -62,9 +61,9 @@ public class NotificationService implements IService<NotificationDTO> {
         Notification notificationToUpdate = new Notification(NotificationDTO);
         try {
             findOne(NotificationDTO.getId()); // this will throw ResponseStatusException if student is not found
-            notificationRepository.save(notificationToUpdate);
+            Notification updatedNotification =notificationRepository.save(notificationToUpdate);
             notificationRepository.flush();
-            return NotificationDTO;
+            return new NotificationDTO(updatedNotification);
         } catch (RuntimeException ex) {
             Throwable e = ex;
             Throwable c = null;
