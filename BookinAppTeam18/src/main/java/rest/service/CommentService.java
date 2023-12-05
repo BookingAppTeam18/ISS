@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Comment;
 import rest.domain.DTO.CommentDTO;
+import rest.domain.Notification;
 import rest.domain.enumerations.Page;
 import rest.repository.CommentRepository;
 
@@ -45,9 +46,9 @@ public class CommentService implements IService<CommentDTO>{
     public CommentDTO insert(CommentDTO commentDTO){
         Comment comment = new Comment(commentDTO);
         try {
-            commentRepository.save(comment);
+            Comment savedComment = commentRepository.save(comment);
             commentRepository.flush();
-            return commentDTO;
+            return new CommentDTO(savedComment);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
             StringBuilder sb = new StringBuilder(1000);
