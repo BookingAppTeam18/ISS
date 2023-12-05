@@ -4,9 +4,15 @@ import rest.domain.DTO.AccountDTO;
 import rest.domain.enumerations.UserState;
 import rest.domain.enumerations.UserType;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@Table(name="accounts")
 public class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="account_id",length = 5)
     private Long id;
     private String firstName;
     private String lastName;
@@ -16,6 +22,13 @@ public class Account {
     private String phone;
     private UserType userType;
     private UserState userState;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "account_favourite_accommodations",
+            joinColumns = @JoinColumn(name = "account_id")
+    )
+    @Column(name = "accommodation_id")
     private List<Long> favouriteAccommodations;
 
     public Account(Long id, String firstName, String lastName, String email, String password, String address, String phone, UserType userType, UserState userState, List<Long> favouriteAccommodations) {

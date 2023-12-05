@@ -48,11 +48,11 @@ public class AccountController {
     }
 
     //Add accommodation in favourites (Post?)
-    @PostMapping(value="addFavorites",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationDTO> addInFavourites(@RequestBody AccommodationDTO accommodationDTO) throws Exception{
-
-        return new ResponseEntity<>(accountService.addInFavourites(accommodationDTO), HttpStatus.CREATED);
-    }
+//    @PostMapping(value="addFavorites",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<AccommodationDTO> addInFavourites(@RequestBody AccommodationDTO accommodationDTO) throws Exception{
+//
+//        return new ResponseEntity<>(accountService.addInFavourites(accommodationDTO), HttpStatus.CREATED);
+//    }
 
     //Update account
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
