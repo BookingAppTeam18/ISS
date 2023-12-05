@@ -1,5 +1,6 @@
 package rest.domain;
 
+import rest.domain.DTO.ReservationDTO;
 import rest.domain.enumerations.ReservationStatus;
 
 import javax.persistence.*;
@@ -33,6 +34,9 @@ public class Reservation {
         this.reservationStatus = reservationStatus;
     }
 
+    public Reservation(ReservationDTO reservationDTO){
+        this(reservationDTO.getId(), reservationDTO.getStartDate(), reservationDTO.getEndDate(), reservationDTO.getPrice(), reservationDTO.getAccountId(), reservationDTO.getAccommodationId(), ReservationStatus.DENIED);
+    }
     public Long getId() {
         return id;
     }
