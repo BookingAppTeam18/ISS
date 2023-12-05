@@ -5,8 +5,17 @@ Backend of Booking App
 ##### Remove All Data
 
 TRUNCATE accommodation_requests, accommodations, comments,notifications, report,  account, reservation
-
 CASCADE;
+
+
+
+select 'truncate if exists "' || tablename || '" cascade;' 
+
+  from pg_tables
+  
+ where schemaname = 'public';
+
+
 
 ##### Drop all tables
 
