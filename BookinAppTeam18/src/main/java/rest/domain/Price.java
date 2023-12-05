@@ -1,6 +1,8 @@
 package rest.domain;
 
 
+import rest.domain.DTO.PriceDTO;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -27,6 +29,13 @@ public class Price {
         this.start = start;
         this.endDate = end;
         this.amount = value;
+    }
+
+    public Price(PriceDTO priceDTO){
+        this.id = priceDTO.getId();
+        this.start = priceDTO.getStartDate();
+        this.endDate = priceDTO.getEndDate();
+
     }
 
     public Long getId() {

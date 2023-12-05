@@ -9,15 +9,14 @@ public class PriceDTO {
     private Date startDate;
     private Date endDate;
     private double amount;
+    private Long accommodationId;
 
-    private Accommodation accommodation;
-
-    public PriceDTO(Price price, Accommodation accommodation){
+    public PriceDTO(Price price){
         this.id = price.getId();
         this.startDate = price.getStart();
         this.endDate = price.getEndDate();
         this.amount = price.getAmount();
-        this.accommodation = accommodation;
+        this.accommodationId = price.getAccommodation().getId();
 
     }
 
@@ -53,11 +52,11 @@ public class PriceDTO {
         this.amount = amount;
     }
 
-    public Accommodation getAccommodation() {
-        return accommodation;
+    public Long getAccommodationId() {
+        return accommodationId;
     }
 
-    public void setAccommodation(Accommodation accommodation) {
-        this.accommodation = accommodation;
+    public void setAccommodationId(Long accommodationId) {
+        this.accommodationId = accommodationId;
     }
 }
