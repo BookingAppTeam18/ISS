@@ -9,7 +9,7 @@ CASCADE;
 
 
 
-select 'truncate if exists "' || tablename || '" cascade;' 
+select 'truncate "' || tablename || '" cascade;' 
 
   from pg_tables
   
