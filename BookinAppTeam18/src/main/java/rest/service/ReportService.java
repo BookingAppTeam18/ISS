@@ -50,9 +50,9 @@ public class ReportService implements IService<ReportDTO>{
     public ReportDTO insert(ReportDTO reportDTO){
         Report report = new Report(reportDTO);
         try {
-            reportRepository.save(report);
+            Report savedReport = reportRepository.save(report);
             reportRepository.flush();
-            return reportDTO;
+            return new ReportDTO(savedReport);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
             StringBuilder sb = new StringBuilder(1000);
