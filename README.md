@@ -2,7 +2,7 @@
 Backend of Booking App
 
 
-##### Remove All Data
+#### Remove All Data
 
 select 'truncate "' || tablename || '" cascade;' 
   from pg_tables
@@ -12,7 +12,7 @@ select 'truncate "' || tablename || '" cascade;'
 (run the script that it makes)
 
 
-##### Drop all tables
+#### Drop all tables
 
 select 'drop table if exists "' || tablename || '" cascade;' 
   from pg_tables
