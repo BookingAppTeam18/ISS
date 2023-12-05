@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReportRepository extends JpaRepository<Report,Long> {
-    @Query("select r from Report r where r.reportedComment = ?1")
+    @Query("select r from Report r where r.reportedCommentId = ?1")
     Report[] findCommentReports(Long accountId);
 
-    @Query("select r from Report r where r.reportedUserId = ?1")
+    @Query("select r from Report r where r.reportedUser = ?1")
     Report[] findAccountReports(Long accountId);
 }

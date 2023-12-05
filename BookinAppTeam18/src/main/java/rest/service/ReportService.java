@@ -5,8 +5,14 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import rest.domain.AccommodationComment;
+import rest.domain.Comment;
+import rest.domain.DTO.CommentDTO;
 import rest.domain.Report;
 import rest.domain.DTO.ReportDTO;
+import rest.repository.AccommodationCommentRepository;
+import rest.repository.AccountCommentRepository;
+import rest.repository.AccountRepository;
 import rest.repository.ReportRepository;
 
 import javax.validation.ConstraintViolation;
@@ -18,6 +24,10 @@ public class ReportService implements IService<ReportDTO>{
 
     @Autowired
     private ReportRepository reportRepository;
+    @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
+    private CommentService commentService;
     @Override
     public Collection<ReportDTO> findAll() {
 
@@ -42,7 +52,12 @@ public class ReportService implements IService<ReportDTO>{
     @Override
     public ReportDTO insert(ReportDTO reportDTO){
         Report report = new Report(reportDTO);
-        try {
+        report.setReportedBy(accountRepository.getOne(reportDTO.getReportedById()));
+        report.setReportedUser(accountRepository.getOne(reportDTO.getReportedUserId()));
+        CommentDTO found = commentService.findOne(reportDTO.getReportedCommentId());
+        if(found == null)
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Comment Doesn't exist");
+       try {
             Report savedReport = reportRepository.save(report);
             reportRepository.flush();
             return new ReportDTO(savedReport);
@@ -59,6 +74,11 @@ public class ReportService implements IService<ReportDTO>{
     @Override
     public ReportDTO update(ReportDTO reportDTO) throws Exception {
         Report reportToUpdate = new Report(reportDTO);
+        reportToUpdate.setReportedBy(accountRepository.getOne(reportDTO.getReportedById()));
+        reportToUpdate.setReportedUser(accountRepository.getOne(reportDTO.getReportedUserId()));
+        CommentDTO found = commentService.findOne(reportDTO.getReportedCommentId());
+        if(found == null)
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Comment Doesn't exist");
         try {
             findOne(reportDTO.getId()); // this will throw ResponseStatusException if student is not found
             Report updatedReport = reportRepository.save(reportToUpdate);
@@ -104,9 +124,9 @@ public class ReportService implements IService<ReportDTO>{
         return accountReports;
     }
 
-    public Collection<ReportDTO> findCommentReports(Long accountId) {
+    public Collection<ReportDTO> findCommentReports(Long commentId) {
         ArrayList<ReportDTO>  commentReports= new ArrayList<>();
-        for(Report commentReport:reportRepository.findCommentReports(accountId)){
+        for(Report commentReport:reportRepository.findCommentReports(commentId)){
             commentReports.add(new ReportDTO(commentReport));
         }
         return commentReports;
