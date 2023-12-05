@@ -14,6 +14,15 @@ public class Price {
     private Date start;
     private Date endDate;
     private double amount;
+
+    public Accommodation getAccommodation() {
+        return accommodation;
+    }
+
+    public void setAccommodation(Accommodation accommodation) {
+        this.accommodation = accommodation;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Accommodation accommodation;
 
@@ -58,5 +67,17 @@ public class Price {
 
     public void setAmount(double price) {
         this.amount = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Price )) return false;
+        return id != null && id.equals(((Price) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

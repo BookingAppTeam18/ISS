@@ -20,13 +20,12 @@ public class Accommodation {
     private String name;
     private double longitude;
     private double latitude;
-    private double activePrice;
-    @OneToMany(
-            mappedBy = "accommodation",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<Price> prices = new ArrayList<>();
+//    @OneToMany(
+//            mappedBy = "accommodation",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true
+//    )
+//    private List<Price> prices = new ArrayList<>();
     private int minNumOfGuests;
     private int maxNumOfGuests;
     @ElementCollection
@@ -49,10 +48,6 @@ public class Accommodation {
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.activePrice = activePrice;
-        Price newPrice = new Price();
-        newPrice.setAmount(activePrice);
-//        this.prices.add(newPrice);
         this.minNumOfGuests = minNumOfGuests;
         this.maxNumOfGuests = maxNumOfGuests;
         this.gallery = gallery;
@@ -66,7 +61,6 @@ public class Accommodation {
         this.name = accommodationDTO.getName();
         this.longitude = accommodationDTO.getLongitude();
         this.latitude = accommodationDTO.getLatitude();
-        this.activePrice = accommodationDTO.getActivePrice();
         this.minNumOfGuests = accommodationDTO.getMinNumOfGuests();
         this.maxNumOfGuests = accommodationDTO.getMaxNumOfGuests();
         this.gallery = new ArrayList<>();
@@ -112,22 +106,6 @@ public class Accommodation {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
-    }
-
-    public double getActivePrice() {
-        return activePrice;
-    }
-
-    public void setActivePrice(double activePrice) {
-        this.activePrice = activePrice;
-    }
-
-    public List<Price> getPrices() {
-        return prices;
-    }
-
-    public void setPrices(List<Price> prices) {
-        this.prices = prices;
     }
 
     public int getMinNumOfGuests() {
@@ -177,8 +155,6 @@ public class Accommodation {
         this.name = accommodation.getName();
         this.longitude = accommodation.getLongitude();
         this.latitude = accommodation.getLatitude();
-        this.activePrice = accommodation.getActivePrice();
-        this.prices = accommodation.getPrices();
         this.minNumOfGuests = accommodation.getMinNumOfGuests();
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
         this.gallery = accommodation.getGallery();

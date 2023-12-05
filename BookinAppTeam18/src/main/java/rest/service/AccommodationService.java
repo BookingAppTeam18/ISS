@@ -42,17 +42,6 @@ public class AccommodationService implements IService<AccommodationDTO> {
     @Override
     public AccommodationDTO insert(AccommodationDTO accommodationDTO) throws Exception {
         Accommodation accommodation = new Accommodation(accommodationDTO);
-        accommodation.setPrices(null);
-        List<Price> prices = new ArrayList<>();
-        prices.add(new Price(
-                new Date(2022,11,4),
-                new Date(2022,11,10),
-                99.9));
-        prices.add(new Price(
-                new Date(2022,11,4),
-                new Date(2022,11,10),
-                99.9));
-        accommodation.setPrices(prices);
         try {
             accommodationRepository.save(accommodation);
             accommodationRepository.flush();
