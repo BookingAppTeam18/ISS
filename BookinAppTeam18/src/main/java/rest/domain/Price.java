@@ -15,20 +15,12 @@ public class Price {
     private Date endDate;
     private double amount;
 
-    public Accommodation getAccommodation() {
-        return accommodation;
-    }
-
-    public void setAccommodation(Accommodation accommodation) {
-        this.accommodation = accommodation;
-    }
-
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="accommodation_id")
     private Accommodation accommodation;
 
     public Price() {
     }
-
 
     public Price(Date start, Date end, double value) {
         this.id = null;
@@ -67,6 +59,14 @@ public class Price {
 
     public void setAmount(double price) {
         this.amount = price;
+    }
+
+    public Accommodation getAccommodation() {
+        return accommodation;
+    }
+
+    public void setAccommodation(Accommodation accommodation) {
+        this.accommodation = accommodation;
     }
 
     @Override
