@@ -8,7 +8,7 @@ public class CommentDTO {
     private String message;
     private int rate;
     private long writtenById;
-    private long writtenTo;
+    private long writtenToId;
     private Page page;
     public CommentDTO( ) {
     }
@@ -45,12 +45,12 @@ public class CommentDTO {
         this.writtenById = writtenById;
     }
 
-    public long getWrittenTo() {
-        return writtenTo;
+    public long getWrittenToId() {
+        return writtenToId;
     }
 
-    public void setWrittenTo(long writtenTo) {
-        this.writtenTo = writtenTo;
+    public void setWrittenToId(long writtenToId) {
+        this.writtenToId = writtenToId;
     }
 
     public Page getPage() {
@@ -65,8 +65,8 @@ public class CommentDTO {
         this.id = comment.getId();
         this.message = comment.getMessage();
         this.rate = comment.getRate();
-        this.writtenById = comment.getWrittenById();
-        this.writtenTo = comment.getWrittenTo();
+        this.writtenById = comment.getWrittenBy().getId();
+        this.writtenToId = comment.getWrittenTo().getId();
         this.page = comment.getPage();
     }
 }
