@@ -16,16 +16,6 @@ public class AccommodationDTO {
     private double latitude;
     private int minNumOfGuests;
     private int maxNumOfGuests;
-
-    public List<Price> getPrices() {
-        return prices;
-    }
-
-    public void setPrices(List<Price> prices) {
-        this.prices = prices;
-    }
-
-    private List<Price>prices;
     private List<String> gallery;
     private List<Benefit> benefits;
     private AccommodationType accommodationType;
@@ -42,7 +32,6 @@ public class AccommodationDTO {
         this.latitude = accommodation.getLatitude();
         this.minNumOfGuests = accommodation.getMinNumOfGuests();
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
-        this.prices = accommodation.getPrices();
         this.gallery = new ArrayList<String>();
         this.gallery = accommodation.getGallery();
         this.benefits = new ArrayList<Benefit>();
