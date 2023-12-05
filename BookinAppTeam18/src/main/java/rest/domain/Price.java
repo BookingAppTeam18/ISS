@@ -13,17 +13,19 @@ public class Price {
     private Long id;
     private Date start;
     private Date endDate;
-    private double price;
-
+    private double amount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Accommodation accommodation;
 
     public Price() {
     }
 
 
     public Price(Date start, Date end, double value) {
+        this.id = null;
         this.start = start;
         this.endDate = end;
-        this.price = value;
+        this.amount = value;
     }
 
     public Long getId() {
@@ -50,11 +52,11 @@ public class Price {
         this.endDate = end;
     }
 
-    public double getPrice() {
-        return price;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setAmount(double price) {
+        this.amount = price;
     }
 }
