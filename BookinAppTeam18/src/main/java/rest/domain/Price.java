@@ -17,6 +17,7 @@ public class Price {
     private Date endDate;
     private double amount;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="accommodation_id")
     private Accommodation accommodation;

@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Comment;
 import rest.domain.DTO.CommentDTO;
+import rest.domain.Notification;
 import rest.domain.enumerations.Page;
+import rest.repository.AccountRepository;
 import rest.repository.CommentRepository;
 
 import javax.validation.ConstraintViolation;
@@ -19,6 +21,9 @@ public class CommentService implements IService<CommentDTO>{
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 //    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
     @Override
     public Collection<CommentDTO> findAll() {
@@ -44,10 +49,12 @@ public class CommentService implements IService<CommentDTO>{
     @Override
     public CommentDTO insert(CommentDTO commentDTO){
         Comment comment = new Comment(commentDTO);
+        comment.setWrittenBy(accountRepository.getOne(commentDTO.getWrittenById()));
+        comment.setWrittenTo(accountRepository.getOne(commentDTO.getWrittenToId()));
         try {
-            commentRepository.save(comment);
+            Comment savedComment = commentRepository.save(comment);
             commentRepository.flush();
-            return commentDTO;
+            return new CommentDTO(savedComment);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
             StringBuilder sb = new StringBuilder(1000);

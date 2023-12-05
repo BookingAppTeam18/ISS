@@ -15,8 +15,12 @@ public class Comment {
     private Long id;
     private String message;
     private int rate;
-    private long writtenById;
-    private long writtenTo;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "writtenById")
+    private Account writtenBy;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "writtenToId")
+    private Account writtenTo;
 
     @Enumerated(EnumType.STRING)
     private Page page;
@@ -25,20 +29,16 @@ public class Comment {
 
     }
 
-    public Comment(Long id, String message, int rate, long writtenById,long writtenTo, Page page) {
+    public Comment(Long id, String message, int rate, Page page) {
         this.id = id;
         this.message = message;
         this.rate = rate;
-        this.writtenById = writtenById;
-        this.writtenTo = writtenTo;
         this.page = page;
     }
     public Comment(CommentDTO commentDTO) {
         this.id = commentDTO.getId();
         this.message = commentDTO.getMessage();
         this.rate = commentDTO.getRate();
-        this.writtenById = commentDTO.getWrittenById();
-        this.writtenTo = commentDTO.getWrittenTo();
         this.page = commentDTO.getPage();
     }
 
@@ -67,18 +67,18 @@ public class Comment {
         this.rate = rate;
     }
 
-    public long getWrittenById() {
-        return writtenById;
+    public Account getWrittenBy() {
+        return writtenBy;
     }
 
-    public void setWrittenById(long writtenById) {
-        this.writtenById = writtenById;
+    public void setWrittenBy(Account writtenBy) {
+        this.writtenBy = writtenBy;
     }
 
     public void copyValues(Comment comment) {
         this.message = comment.message;
         this.rate = comment.rate;
-        this.writtenById = comment.writtenById;
+        this.writtenBy = comment.writtenBy;
     }
 
     public Page getPage() {
@@ -89,11 +89,11 @@ public class Comment {
         this.page = page;
     }
 
-    public long getWrittenTo() {
+    public Account getWrittenTo() {
         return writtenTo;
     }
 
-    public void setWrittenTo(long writtenTo) {
+    public void setWrittenTo(Account writtenTo) {
         this.writtenTo = writtenTo;
     }
 }
