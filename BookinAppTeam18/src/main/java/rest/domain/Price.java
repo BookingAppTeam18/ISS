@@ -11,7 +11,7 @@ public class Price {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date start;
-    private Date end;
+    private Date endDate;
     private double price;
 
 
@@ -21,7 +21,7 @@ public class Price {
 
     public Price(Date start, Date end, double value) {
         this.start = start;
-        this.end = end;
+        this.endDate = end;
         this.price = value;
     }
 
@@ -42,11 +42,11 @@ public class Price {
     }
 
     public Date getEnd() {
-        return end;
+        return endDate;
     }
 
     public void setEnd(Date end) {
-        this.end = end;
+        this.endDate = end;
     }
 
     public double getPrice() {
