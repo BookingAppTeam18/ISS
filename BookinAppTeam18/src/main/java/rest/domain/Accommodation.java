@@ -7,6 +7,8 @@ import rest.domain.enumerations.Benefit;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name="accommodations")
 public class Accommodation {
@@ -18,10 +20,12 @@ public class Accommodation {
     private String name;
     private double longitude;
     private double latitude;
-    private double activePrice;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "price_id")
-    private List<Price> prices = new ArrayList<>();
+//    @OneToMany(
+//            mappedBy = "accommodation",
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true
+//    )
+//    private List<Price> prices = new ArrayList<>();
     private int minNumOfGuests;
     private int maxNumOfGuests;
     @ElementCollection
@@ -37,18 +41,6 @@ public class Accommodation {
     private AccommodationType accommodetionType;
 
     public Accommodation(){
-        this.id = null;
-        this.ownerId = null;
-        this.name = "name";
-        this.longitude = 0.0;
-        this.latitude = 0.0;
-        this.activePrice = 0.0;
-//        this.prices = new ArrayList<Price>();
-        this.minNumOfGuests = 0;
-        this.maxNumOfGuests = 0;
-        this.gallery = new ArrayList<String>();
-        this.benefits = new ArrayList<Benefit>();
-        this.accommodetionType = null;
     }
     public Accommodation(Long id, Long ownerId, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType) {
         this.id = id;
@@ -56,10 +48,6 @@ public class Accommodation {
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
-        this.activePrice = activePrice;
-        Price newPrice = new Price();
-        newPrice.setPrice(activePrice);
-//        this.prices.add(newPrice);
         this.minNumOfGuests = minNumOfGuests;
         this.maxNumOfGuests = maxNumOfGuests;
         this.gallery = gallery;
@@ -73,10 +61,6 @@ public class Accommodation {
         this.name = accommodationDTO.getName();
         this.longitude = accommodationDTO.getLongitude();
         this.latitude = accommodationDTO.getLatitude();
-        this.activePrice = accommodationDTO.getActivePrice();
-        Price newPrice = new Price();
-        newPrice.setPrice(activePrice);
-        this.prices.add(newPrice);
         this.minNumOfGuests = accommodationDTO.getMinNumOfGuests();
         this.maxNumOfGuests = accommodationDTO.getMaxNumOfGuests();
         this.gallery = new ArrayList<>();
@@ -122,22 +106,6 @@ public class Accommodation {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
-    }
-
-    public double getActivePrice() {
-        return activePrice;
-    }
-
-    public void setActivePrice(double activePrice) {
-        this.activePrice = activePrice;
-    }
-
-    public List<Price> getPrices() {
-        return prices;
-    }
-
-    public void setPrices(List<Price> prices) {
-        this.prices = prices;
     }
 
     public int getMinNumOfGuests() {
@@ -187,8 +155,6 @@ public class Accommodation {
         this.name = accommodation.getName();
         this.longitude = accommodation.getLongitude();
         this.latitude = accommodation.getLatitude();
-        this.activePrice = accommodation.getActivePrice();
-        this.prices = accommodation.getPrices();
         this.minNumOfGuests = accommodation.getMinNumOfGuests();
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
         this.gallery = accommodation.getGallery();

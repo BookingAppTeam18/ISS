@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
+import rest.domain.Price;
 import rest.domain.enumerations.AccommodationType;
 import rest.repository.AccommodationRepository;
 

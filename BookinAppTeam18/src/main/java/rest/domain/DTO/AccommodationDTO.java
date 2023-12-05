@@ -1,6 +1,7 @@
 package rest.domain.DTO;
 
 import rest.domain.Accommodation;
+import rest.domain.Price;
 import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
 
@@ -13,7 +14,6 @@ public class AccommodationDTO {
     private String name;
     private double longitude;
     private double latitude;
-    private double activePrice;
     private int minNumOfGuests;
     private int maxNumOfGuests;
     private List<String> gallery;
@@ -30,7 +30,6 @@ public class AccommodationDTO {
         this.name = accommodation.getName();
         this.longitude = accommodation.getLongitude();
         this.latitude = accommodation.getLatitude();
-        this.activePrice = accommodation.getActivePrice();
         this.minNumOfGuests = accommodation.getMinNumOfGuests();
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
         this.gallery = new ArrayList<String>();
@@ -58,10 +57,6 @@ public class AccommodationDTO {
 
     public double getLatitude() {
         return latitude;
-    }
-
-    public double getActivePrice() {
-        return activePrice;
     }
 
     public int getMinNumOfGuests() {
@@ -102,10 +97,6 @@ public class AccommodationDTO {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
-    }
-
-    public void setActivePrice(double activePrice) {
-        this.activePrice = activePrice;
     }
 
     public void setMinNumOfGuests(int minNumOfGuests) {
