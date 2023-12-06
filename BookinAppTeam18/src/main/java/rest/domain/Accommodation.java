@@ -21,6 +21,8 @@ public class Accommodation {
     private String name;
     private double longitude;
     private double latitude;
+
+    private String location;
     private int minNumOfGuests;
     private int maxNumOfGuests;
     @ElementCollection
@@ -53,6 +55,7 @@ public class Accommodation {
         this.name = accommodationDTO.getName();
         this.longitude = accommodationDTO.getLongitude();
         this.latitude = accommodationDTO.getLatitude();
+        this.location = accommodationDTO.getLocation();
         this.minNumOfGuests = accommodationDTO.getMinNumOfGuests();
         this.maxNumOfGuests = accommodationDTO.getMaxNumOfGuests();
         this.gallery = new ArrayList<>();
@@ -102,6 +105,14 @@ public class Accommodation {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public int getMinNumOfGuests() {
