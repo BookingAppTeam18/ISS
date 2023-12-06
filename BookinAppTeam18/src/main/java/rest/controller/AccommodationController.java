@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
-import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.enumerations.AccommodationType;
 import rest.service.AccommodationService;
 
