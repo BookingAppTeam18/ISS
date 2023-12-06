@@ -7,22 +7,22 @@ public class ReportDTO {
     private String Description;
     private long reportedUserId;
     private long reportedById;
-    private long reportedComment;
+    private long reportedCommentId;
 
-    public ReportDTO(Long id, String description, long reportedUserId, long reportedById, long reportedComment) {
+    public ReportDTO(Long id, String description, long reportedUserId, long reportedById, long reportedCommentId) {
         this.id = id;
         Description = description;
         this.reportedUserId = reportedUserId;
         this.reportedById = reportedById;
-        this.reportedComment = reportedComment;
+        this.reportedCommentId = reportedCommentId;
     }
 
     public ReportDTO(Report report) {
         this.id = report.getId();
         Description = report.getDescription();
-        this.reportedUserId = report.getReportedUserId();
-        this.reportedById = report.getReportedById();
-        this.reportedComment = report.getReportedComment();
+        this.reportedUserId = report.getReportedUser().getId();
+        this.reportedById = report.getReportedBy().getId();
+        this.reportedCommentId = report.getReportedCommentId();
     }
 
     public Long getId() {
@@ -57,11 +57,11 @@ public class ReportDTO {
         this.reportedById = reportedById;
     }
 
-    public long getReportedComment() {
-        return reportedComment;
+    public long getReportedCommentId() {
+        return reportedCommentId;
     }
 
-    public void setReportedComment(long reportedComment) {
-        this.reportedComment = reportedComment;
+    public void setReportedCommentId(long reportedComment) {
+        this.reportedCommentId = reportedComment;
     }
 }

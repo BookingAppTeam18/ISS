@@ -5,14 +5,14 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import rest.domain.DTO.NotificationDTO;
-import rest.domain.Notification;
+import rest.domain.AccommodationComment;
+import rest.domain.Comment;
+import rest.domain.DTO.CommentDTO;
 import rest.domain.Report;
 import rest.domain.DTO.ReportDTO;
-import rest.domain.DTO.ReportDTO;
-import rest.domain.Report;
-import rest.domain.enumerations.Page;
-import rest.repository.CommentRepository;
+import rest.repository.AccommodationCommentRepository;
+import rest.repository.AccountCommentRepository;
+import rest.repository.AccountRepository;
 import rest.repository.ReportRepository;
 
 import javax.validation.ConstraintViolation;
@@ -24,7 +24,10 @@ public class ReportService implements IService<ReportDTO>{
 
     @Autowired
     private ReportRepository reportRepository;
-//    ResourceBundle bundle = ResourceBundle.getBundle("ValidationMessages", LocaleContextHolder.getLocale());
+    @Autowired
+    private AccountRepository accountRepository;
+    @Autowired
+    private CommentService commentService;
     @Override
     public Collection<ReportDTO> findAll() {
 
@@ -39,17 +42,30 @@ public class ReportService implements IService<ReportDTO>{
     public ReportDTO findOne(Long id)
     {
         Optional<Report> found = reportRepository.findById(id);
-//        if (found.isEmpty()) {
-//            String value = bundle.getString("notFound");
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
-//        }
+        if (found.isEmpty()) {
+            String value = "Not Found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, value);
+        }
         return new ReportDTO(found.get());
     }
 
     @Override
     public ReportDTO insert(ReportDTO reportDTO){
         Report report = new Report(reportDTO);
-        try {
+        report.setReportedBy(accountRepository.getOne(reportDTO.getReportedById()));
+        if(reportDTO.getReportedCommentId() != -1){
+            CommentDTO found = commentService.findOne(reportDTO.getReportedCommentId());
+            if(found == null)
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Comment Doesn't exist");
+        }
+        if(reportDTO.getReportedUserId() == -1){
+            CommentDTO commentReported = commentService.findOne(reportDTO.getReportedCommentId());
+            report.setReportedUser(accountRepository.getOne(commentReported.getWrittenById()));
+        }
+        else{
+            report.setReportedUser(accountRepository.getOne(reportDTO.getReportedUserId()));
+        }
+       try {
             Report savedReport = reportRepository.save(report);
             reportRepository.flush();
             return new ReportDTO(savedReport);
@@ -66,11 +82,16 @@ public class ReportService implements IService<ReportDTO>{
     @Override
     public ReportDTO update(ReportDTO reportDTO) throws Exception {
         Report reportToUpdate = new Report(reportDTO);
+        reportToUpdate.setReportedBy(accountRepository.getOne(reportDTO.getReportedById()));
+        reportToUpdate.setReportedUser(accountRepository.getOne(reportDTO.getReportedUserId()));
+        CommentDTO found = commentService.findOne(reportDTO.getReportedCommentId());
+        if(found == null)
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Comment Doesn't exist");
         try {
             findOne(reportDTO.getId()); // this will throw ResponseStatusException if student is not found
-            reportRepository.save(reportToUpdate);
+            Report updatedReport = reportRepository.save(reportToUpdate);
             reportRepository.flush();
-            return reportDTO;
+            return new ReportDTO(updatedReport);
         } catch (RuntimeException ex) {
             Throwable e = ex;
             Throwable c = null;
@@ -92,10 +113,10 @@ public class ReportService implements IService<ReportDTO>{
 
     @Override
     public ReportDTO delete(Long id) {
-        Report found = new Report(findOne(id)); // this will throw StudentNotFoundException if student is not found
-        reportRepository.delete(found);
+        ReportDTO found = findOne(id); // this will throw StudentNotFoundException if student is not found
+        reportRepository.delete(new Report(found));
         reportRepository.flush();
-        return new ReportDTO(found);
+        return found;
     }
 
     @Override
@@ -111,9 +132,9 @@ public class ReportService implements IService<ReportDTO>{
         return accountReports;
     }
 
-    public Collection<ReportDTO> findCommentReports(Long accountId) {
+    public Collection<ReportDTO> findCommentReports(Long commentId) {
         ArrayList<ReportDTO>  commentReports= new ArrayList<>();
-        for(Report commentReport:reportRepository.findCommentReports(accountId)){
+        for(Report commentReport:reportRepository.findCommentReports(commentId)){
             commentReports.add(new ReportDTO(commentReport));
         }
         return commentReports;

@@ -22,8 +22,8 @@ public class NotificationDTO {
     public NotificationDTO(Notification notification ) {
         this.id = notification.getId();
         this.message = notification.getMessage();
-        this.accountId = notification.getAccountId();
-        Seen = notification.getSeen();
+        this.accountId = notification.getAccount().getId();
+        this.Seen = notification.getSeen();
     }
 
     public Long getId() {

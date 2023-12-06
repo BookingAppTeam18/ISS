@@ -13,24 +13,26 @@ public class Report{
     @Column(name="id",length = 5)
     private Long id;
     private String Description;
-    private long reportedUserId;
-    private long reportedById;
-    private long reportedComment;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "reported_user_id")
+    private Account reportedUser;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "reported_by_id")
+    private Account reportedBy;
+    private Long reportedCommentId;
 
-    public Report(Long id, String description, long reportedUserId, long reportedById, long reportedComment) {
+    public Report(Long id, String description, Account reportedUser, Account reportedBy, Long reportedCommentId) {
         this.id = id;
         Description = description;
-        this.reportedUserId = reportedUserId;
-        this.reportedById = reportedById;
-        this.reportedComment = reportedComment;
+        this.reportedUser = reportedUser;
+        this.reportedBy = reportedBy;
+        this.reportedCommentId = reportedCommentId;
     }
 
     public Report(ReportDTO reportDTO) {
         this.id = reportDTO.getId();
-        Description = reportDTO.getDescription();
-        this.reportedUserId = reportDTO.getReportedUserId();
-        this.reportedById = reportDTO.getReportedById();
-        this.reportedComment = reportDTO.getReportedComment();
+        this.Description = reportDTO.getDescription();
+        this.reportedCommentId = reportDTO.getReportedCommentId();
     }
 
     public Report() {
@@ -53,27 +55,27 @@ public class Report{
         Description = description;
     }
 
-    public long getReportedUserId() {
-        return reportedUserId;
+    public Account getReportedUser() {
+        return reportedUser;
     }
 
-    public void setReportedUserId(long reportedUserId) {
-        this.reportedUserId = reportedUserId;
+    public void setReportedUser(Account reportedUser) {
+        this.reportedUser = reportedUser;
     }
 
-    public long getReportedById() {
-        return reportedById;
+    public Account getReportedBy() {
+        return reportedBy;
     }
 
-    public void setReportedById(long reportedById) {
-        this.reportedById = reportedById;
+    public void setReportedBy(Account reportedBy) {
+        this.reportedBy = reportedBy;
     }
 
-    public long getReportedComment() {
-        return reportedComment;
+    public Long getReportedCommentId() {
+        return reportedCommentId;
     }
 
-    public void setReportedComment(long reportedComment) {
-        this.reportedComment = reportedComment;
+    public void setReportedCommentId(Long reportedCommentId) {
+        this.reportedCommentId = reportedCommentId;
     }
 }

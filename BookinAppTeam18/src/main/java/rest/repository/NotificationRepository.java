@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NotificationRepository extends JpaRepository<Notification,Long> {
-    @Query("select n from Notification n where n.accountId = ?1 and n.seen=false ")
+    @Query("select n from Notification n where n.account.id = ?1 and n.seen=false ")
     Notification[] findUnseenNotifications(Long accountId);
 
-    @Query("select n from Notification n where n.accountId = ?1")
+    @Query("select n from Notification n where n.account.id = ?1")
     Notification[] findAccountNotifications(Long accountId);
 
 }

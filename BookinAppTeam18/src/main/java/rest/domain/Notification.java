@@ -13,20 +13,21 @@ public class Notification {
     @Column(name="id",length = 5)
     private Long id;
     private String message;
-    private long accountId;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "notification_for")
+    private Account account;
     private Boolean seen;
 
 
-    public Notification(Long id, String message, long accountId, Boolean seen) {
+    public Notification(Long id, String message, Account account, Boolean seen) {
         this.id = id;
         this.message = message;
-        this.accountId = accountId;
+        this.account = account;
         this.seen = seen;
     }
     public Notification(NotificationDTO notificationDTO) {
         this.id = notificationDTO.getId();
         this.message = notificationDTO.getMessage();
-        this.accountId = notificationDTO.getAccountId();
         this.seen = notificationDTO.getSeen();
     }
 
@@ -42,12 +43,12 @@ public class Notification {
         this.id = id;
     }
 
-    public long getAccountId() {
-        return accountId;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public String getMessage() {
