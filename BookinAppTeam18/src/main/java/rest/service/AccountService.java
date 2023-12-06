@@ -8,7 +8,11 @@ import rest.domain.Accommodation;
 import rest.domain.Account;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
+import rest.domain.Reservation;
+import rest.domain.enumerations.UserType;
+import rest.repository.AccommodationRepository;
 import rest.repository.AccountRepository;
+import rest.repository.ReservationRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -19,6 +23,10 @@ public class AccountService implements IService<AccountDTO> {
 
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private AccommodationRepository accommodationRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     @Override
     public Collection<AccountDTO> findAll(){
@@ -88,9 +96,32 @@ public class AccountService implements IService<AccountDTO> {
     @Override
     public AccountDTO delete(Long id) {
         Account account = new Account(findOne(id)); // this will throw StudentNotFoundException if student is not found
+        if(account.getUserType() == UserType.GUEST){
+            if(ReservationsExist(id))
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Guest has reservations");
+        }
+        if(account.getUserType() == UserType.OWNER){
+            if(AccommodationsOwned(id))
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Owner owns accommodations");
+        }
         accountRepository.delete(account);
         accountRepository.flush();
         return new AccountDTO(account);
+    }
+
+    private boolean AccommodationsOwned(Long id) {
+        Collection<Accommodation> accommodations = accommodationRepository.findAccommodationsOwned(id);
+        if(accommodations.isEmpty())
+            return false;
+        return true;
+    }
+
+    private boolean ReservationsExist(Long id) {
+        Collection<Reservation> reservations = reservationRepository.findGuestReservations(id);
+        if(reservations.isEmpty())
+            return false;
+        return true;
+
     }
 
     public Collection<AccommodationDTO> findFavourite(Long id){
