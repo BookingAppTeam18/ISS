@@ -6,9 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Accommodation;
+import rest.domain.AccommodationComment;
 import rest.domain.DTO.AccommodationDTO;
+import rest.domain.DTO.AccommodationDetailsDTO;
+import rest.domain.DTO.CommentDTO;
 import rest.domain.Price;
 import rest.domain.enumerations.AccommodationType;
+import rest.repository.AccommodationCommentRepository;
 import rest.repository.AccommodationRepository;
 
 import javax.validation.ConstraintViolation;
@@ -20,6 +24,10 @@ public class AccommodationService implements IService<AccommodationDTO> {
 
     @Autowired
     private AccommodationRepository accommodationRepository;
+
+    @Autowired
+    private AccommodationCommentRepository accommodationCommentRepository;
+
 
     @Override
     public Collection<AccommodationDTO> findAll() {
@@ -112,5 +120,20 @@ public class AccommodationService implements IService<AccommodationDTO> {
             accommodationType.add(new AccommodationDTO(a));
         }
         return accommodationType;
+    }
+
+    public AccommodationDetailsDTO findAccommodationDetails(long accommodationId) {
+
+        AccommodationDetailsDTO accommodationDetailsDTO = new AccommodationDetailsDTO();
+
+        Accommodation accommodation = accommodationRepository.getOne(accommodationId);
+        Collection<AccommodationComment> accommodationComments = accommodationCommentRepository.FindAccommodationComments(accommodationId);
+
+        accommodationDetailsDTO.setAccommodationDTO(new AccommodationDTO(accommodation));
+        for (AccommodationComment accommodationComment: accommodationComments) {
+            accommodationDetailsDTO.getCommentsDTO().add(new CommentDTO(accommodationComment));
+        }
+        
+        return accommodationDetailsDTO;
     }
 }
