@@ -14,6 +14,7 @@ public class AccommodationDTO {
     private String name;
     private double longitude;
     private double latitude;
+    private String location;
     private int minNumOfGuests;
     private int maxNumOfGuests;
     private List<String> gallery;
@@ -26,10 +27,11 @@ public class AccommodationDTO {
 
     public AccommodationDTO(Accommodation accommodation){
         this.id = accommodation.getId();
-        this.ownerId = accommodation.getOwnerId();
+        this.ownerId = accommodation.getOwner().getId();
         this.name = accommodation.getName();
         this.longitude = accommodation.getLongitude();
         this.latitude = accommodation.getLatitude();
+        this.location = accommodation.getLocation();
         this.minNumOfGuests = accommodation.getMinNumOfGuests();
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
         this.gallery = new ArrayList<String>();
@@ -57,6 +59,10 @@ public class AccommodationDTO {
 
     public double getLatitude() {
         return latitude;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     public int getMinNumOfGuests() {
@@ -97,6 +103,10 @@ public class AccommodationDTO {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public void setMinNumOfGuests(int minNumOfGuests) {
