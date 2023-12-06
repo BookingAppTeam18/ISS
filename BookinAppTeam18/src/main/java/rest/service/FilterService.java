@@ -18,12 +18,22 @@ public class FilterService {
 
     @Autowired
     private AccommodationRepository accommodationRepository;
+
+
+
     @Autowired
     private PriceRepository priceRepository;
     public static Collection<Accommodation> accommodations;
-    public FilterService(){
+    @Autowired
+    public FilterService(AccommodationRepository accommodationRepository, PriceRepository priceRepository) {
+        this.accommodationRepository = accommodationRepository;
+        this.priceRepository = priceRepository;
         this.accommodations = accommodationRepository.findAll();
     }
+    public FilterService(){
+
+    }
+
     //filter by type
     public Collection<Accommodation> filterAccommodationsType(AccommodationType type){
         for(Accommodation a :accommodations){
@@ -48,7 +58,7 @@ public class FilterService {
             if(!a.getLocation().equals(location))
                 accommodations.remove(a);
         }
-          return accommodations;
+        return accommodations;
     }
 
     //filter accommodation if it has price at any time higher then min price
