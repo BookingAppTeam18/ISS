@@ -13,6 +13,7 @@ import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.enumerations.AccommodationType;
+import rest.domain.enumerations.Benefit;
 import rest.service.AccommodationService;
 import rest.service.FilterService;
 
@@ -50,9 +51,8 @@ public class AccommodationController {
 
     @GetMapping(value ="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationByFilter(
-            @RequestParam(name = "longitude", required = false) double longitude,
-            @RequestParam(name = "latitude", required = false) double latitude,
             @RequestParam(name = "type", required = false) AccommodationType type,
+            @RequestParam(name = "benefits", required = false) ArrayList<Benefit> benefits,
             @RequestParam(name = "location", required = false) String location,
             @RequestParam(name = "minPrice", required = false) double minPrice,
             @RequestParam(name = "maxPrice", required = false) double maxPrice
@@ -60,9 +60,8 @@ public class AccommodationController {
     ) {
         filterService = new FilterService();
         Collection<Accommodation> Accommodations = new ArrayList<>();
-        if (longitude != 0.0 && latitude != 0.0) {
-            // Pozivamo filter koji kombinuje sve parametre
-            Accommodations = filterService.filterAccommodationsLocation(longitude, latitude);
+        if(benefits != null){
+            Accommodations = filterService.filterAccommodationsBenefits(benefits);
         }
         if (type != null) {
             // Pozivamo filter samo po tipu
