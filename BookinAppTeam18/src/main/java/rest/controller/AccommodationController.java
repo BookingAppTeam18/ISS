@@ -58,24 +58,25 @@ public class AccommodationController {
             // Add more filter parameters as needed
     ) {
         filterService = new FilterService();
-        Collection<AccommodationDTO> filteredAccommodations = new ArrayList<>();
+        Collection<Accommodation> Accommodations = new ArrayList<>();
         if (longitude != 0.0 && latitude != 0.0) {
             // Pozivamo filter koji kombinuje sve parametre
-            filteredAccommodations = filterService.filterAccommodationsLocation(longitude, latitude);
+            Accommodations = filterService.filterAccommodationsLocation(longitude, latitude);
         }
         if (type != null) {
             // Pozivamo filter samo po tipu
-            filteredAccommodations = filterService.filterAccommodationsType(type);
+            Accommodations = filterService.filterAccommodationsType(type);
         }if (location != null) {
             // Pozivamo filter samo po tipu
-            filteredAccommodations = filterService.filterAccommodationsLocationName(location);
+            Accommodations = filterService.filterAccommodationsLocationName(location);
         }if (minPrice != 0) {
             // Pozivamo filter samo po tipu
-            filteredAccommodations = filterService.filterAccommodationsMinPrice(minPrice);
+            Accommodations = filterService.filterAccommodationsMinPrice(minPrice);
         }if (maxPrice != 0) {
             // Pozivamo filter samo po tipu
-            filteredAccommodations = filterService.filterAccommodationsMaxPrice(maxPrice);
+            Accommodations = filterService.filterAccommodationsMaxPrice(maxPrice);
         }
+        Collection<AccommodationDTO> filteredAccommodations = filterService.toDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);
     }
 

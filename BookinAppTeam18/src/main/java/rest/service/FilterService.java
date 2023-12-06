@@ -4,11 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
+import rest.domain.Price;
 import rest.domain.enumerations.AccommodationType;
 import rest.repository.AccommodationRepository;
+import rest.repository.PriceRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -16,32 +20,76 @@ public class FilterService {
 
     @Autowired
     private AccommodationRepository accommodationRepository;
+    @Autowired
+    private PriceRepository priceRepository;
     public static Collection<Accommodation> accommodations;
     public FilterService(){
         this.accommodations = accommodationRepository.findAll();
     }
-    public Collection<AccommodationDTO> filterAccommodationsType(AccommodationType type){
-        ArrayList<AccommodationDTO> accommodationType= new ArrayList<>();
-        for(Accommodation a :accommodationRepository.findAccommodationType(type)){
-            accommodationType.add(new AccommodationDTO(a));
+    //filter by type
+    public Collection<Accommodation> filterAccommodationsType(AccommodationType type){
+        for(Accommodation a :accommodations){
+            if(a.getAccommodetionType()!=type)
+                accommodations.remove(a);
         }
-        return accommodationType;
+        return accommodations;
     }
 
-    public Collection<AccommodationDTO> filterAccommodationsLocation(double longitude, double latitude){
-        ArrayList<AccommodationDTO>  accommodationType= new ArrayList<>();
-        for(Accommodation a :accommodationRepository.findAccommodationLocation(longitude, latitude)){
-            accommodationType.add(new AccommodationDTO(a));
+    //filter by location
+    public Collection<Accommodation> filterAccommodationsLocation(double longitude, double latitude){
+//        for(Accommodation a :accommodations){
+//            if(a.getAccommodetionType()!=type)
+//                accommodations.remove(a);
+//        }
+        return accommodations;
+    }
+
+    //filter by location name
+    public Collection<Accommodation> filterAccommodationsLocationName(String location) {
+//        for(Accommodation a :accommodations){
+//            if(a!=type)
+//                accommodations.remove(a);
+//        }
+          return accommodations;
+    }
+
+    //filter accommodation if it has price at any time higher then min price
+    public Collection<Accommodation> filterAccommodationsMinPrice(double minPrice) {
+        for(Accommodation a :accommodations){
+            Collection<Price> prices = priceRepository.findPricesForAccommodation(a.getId());
+            if( !findMoreThenMin(prices,minPrice)){
+                accommodations.remove(a);
+            }
         }
-        return accommodationType;
+        return accommodations;
     }
 
-    public Collection<AccommodationDTO> filterAccommodationsLocationName(String location) {
+    private boolean findMoreThenMin(Collection<Price> prices,double minPrice) {
+        for(Price price:prices){
+            if(price.getAmount() > minPrice && price.getEndDate().after(new Date())){
+                return true;
+            }
+        }
+        return false;
     }
 
-    public Collection<AccommodationDTO> filterAccommodationsMinPrice(double minPrice) {
+    //filter accommodation if it has price at any time lower then max price
+    public Collection<Accommodation> filterAccommodationsMaxPrice(double maxPrice) {
+        for(Accommodation a :accommodations){
+            Collection<Price> prices = priceRepository.findPricesForAccommodation(a.getId());
+            if(!findLessThenMax(prices,maxPrice)){
+                accommodations.remove(a);
+            }
+        }
+        return accommodations;
     }
 
-    public Collection<AccommodationDTO> filterAccommodationsMaxPrice(double maxPrice) {
+    private boolean findLessThenMax(Collection<Price> prices, double maxPrice) {
+        for(Price price:prices){
+            if(price.getAmount() < maxPrice && price.getEndDate().after(new Date())){
+                return true;
+            }
+        }
+        return false;
     }
 }
