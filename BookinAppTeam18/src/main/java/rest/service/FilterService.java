@@ -9,11 +9,9 @@ import rest.domain.enumerations.AccommodationType;
 import rest.repository.AccommodationRepository;
 import rest.repository.PriceRepository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class FilterService {
@@ -46,10 +44,10 @@ public class FilterService {
 
     //filter by location name
     public Collection<Accommodation> filterAccommodationsLocationName(String location) {
-//        for(Accommodation a :accommodations){
-//            if(a!=type)
-//                accommodations.remove(a);
-//        }
+        for(Accommodation a :accommodations){
+            if(!a.getLocation().equals(location))
+                accommodations.remove(a);
+        }
           return accommodations;
     }
 
@@ -91,5 +89,13 @@ public class FilterService {
             }
         }
         return false;
+    }
+
+    public Collection<AccommodationDTO> toDTO() {
+        Collection<AccommodationDTO> accommodationsDTO = new ArrayList<>();
+        for(Accommodation accommodation:accommodations){
+            accommodationsDTO.add(new AccommodationDTO((accommodation)));
+        }
+        return accommodationsDTO;
     }
 }

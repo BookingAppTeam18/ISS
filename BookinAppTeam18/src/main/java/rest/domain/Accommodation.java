@@ -20,6 +20,8 @@ public class Accommodation {
     private Account owner;
     private String name;
     private double longitude;
+
+
     private double latitude;
 
     private String location;
