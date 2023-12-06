@@ -50,32 +50,25 @@ public class AccommodationController {
 
     @GetMapping(value ="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationByFilter(
-            @RequestParam(name = "longitude", required = false) double longitude,
-            @RequestParam(name = "latitude", required = false) double latitude,
             @RequestParam(name = "type", required = false) AccommodationType type,
             @RequestParam(name = "location", required = false) String location,
             @RequestParam(name = "minPrice", required = false) double minPrice,
             @RequestParam(name = "maxPrice", required = false) double maxPrice
             // Add more filter parameters as needed
     ) {
-        filterService = new FilterService();
-        Collection<Accommodation> Accommodations = new ArrayList<>();
-        if (longitude != 0.0 && latitude != 0.0) {
-            // Pozivamo filter koji kombinuje sve parametre
-            Accommodations = filterService.filterAccommodationsLocation(longitude, latitude);
-        }
+        filterService.FillFilter();
         if (type != null) {
             // Pozivamo filter samo po tipu
-            Accommodations = filterService.filterAccommodationsType(type);
+            filterService.filterAccommodationsType(type);
         }if (location != null) {
             // Pozivamo filter samo po tipu
-            Accommodations = filterService.filterAccommodationsLocationName(location);
+            filterService.filterAccommodationsLocationName(location);
         }if (minPrice != 0) {
             // Pozivamo filter samo po tipu
-            Accommodations = filterService.filterAccommodationsMinPrice(minPrice);
+            filterService.filterAccommodationsMinPrice(minPrice);
         }if (maxPrice != 0) {
             // Pozivamo filter samo po tipu
-            Accommodations = filterService.filterAccommodationsMaxPrice(maxPrice);
+            filterService.filterAccommodationsMaxPrice(maxPrice);
         }
         Collection<AccommodationDTO> filteredAccommodations = filterService.toDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);

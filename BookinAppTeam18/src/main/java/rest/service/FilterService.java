@@ -20,9 +20,12 @@ public class FilterService {
     private AccommodationRepository accommodationRepository;
     @Autowired
     private PriceRepository priceRepository;
-    public static Collection<Accommodation> accommodations;
+    public Collection<Accommodation> accommodations;
     public FilterService(){
-        this.accommodations = accommodationRepository.findAll();
+    }
+
+    public void FillFilter(){
+        accommodations = accommodationRepository.findAll();
     }
     //filter by type
     public Collection<Accommodation> filterAccommodationsType(AccommodationType type){
@@ -33,14 +36,6 @@ public class FilterService {
         return accommodations;
     }
 
-    //filter by location
-    public Collection<Accommodation> filterAccommodationsLocation(double longitude, double latitude){
-//        for(Accommodation a :accommodations){
-//            if(a.getAccommodetionType()!=type)
-//                accommodations.remove(a);
-//        }
-        return accommodations;
-    }
 
     //filter by location name
     public Collection<Accommodation> filterAccommodationsLocationName(String location) {
