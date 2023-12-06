@@ -14,6 +14,7 @@ import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.enumerations.AccommodationType;
 import rest.service.AccommodationService;
+import rest.service.FilterService;
 
 @RestController
 @RequestMapping("/api/accommodations")
@@ -21,6 +22,8 @@ public class AccommodationController {
 
     @Autowired
     private AccommodationService accommodationService;
+    @Autowired
+    private FilterService filterService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodations() {
@@ -49,17 +52,32 @@ public class AccommodationController {
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationByFilter(
             @RequestParam(name = "longitude", required = false) double longitude,
             @RequestParam(name = "latitude", required = false) double latitude,
-            @RequestParam(name = "type", required = false) AccommodationType type
+            @RequestParam(name = "type", required = false) AccommodationType type,
+            @RequestParam(name = "location", required = false) String location,
+            @RequestParam(name = "minPrice", required = false) double minPrice,
+            @RequestParam(name = "maxPrice", required = false) double maxPrice
             // Add more filter parameters as needed
     ) {
-        Collection<AccommodationDTO> filteredAccommodations = new ArrayList<>();
+        filterService = new FilterService();
+        Collection<Accommodation> Accommodations = new ArrayList<>();
         if (longitude != 0.0 && latitude != 0.0) {
             // Pozivamo filter koji kombinuje sve parametre
-            filteredAccommodations = accommodationService.filterAccommodationsLocation(longitude, latitude);
-        } else if (type != null) {
-            // Pozivamo filter samo po tipu
-            filteredAccommodations = accommodationService.filterAccommodationsType(type);
+            Accommodations = filterService.filterAccommodationsLocation(longitude, latitude);
         }
+        if (type != null) {
+            // Pozivamo filter samo po tipu
+            Accommodations = filterService.filterAccommodationsType(type);
+        }if (location != null) {
+            // Pozivamo filter samo po tipu
+            Accommodations = filterService.filterAccommodationsLocationName(location);
+        }if (minPrice != 0) {
+            // Pozivamo filter samo po tipu
+            Accommodations = filterService.filterAccommodationsMinPrice(minPrice);
+        }if (maxPrice != 0) {
+            // Pozivamo filter samo po tipu
+            Accommodations = filterService.filterAccommodationsMaxPrice(maxPrice);
+        }
+        Collection<AccommodationDTO> filteredAccommodations = filterService.toDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);
     }
 

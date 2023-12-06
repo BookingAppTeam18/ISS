@@ -109,21 +109,7 @@ public class AccommodationService implements IService<AccommodationDTO> {
         accommodationRepository.flush();
     }
 
-    public Collection<AccommodationDTO> filterAccommodationsType(AccommodationType type){
-        ArrayList<AccommodationDTO>  accommodationType= new ArrayList<>();
-        for(Accommodation a :accommodationRepository.findAccommodationType(type)){
-            accommodationType.add(new AccommodationDTO(a));
-        }
-        return accommodationType;
-    }
 
-    public Collection<AccommodationDTO> filterAccommodationsLocation(double longitude, double latitude){
-        ArrayList<AccommodationDTO>  accommodationType= new ArrayList<>();
-        for(Accommodation a :accommodationRepository.findAccommodationLocation(longitude, latitude)){
-            accommodationType.add(new AccommodationDTO(a));
-        }
-        return accommodationType;
-    }
 
     public AccommodationDetailsDTO findAccommodationDetails(long accommodationId) {
 
