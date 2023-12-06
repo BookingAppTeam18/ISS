@@ -53,10 +53,18 @@ public class ReportService implements IService<ReportDTO>{
     public ReportDTO insert(ReportDTO reportDTO){
         Report report = new Report(reportDTO);
         report.setReportedBy(accountRepository.getOne(reportDTO.getReportedById()));
-        report.setReportedUser(accountRepository.getOne(reportDTO.getReportedUserId()));
-        CommentDTO found = commentService.findOne(reportDTO.getReportedCommentId());
-        if(found == null)
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Comment Doesn't exist");
+        if(reportDTO.getReportedCommentId() != -1){
+            CommentDTO found = commentService.findOne(reportDTO.getReportedCommentId());
+            if(found == null)
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Comment Doesn't exist");
+        }
+        if(reportDTO.getReportedUserId() == -1){
+            CommentDTO commentReported = commentService.findOne(reportDTO.getReportedCommentId());
+            report.setReportedUser(accountRepository.getOne(commentReported.getWrittenById()));
+        }
+        else{
+            report.setReportedUser(accountRepository.getOne(reportDTO.getReportedUserId()));
+        }
        try {
             Report savedReport = reportRepository.save(report);
             reportRepository.flush();
@@ -105,10 +113,10 @@ public class ReportService implements IService<ReportDTO>{
 
     @Override
     public ReportDTO delete(Long id) {
-        Report found = new Report(findOne(id)); // this will throw StudentNotFoundException if student is not found
-        reportRepository.delete(found);
+        ReportDTO found = findOne(id); // this will throw StudentNotFoundException if student is not found
+        reportRepository.delete(new Report(found));
         reportRepository.flush();
-        return new ReportDTO(found);
+        return found;
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.DTO.NotificationDTO;
 import rest.domain.Notification;
+import rest.repository.AccountRepository;
 import rest.repository.NotificationRepository;
 
 import javax.validation.ConstraintViolation;
@@ -18,6 +19,8 @@ public class NotificationService implements IService<NotificationDTO> {
 
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private AccountRepository accountRepository;
  @Override
     public Collection<NotificationDTO> findAll() {
 
@@ -42,6 +45,7 @@ public class NotificationService implements IService<NotificationDTO> {
     @Override
     public NotificationDTO insert(NotificationDTO NotificationDTO){
         Notification notification = new Notification(NotificationDTO);
+        notification.setAccount(accountRepository.getOne(NotificationDTO.getAccountId()));
         try {
             Notification savedNotification = notificationRepository.save(notification);
             notificationRepository.flush();
@@ -59,6 +63,7 @@ public class NotificationService implements IService<NotificationDTO> {
     @Override
     public NotificationDTO update(NotificationDTO NotificationDTO) throws Exception {
         Notification notificationToUpdate = new Notification(NotificationDTO);
+        notificationToUpdate.setAccount(accountRepository.getOne(NotificationDTO.getAccountId()));
         try {
             findOne(NotificationDTO.getId()); // this will throw ResponseStatusException if student is not found
             Notification updatedNotification =notificationRepository.save(notificationToUpdate);
@@ -85,10 +90,10 @@ public class NotificationService implements IService<NotificationDTO> {
 
     @Override
     public NotificationDTO delete(Long id) {
-        Notification found = new Notification(findOne(id)); // this will throw StudentNotFoundException if student is not found
-        notificationRepository.delete(found);
+        NotificationDTO found = findOne(id); // this will throw StudentNotFoundException if student is not found
+        notificationRepository.delete(new Notification(found));
         notificationRepository.flush();
-        return new NotificationDTO(found);
+        return found;
     }
 
     @Override
