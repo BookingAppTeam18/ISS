@@ -7,7 +7,6 @@ import rest.domain.enumerations.Benefit;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name="accommodations")
@@ -16,16 +15,14 @@ public class Accommodation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id",length = 5)
     private Long id;
-    private Long ownerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="owner_id")
+    private Account owner;
     private String name;
     private double longitude;
     private double latitude;
-//    @OneToMany(
-//            mappedBy = "accommodation",
-//            cascade = CascadeType.ALL,
-//            orphanRemoval = true
-//    )
-//    private List<Price> prices = new ArrayList<>();
+
+    private String location;
     private int minNumOfGuests;
     private int maxNumOfGuests;
     @ElementCollection
@@ -40,11 +37,9 @@ public class Accommodation {
     @Enumerated(EnumType.STRING)
     private AccommodationType accommodetionType;
 
-    public Accommodation(){
-    }
-    public Accommodation(Long id, Long ownerId, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType) {
+    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType) {
         this.id = id;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -57,15 +52,19 @@ public class Accommodation {
 
     public Accommodation(AccommodationDTO accommodationDTO) {
         this.id = accommodationDTO.getId();
-        this.ownerId = accommodationDTO.getOwnerId();
         this.name = accommodationDTO.getName();
         this.longitude = accommodationDTO.getLongitude();
         this.latitude = accommodationDTO.getLatitude();
+        this.location = accommodationDTO.getLocation();
         this.minNumOfGuests = accommodationDTO.getMinNumOfGuests();
         this.maxNumOfGuests = accommodationDTO.getMaxNumOfGuests();
         this.gallery = new ArrayList<>();
         this.benefits = new ArrayList<>();
         this.accommodetionType = accommodationDTO.getAccommodationType();
+    }
+
+    public Accommodation() {
+
     }
 
     public Long getId() {
@@ -76,12 +75,12 @@ public class Accommodation {
         this.id = id;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public Account getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(Account owner) {
+        this.owner = owner;
     }
 
     public String getName() {
@@ -106,6 +105,14 @@ public class Accommodation {
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public int getMinNumOfGuests() {
@@ -151,7 +158,7 @@ public class Accommodation {
     public void copyValues(Accommodation accommodation) {
 
         this.id = accommodation.getId();
-        this.ownerId = accommodation.getOwnerId();
+        this.owner = accommodation.getOwner();
         this.name = accommodation.getName();
         this.longitude = accommodation.getLongitude();
         this.latitude = accommodation.getLatitude();

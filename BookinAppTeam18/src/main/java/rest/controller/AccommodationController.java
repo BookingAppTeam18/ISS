@@ -36,6 +36,7 @@ public class AccommodationController {
         AccommodationDetailsDTO accommodationDetails = accommodationService.findAccommodationDetails(id);
         return new ResponseEntity<AccommodationDetailsDTO>(accommodationDetails, HttpStatus.OK);
     }
+  
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> getAccommodation(@PathVariable("id") Long id) {
         AccommodationDTO accommodationDTO = accommodationService.findOne(id);

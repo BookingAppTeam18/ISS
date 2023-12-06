@@ -1,6 +1,5 @@
 package rest.service;
 
-//import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,10 +9,10 @@ import rest.domain.AccommodationComment;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.DTO.CommentDTO;
-import rest.domain.Price;
 import rest.domain.enumerations.AccommodationType;
 import rest.repository.AccommodationCommentRepository;
 import rest.repository.AccommodationRepository;
+import rest.repository.AccountRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -27,6 +26,9 @@ public class AccommodationService implements IService<AccommodationDTO> {
 
     @Autowired
     private AccommodationCommentRepository accommodationCommentRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
 
     @Override
@@ -50,6 +52,7 @@ public class AccommodationService implements IService<AccommodationDTO> {
     @Override
     public AccommodationDTO insert(AccommodationDTO accommodationDTO) throws Exception {
         Accommodation accommodation = new Accommodation(accommodationDTO);
+        accommodation.setOwner(accountRepository.getOne(accommodationDTO.getOwnerId()));
         try {
             accommodationRepository.save(accommodation);
             accommodationRepository.flush();
