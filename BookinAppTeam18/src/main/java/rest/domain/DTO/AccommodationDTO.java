@@ -26,7 +26,7 @@ public class AccommodationDTO {
 
     public AccommodationDTO(Accommodation accommodation){
         this.id = accommodation.getId();
-        this.ownerId = accommodation.getOwnerId();
+        this.ownerId = accommodation.getOwner().getId();
         this.name = accommodation.getName();
         this.longitude = accommodation.getLongitude();
         this.latitude = accommodation.getLatitude();
