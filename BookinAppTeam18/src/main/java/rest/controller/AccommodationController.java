@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
+import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.enumerations.AccommodationType;
 import rest.service.AccommodationService;
 
@@ -25,6 +26,12 @@ public class AccommodationController {
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodations() {
         Collection<AccommodationDTO> accommodations = accommodationService.findAll();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodations, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/details/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationDetailsDTO> getAccommodationDetails(@PathVariable("id") Long id) {
+        AccommodationDetailsDTO accommodationDetails = accommodationService.findAccommodationDetails(id);
+        return new ResponseEntity<AccommodationDetailsDTO>(accommodationDetails, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

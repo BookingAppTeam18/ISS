@@ -14,5 +14,7 @@ public interface AccommodationRepository extends JpaRepository<Accommodation,Lon
 
     @Query("select a from Accommodation a where a.longitude= ?1 and a.latitude = ?2")
     public Collection<Accommodation> findAccommodationLocation(double laongitude, double latitude);
+    @Query("select a from Accommodation a where a.ownerId=?1")
+    public Collection<Accommodation> findAccommodationsOwned(Long ownerId );
 
 }
