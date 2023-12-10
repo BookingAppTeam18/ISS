@@ -17,6 +17,7 @@ import rest.domain.enumerations.Benefit;
 import rest.service.AccommodationService;
 import rest.service.FilterService;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/accommodations")
 public class AccommodationController {
@@ -58,23 +59,18 @@ public class AccommodationController {
             @RequestParam(name = "maxPrice", required = false) double maxPrice
             // Add more filter parameters as needed
     ) {
-        filterService = new FilterService();
-        Collection<Accommodation> Accommodations = new ArrayList<>();
+        filterService.FillFilter();
         if(benefits != null){
-            Accommodations = filterService.filterAccommodationsBenefits(benefits);
+            filterService.filterAccommodationsBenefits(benefits);
         }
         if (type != null) {
-            // Pozivamo filter samo po tipu
-            Accommodations = filterService.filterAccommodationsType(type);
+            filterService.filterAccommodationsType(type);
         }if (location != null) {
-            // Pozivamo filter samo po tipu
-            Accommodations = filterService.filterAccommodationsLocationName(location);
+            filterService.filterAccommodationsLocationName(location);
         }if (minPrice != 0) {
-            // Pozivamo filter samo po tipu
-            Accommodations = filterService.filterAccommodationsMinPrice(minPrice);
+            filterService.filterAccommodationsMinPrice(minPrice);
         }if (maxPrice != 0) {
-            // Pozivamo filter samo po tipu
-            Accommodations = filterService.filterAccommodationsMaxPrice(maxPrice);
+            filterService.filterAccommodationsMaxPrice(maxPrice);
         }
         Collection<AccommodationDTO> filteredAccommodations = filterService.toDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);

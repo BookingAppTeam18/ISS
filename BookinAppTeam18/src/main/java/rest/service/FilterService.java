@@ -21,9 +21,12 @@ public class FilterService {
     private AccommodationRepository accommodationRepository;
     @Autowired
     private PriceRepository priceRepository;
-    public static Collection<Accommodation> accommodations;
+    public Collection<Accommodation> accommodations;
     public FilterService(){
-        this.accommodations = accommodationRepository.findAll();
+    }
+
+    public void FillFilter(){
+        accommodations = accommodationRepository.findAll();
     }
     //filter by type
     public Collection<Accommodation> filterAccommodationsType(AccommodationType type){
@@ -35,7 +38,6 @@ public class FilterService {
     }
 
     //filter by benefits
-
     public Collection<Accommodation> filterAccommodationsBenefits(Collection<Benefit> benefits) {
         for(Accommodation a :accommodations){
             Collection<Benefit> accommodationBenefits = a.getBenefits();
