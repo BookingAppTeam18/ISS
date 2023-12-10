@@ -13,6 +13,7 @@ import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.enumerations.AccommodationType;
+import rest.domain.enumerations.Benefit;
 import rest.service.AccommodationService;
 import rest.service.FilterService;
 
@@ -52,23 +53,23 @@ public class AccommodationController {
     @GetMapping(value ="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationByFilter(
             @RequestParam(name = "type", required = false) AccommodationType type,
+            @RequestParam(name = "benefits", required = false) ArrayList<Benefit> benefits,
             @RequestParam(name = "location", required = false) String location,
             @RequestParam(name = "minPrice", required = false) double minPrice,
             @RequestParam(name = "maxPrice", required = false) double maxPrice
             // Add more filter parameters as needed
     ) {
         filterService.FillFilter();
+        if(benefits != null){
+            filterService.filterAccommodationsBenefits(benefits);
+        }
         if (type != null) {
-            // Pozivamo filter samo po tipu
             filterService.filterAccommodationsType(type);
         }if (location != null) {
-            // Pozivamo filter samo po tipu
             filterService.filterAccommodationsLocationName(location);
         }if (minPrice != 0) {
-            // Pozivamo filter samo po tipu
             filterService.filterAccommodationsMinPrice(minPrice);
         }if (maxPrice != 0) {
-            // Pozivamo filter samo po tipu
             filterService.filterAccommodationsMaxPrice(maxPrice);
         }
         Collection<AccommodationDTO> filteredAccommodations = filterService.toDTO();

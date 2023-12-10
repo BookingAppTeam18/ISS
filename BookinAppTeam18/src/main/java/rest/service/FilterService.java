@@ -6,6 +6,7 @@ import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.Price;
 import rest.domain.enumerations.AccommodationType;
+import rest.domain.enumerations.Benefit;
 import rest.repository.AccommodationRepository;
 import rest.repository.PriceRepository;
 
@@ -36,6 +37,17 @@ public class FilterService {
         return accommodations;
     }
 
+    //filter by benefits
+    public Collection<Accommodation> filterAccommodationsBenefits(Collection<Benefit> benefits) {
+        for(Accommodation a :accommodations){
+            Collection<Benefit> accommodationBenefits = a.getBenefits();
+            if(!accommodationBenefits.containsAll(benefits)){
+                accommodations.remove(a);
+            }
+        }
+        return accommodations;
+
+    }
 
     //filter by location name
     public Collection<Accommodation> filterAccommodationsLocationName(String location) {
