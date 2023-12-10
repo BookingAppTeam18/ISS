@@ -16,6 +16,7 @@ import rest.domain.enumerations.AccommodationType;
 import rest.service.AccommodationService;
 import rest.service.FilterService;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/accommodations")
 public class AccommodationController {
