@@ -26,8 +26,8 @@ public class ReservationController {
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
-    @GetMapping(value="/{reservationId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReservationDTO> getReservationById(@PathVariable("reservationId") Long reservationId) {
+    @GetMapping(value="/reservation/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReservationDTO> getReservationById(@PathVariable("id") Long reservationId) {
         ReservationDTO reservationDTO = reservationService.findOne(reservationId);
         if(reservationDTO == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -36,15 +36,15 @@ public class ReservationController {
     }
 
     //Get all users who had reservation in specific accommodation
-    @GetMapping(value="/{accommodationId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccountDTO>> getAccommodationGuests(@PathVariable("accommodationId") Long accommodationId) {
+    @GetMapping(value="/accommodation/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccountDTO>> getAccommodationGuests(@PathVariable("id") Long accommodationId) {
         Collection<AccountDTO> accounts = reservationService.findAccommodationGuests(accommodationId);
         return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
     //Get all
-    @GetMapping(value="/{accountId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccommodationDTO>> getGuestAccommodations(@PathVariable("accountId") Long accountId) {
+    @GetMapping(value="/account/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getGuestAccommodations(@PathVariable("id") Long accountId) {
         Collection<AccommodationDTO> accommodations = reservationService.findUserAccommodations(accountId);
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
@@ -52,7 +52,7 @@ public class ReservationController {
     // Create reservation
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) throws Exception{
-        return new ResponseEntity<>(reservationService.create(reservationDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(reservationService.insert(reservationDTO), HttpStatus.CREATED);
     }
 
     //Update reservation

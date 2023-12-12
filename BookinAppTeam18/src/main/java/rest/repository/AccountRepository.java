@@ -1,54 +1,24 @@
 package rest.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import rest.domain.Accommodation;
 import rest.domain.Account;
+import rest.domain.enumerations.AccommodationType;
 
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-public class AccountRepository implements IRepository<Account>{
-    private static AtomicLong counter = new AtomicLong();
+public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    private final ConcurrentMap<Long, Account> accounts = new ConcurrentHashMap<Long, Account>();
-    @Override
-    public Collection<Account> findAll() {
-        return this.accounts.values();
-    }
-    @Override
-    public Account create(Account account) {
-        Long id = account.getId();
+    @Query("SELECT accommodation FROM Account a JOIN a.favouriteAccommodations accommodation WHERE a.id = :accountId")
+    public Collection<Accommodation> findFavouriteAccommodation(@Param("accountId") Long accountId);
 
-        if (id == null) {
-            id = counter.incrementAndGet();
-            account.setId(id);
-        }
 
-        this.accounts.put(id, account);
-        return account;
-    }
+    //U odnosu na id usera dobiti njegovu listu accommodationa i onda dodati/ukloniti accommodation
+    // sa odredjenim idom (proslijediti id accommodationa i accounta)
 
-    @Override
-    public Account findOne(Long id) {
-        return this.accounts.get(id);
-    }
-
-    @Override
-    public void delete(Long id) {
-        this.accounts.remove(id);
-    }
-
-    @Override
-    public Account update(Account account) {
-        Long id = account.getId();
-
-        if (id != null) {
-            this.accounts.put(id, account);
-        }
-
-        return account;
-    }
 
 }

@@ -4,30 +4,41 @@ package rest.domain;
 import rest.domain.DTO.CommentDTO;
 import rest.domain.enumerations.Page;
 
+import javax.persistence.*;
+
+@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_sequence")
+    @SequenceGenerator(name = "my_sequence", sequenceName = "my_sequence", allocationSize = 1)
     private Long id;
     private String message;
     private int rate;
-    private long writtenById;
-    private long writtenTo;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "writtenById")
+    private Account writtenBy;
+
+    @Enumerated(EnumType.STRING)
     private Page page;
 
-    public Comment(Long id, String message, int rate, long writtenById,long writtenTo, Page page) {
+    public Comment() {
+
+    }
+
+    public Comment(Long id, String message, int rate, Page page) {
         this.id = id;
         this.message = message;
         this.rate = rate;
-        this.writtenById = writtenById;
-        this.writtenTo = writtenTo;
         this.page = page;
     }
     public Comment(CommentDTO commentDTO) {
         this.id = commentDTO.getId();
         this.message = commentDTO.getMessage();
         this.rate = commentDTO.getRate();
-        this.writtenById = commentDTO.getWrittenById();
-        this.writtenTo = commentDTO.getWrittenTo();
         this.page = commentDTO.getPage();
     }
+
 
     public Long getId() {
         return id;
@@ -53,18 +64,18 @@ public class Comment {
         this.rate = rate;
     }
 
-    public long getWrittenById() {
-        return writtenById;
+    public Account getWrittenBy() {
+        return writtenBy;
     }
 
-    public void setWrittenById(long writtenById) {
-        this.writtenById = writtenById;
+    public void setWrittenBy(Account writtenBy) {
+        this.writtenBy = writtenBy;
     }
 
     public void copyValues(Comment comment) {
         this.message = comment.message;
         this.rate = comment.rate;
-        this.writtenById = comment.writtenById;
+        this.writtenBy = comment.writtenBy;
     }
 
     public Page getPage() {
@@ -75,11 +86,4 @@ public class Comment {
         this.page = page;
     }
 
-    public long getWrittenTo() {
-        return writtenTo;
-    }
-
-    public void setWrittenTo(long writtenTo) {
-        this.writtenTo = writtenTo;
-    }
 }

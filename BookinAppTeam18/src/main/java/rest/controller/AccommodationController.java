@@ -1,31 +1,30 @@
 package rest.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
+import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.enumerations.AccommodationType;
 import rest.service.AccommodationService;
+import rest.service.FilterService;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/accommodations")
 public class AccommodationController {
 
     @Autowired
     private AccommodationService accommodationService;
+    @Autowired
+    private FilterService filterService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodations() {
@@ -33,6 +32,12 @@ public class AccommodationController {
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodations, HttpStatus.OK);
     }
 
+    @GetMapping(value="/details/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationDetailsDTO> getAccommodationDetails(@PathVariable("id") Long id) {
+        AccommodationDetailsDTO accommodationDetails = accommodationService.findAccommodationDetails(id);
+        return new ResponseEntity<AccommodationDetailsDTO>(accommodationDetails, HttpStatus.OK);
+    }
+  
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> getAccommodation(@PathVariable("id") Long id) {
         AccommodationDTO accommodationDTO = accommodationService.findOne(id);
@@ -44,20 +49,35 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.OK);
     }
 
-    @GetMapping(value = "filtered/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationByFilter(@PathVariable("id") AccommodationType type) {
-        Collection<AccommodationDTO> accommodationDTOs = accommodationService.findByFilter(type);
-
-        if (accommodationDTOs == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping(value ="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationByFilter(
+            @RequestParam(name = "type", required = false) AccommodationType type,
+            @RequestParam(name = "location", required = false) String location,
+            @RequestParam(name = "minPrice", required = false) double minPrice,
+            @RequestParam(name = "maxPrice", required = false) double maxPrice
+            // Add more filter parameters as needed
+    ) {
+        filterService.FillFilter();
+        if (type != null) {
+            // Pozivamo filter samo po tipu
+            filterService.filterAccommodationsType(type);
+        }if (location != null) {
+            // Pozivamo filter samo po tipu
+            filterService.filterAccommodationsLocationName(location);
+        }if (minPrice != 0) {
+            // Pozivamo filter samo po tipu
+            filterService.filterAccommodationsMinPrice(minPrice);
+        }if (maxPrice != 0) {
+            // Pozivamo filter samo po tipu
+            filterService.filterAccommodationsMaxPrice(maxPrice);
         }
-
-        return new ResponseEntity<Collection<AccommodationDTO>>(accommodationDTOs, HttpStatus.OK);
+        Collection<AccommodationDTO> filteredAccommodations = filterService.toDTO();
+        return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody AccommodationDTO accommodationDto) throws Exception {
-        AccommodationDTO savedAccommodation = accommodationService.create(accommodationDto);
+        AccommodationDTO savedAccommodation = accommodationService.insert(accommodationDto);
         return new ResponseEntity<AccommodationDTO>(savedAccommodation, HttpStatus.CREATED);
     }
 

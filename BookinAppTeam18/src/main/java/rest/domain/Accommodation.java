@@ -4,44 +4,47 @@ import rest.domain.DTO.AccommodationDTO;
 import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
 
+import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
+@Entity
+@Table(name="accommodations")
 public class Accommodation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id",length = 5)
     private Long id;
-    private Long ownerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="owner_id")
+    private Account owner;
     private String name;
+    private double longitude;
+
+
+    private double latitude;
+
     private String location;
-    private double activePrice;
-    private HashMap<Date, Double> priceList;
     private int minNumOfGuests;
     private int maxNumOfGuests;
+    @ElementCollection
+    @CollectionTable(name = "gallery_mapping", joinColumns = @JoinColumn(name = "accommodation_id"))
+    @Column(name = "image_url")
     private List<String> gallery;
+    @ElementCollection(targetClass = Benefit.class)
+    @CollectionTable(name = "benefits_mapping", joinColumns = @JoinColumn(name = "accommodation_id"))
+    @Column(name = "benefit")
+    @Enumerated(EnumType.STRING)
     private List<Benefit> benefits;
+    @Enumerated(EnumType.STRING)
     private AccommodationType accommodetionType;
 
-    public Accommodation(){
-        this.id = null;
-        this.ownerId = null;
-        this.name = "name";
-        this.location = "location";
-        this.activePrice = 0.0;
-        this.priceList = new HashMap<Date, Double>();
-        this.minNumOfGuests = 0;
-        this.maxNumOfGuests = 0;
-        this.gallery = new ArrayList<String>();
-        this.benefits = new ArrayList<Benefit>();
-        this.accommodetionType = null;
-    }
-    public Accommodation(Long id, Long ownerId, String name, String location, double activePrice, HashMap<Date, Double> priceList, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType) {
+    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType) {
         this.id = id;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.name = name;
-        this.location = location;
-        this.activePrice = activePrice;
-        this.priceList = priceList;
+        this.longitude = longitude;
+        this.latitude = latitude;
         this.minNumOfGuests = minNumOfGuests;
         this.maxNumOfGuests = maxNumOfGuests;
         this.gallery = gallery;
@@ -51,16 +54,19 @@ public class Accommodation {
 
     public Accommodation(AccommodationDTO accommodationDTO) {
         this.id = accommodationDTO.getId();
-        this.ownerId = accommodationDTO.getOwnerId();
         this.name = accommodationDTO.getName();
+        this.longitude = accommodationDTO.getLongitude();
+        this.latitude = accommodationDTO.getLatitude();
         this.location = accommodationDTO.getLocation();
-        this.activePrice = accommodationDTO.getActivePrice();
-        this.priceList = new HashMap<>();
         this.minNumOfGuests = accommodationDTO.getMinNumOfGuests();
         this.maxNumOfGuests = accommodationDTO.getMaxNumOfGuests();
         this.gallery = new ArrayList<>();
         this.benefits = new ArrayList<>();
         this.accommodetionType = accommodationDTO.getAccommodationType();
+    }
+
+    public Accommodation() {
+
     }
 
     public Long getId() {
@@ -71,12 +77,12 @@ public class Accommodation {
         this.id = id;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public Account getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(Account owner) {
+        this.owner = owner;
     }
 
     public String getName() {
@@ -87,28 +93,28 @@ public class Accommodation {
         this.name = name;
     }
 
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
     public String getLocation() {
         return location;
     }
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public double getActivePrice() {
-        return activePrice;
-    }
-
-    public void setActivePrice(double activePrice) {
-        this.activePrice = activePrice;
-    }
-
-    public HashMap<Date, Double> getPriceList() {
-        return priceList;
-    }
-
-    public void setPriceList(HashMap<Date, Double> priceList) {
-        this.priceList = priceList;
     }
 
     public int getMinNumOfGuests() {
@@ -154,11 +160,10 @@ public class Accommodation {
     public void copyValues(Accommodation accommodation) {
 
         this.id = accommodation.getId();
-        this.ownerId = accommodation.getOwnerId();
+        this.owner = accommodation.getOwner();
         this.name = accommodation.getName();
-        this.location = accommodation.getLocation();
-        this.activePrice = accommodation.getActivePrice();
-        this.priceList = accommodation.getPriceList();
+        this.longitude = accommodation.getLongitude();
+        this.latitude = accommodation.getLatitude();
         this.minNumOfGuests = accommodation.getMinNumOfGuests();
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
         this.gallery = accommodation.getGallery();

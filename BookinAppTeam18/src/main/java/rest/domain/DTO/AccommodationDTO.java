@@ -1,6 +1,7 @@
 package rest.domain.DTO;
 
 import rest.domain.Accommodation;
+import rest.domain.Price;
 import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
 
@@ -11,8 +12,9 @@ public class AccommodationDTO {
     private Long id;
     private Long ownerId;
     private String name;
+    private double longitude;
+    private double latitude;
     private String location;
-    private double activePrice;
     private int minNumOfGuests;
     private int maxNumOfGuests;
     private List<String> gallery;
@@ -25,28 +27,18 @@ public class AccommodationDTO {
 
     public AccommodationDTO(Accommodation accommodation){
         this.id = accommodation.getId();
-        this.ownerId = accommodation.getOwnerId();
+        this.ownerId = accommodation.getOwner().getId();
         this.name = accommodation.getName();
+        this.longitude = accommodation.getLongitude();
+        this.latitude = accommodation.getLatitude();
         this.location = accommodation.getLocation();
-        this.activePrice = accommodation.getActivePrice();
         this.minNumOfGuests = accommodation.getMinNumOfGuests();
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
         this.gallery = new ArrayList<String>();
+        this.gallery = accommodation.getGallery();
         this.benefits = new ArrayList<Benefit>();
+        this.benefits = accommodation.getBenefits();
         this.accommodationType = accommodation.getAccommodetionType();
-    }
-
-    public AccommodationDTO(Long id, Long ownerId, String name, String location, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodationType) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.name = name;
-        this.location = location;
-        this.activePrice = activePrice;
-        this.minNumOfGuests = minNumOfGuests;
-        this.maxNumOfGuests = maxNumOfGuests;
-        this.gallery = gallery;
-        this.benefits = benefits;
-        this.accommodationType = accommodationType;
     }
 
     public Long getId() {
@@ -61,12 +53,16 @@ public class AccommodationDTO {
         return name;
     }
 
-    public String getLocation() {
-        return location;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public double getActivePrice() {
-        return activePrice;
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     public int getMinNumOfGuests() {
@@ -101,12 +97,16 @@ public class AccommodationDTO {
         this.name = name;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public void setActivePrice(double activePrice) {
-        this.activePrice = activePrice;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public void setMinNumOfGuests(int minNumOfGuests) {

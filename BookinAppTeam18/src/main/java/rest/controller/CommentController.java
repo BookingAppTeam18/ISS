@@ -54,7 +54,7 @@ public class CommentController {
     //creating comment
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO comment) throws Exception {
-        CommentDTO savedComment = commentService.create(comment);
+        CommentDTO savedComment = commentService.insert(comment);
         return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
     }
 
