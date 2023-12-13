@@ -29,49 +29,53 @@ public class FilterService {
         accommodations = accommodationRepository.findAll();
     }
     //filter by type
-    public Collection<Accommodation> filterAccommodationsType(AccommodationType type){
+    public void filterAccommodationsType(AccommodationType type){
+        Collection<Accommodation> badAccommodations = new ArrayList<>();
         for(Accommodation a :accommodations){
             if(a.getAccommodetionType()!=type)
-                accommodations.remove(a);
+                badAccommodations.add(a);
         }
-        return accommodations;
+        accommodations.removeAll(badAccommodations);
     }
 
     //filter by benefits
-    public Collection<Accommodation> filterAccommodationsBenefits(Collection<Benefit> benefits) {
+    public void filterAccommodationsBenefits(Collection<Benefit> benefits) {
+        Collection<Accommodation> badAccommodations = new ArrayList<>();
         for(Accommodation a :accommodations){
             Collection<Benefit> accommodationBenefits = a.getBenefits();
             if(!accommodationBenefits.containsAll(benefits)){
-                accommodations.remove(a);
+                badAccommodations.add(a);
             }
         }
-        return accommodations;
+        accommodations.removeAll(badAccommodations);
 
     }
 
     //filter by location name
-    public Collection<Accommodation> filterAccommodationsLocationName(String location) {
+    public void filterAccommodationsLocationName(String location) {
+        Collection<Accommodation> badAccommodations = new ArrayList<>();
         for(Accommodation a :accommodations){
             if(!a.getLocation().equals(location))
-                accommodations.remove(a);
+                badAccommodations.add(a);
         }
-          return accommodations;
+        accommodations.removeAll(badAccommodations);
     }
 
     //filter accommodation if it has price at any time higher then min price
-    public Collection<Accommodation> filterAccommodationsMinPrice(double minPrice) {
+    public void filterAccommodationsMinPrice(Double minPrice) {
+        Collection<Accommodation> badAccommodations = new ArrayList<>();
         for(Accommodation a :accommodations){
             Collection<Price> prices = priceRepository.findPricesForAccommodation(a.getId());
             if( !findMoreThenMin(prices,minPrice)){
-                accommodations.remove(a);
+                badAccommodations.add(a);
             }
         }
-        return accommodations;
+        accommodations.removeAll(badAccommodations);
     }
 
     private boolean findMoreThenMin(Collection<Price> prices,double minPrice) {
         for(Price price:prices){
-            if(price.getAmount() > minPrice && price.getEndDate().after(new Date())){
+            if(price.getAmount() >= minPrice && price.getEndDate().after(new Date())){
                 return true;
             }
         }
@@ -79,19 +83,61 @@ public class FilterService {
     }
 
     //filter accommodation if it has price at any time lower then max price
-    public Collection<Accommodation> filterAccommodationsMaxPrice(double maxPrice) {
+    public void filterAccommodationsMaxPrice(Double maxPrice) {
+        Collection<Accommodation> badAccommodations = new ArrayList<>();
         for(Accommodation a :accommodations){
             Collection<Price> prices = priceRepository.findPricesForAccommodation(a.getId());
             if(!findLessThenMax(prices,maxPrice)){
-                accommodations.remove(a);
+                badAccommodations.add(a);
             }
         }
-        return accommodations;
+        accommodations.removeAll(badAccommodations);
     }
 
     private boolean findLessThenMax(Collection<Price> prices, double maxPrice) {
         for(Price price:prices){
-            if(price.getAmount() < maxPrice && price.getEndDate().after(new Date())){
+            if(price.getAmount() <= maxPrice && price.getEndDate().after(new Date())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void filterAccommodationsMinNumberOfGuests(Integer minNumberOfGuests) {
+        Collection<Accommodation> badAccommodations = new ArrayList<>();
+        for(Accommodation a :accommodations){
+            if(a.getMinNumOfGuests() > minNumberOfGuests)
+                badAccommodations.add(a);
+        }
+        accommodations.removeAll(badAccommodations);
+    }
+
+    public void filterAccommodationsStart(Date start) {
+        Collection<Accommodation> badAccommodations = new ArrayList<>();
+        for(Accommodation a :accommodations){
+            Collection<Price> prices = priceRepository.findPricesForAccommodation(a.getId());
+            if(!findInRange(prices,start)){
+                badAccommodations.add(a);
+            }
+        }
+        accommodations.removeAll(badAccommodations);
+    }
+
+    public void filterAccommodationsEnd(Date end) {
+        Collection<Accommodation> badAccommodations = new ArrayList<>();
+        for(Accommodation a :accommodations){
+            Collection<Price> prices = priceRepository.findPricesForAccommodation(a.getId());
+            if(!findInRange(prices,end)){
+                badAccommodations.add(a);
+            }
+        }
+        accommodations.removeAll(badAccommodations);
+    }
+
+    private boolean findInRange(Collection<Price> prices, Date date) {
+        for(Price price:prices){
+            if(price.getStart().before(date) && price.getEndDate().after(date)){
                 return true;
             }
         }
