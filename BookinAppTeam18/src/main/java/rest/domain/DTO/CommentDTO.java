@@ -10,6 +10,7 @@ public class CommentDTO {
     private String message;
     private int rate;
     private long writtenById;
+    private String writtenByName;
     private long writtenToId;
     private Page page;
     public CommentDTO( ) {
@@ -67,7 +68,9 @@ public class CommentDTO {
         this.id = comment.getId();
         this.message = comment.getMessage();
         this.rate = comment.getRate();
-        this.writtenById = comment.getAccommodation().getId();
+        this.writtenToId = comment.getAccommodation().getId();
+        this.writtenById = comment.getWrittenBy().getId();
+        this.writtenByName = comment.getWrittenBy().getFirstName() +" " + comment.getWrittenBy().getLastName();
         this.page = comment.getPage();
     }
 
@@ -76,6 +79,16 @@ public class CommentDTO {
         this.message = comment.getMessage();
         this.rate = comment.getRate();
         this.writtenById = comment.getAccount().getId();
+        this.writtenById = comment.getWrittenBy().getId();
+        this.writtenByName = comment.getWrittenBy().getFirstName() +" " + comment.getWrittenBy().getLastName();
         this.page = comment.getPage();
+    }
+
+    public String getWrittenByName() {
+        return writtenByName;
+    }
+
+    public void setWrittenByName(String writtenByName) {
+        this.writtenByName = writtenByName;
     }
 }
