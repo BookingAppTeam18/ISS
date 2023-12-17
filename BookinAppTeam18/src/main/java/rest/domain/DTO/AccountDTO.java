@@ -12,7 +12,6 @@ public class AccountDTO {
     private String password;
     private String address;
     private String phone;
-    private String password;
     private UserType userType;
     private UserState userState;
 
@@ -45,7 +44,6 @@ public class AccountDTO {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password=password;
         this.address = address;
         this.phone = phone;
         this.password = password;
