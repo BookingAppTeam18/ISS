@@ -35,8 +35,9 @@ public class AccommodationController {
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodations, HttpStatus.OK);
     }
 
-    @GetMapping(value="/paging/{start}/{offset}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccommodationDTO>> getNAccommodations(@PathVariable("start") int start, @PathVariable("offset") int offset) {
+    @GetMapping(value="/{start}/{offset}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getNAccommodations(@PathVariable("start") int start,
+                                                                           @PathVariable("offset") int offset) {
         Collection<AccommodationDTO> accommodations= accommodationService.findNAccommodations(start,offset);
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodations, HttpStatus.OK);
     }
@@ -59,7 +60,7 @@ public class AccommodationController {
     }
 
     @GetMapping(value ="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationByFilter(
+    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsByFilter(
             @RequestParam(name = "type", required = false) AccommodationType type,
             @RequestParam(name = "benefits", required = false) ArrayList<Benefit> benefits,
             @RequestParam(name = "location", required = false) String location,
@@ -67,10 +68,14 @@ public class AccommodationController {
             @RequestParam(name = "minPrice", required = false) Double minPrice,
             @RequestParam(name = "maxPrice", required = false) Double maxPrice,
             @RequestParam(name = "start", required = false) String start,
-            @RequestParam(name = "end", required = false) String end
+            @RequestParam(name = "end", required = false) String end,
+            @RequestParam(name = "search", required = false) String search
             // Add more filter parameters as needed
     ) throws ParseException {
         filterService.FillFilter();
+        if(search != null && !search.isEmpty()){
+            filterService.Search(search);
+        }
         if(benefits != null){
             filterService.filterAccommodationsBenefits(benefits);
         }
@@ -99,9 +104,72 @@ public class AccommodationController {
             Date endDate = dateFormat.parse(end);
             filterService.filterAccommodationsEnd(endDate);
         }
+
         Collection<AccommodationDTO> filteredAccommodations = filterService.toDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);
     }
+
+    @GetMapping(value ="/{start}/{offset}/filter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getNAccommodationsByFilter(
+            @PathVariable("start") int begin,
+            @PathVariable("offset") int offset,
+            @RequestParam(name = "type", required = false) AccommodationType type,
+            @RequestParam(name = "benefits", required = false) ArrayList<Benefit> benefits,
+            @RequestParam(name = "location", required = false) String location,
+            @RequestParam(name = "minNumberOfGuests", required = false) Integer minNumberOfGuests,
+            @RequestParam(name = "minPrice", required = false) Double minPrice,
+            @RequestParam(name = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(name = "start", required = false) String start,
+            @RequestParam(name = "end", required = false) String end,
+            @RequestParam(name = "search", required = false) String search
+            // Add more filter parameters as needed
+    ) throws ParseException {
+        filterService.FillFilter();
+        if(search != null && !search.isEmpty()){
+            filterService.Search(search);
+        }
+        if(benefits != null){
+            filterService.filterAccommodationsBenefits(benefits);
+        }
+        if (type != null) {
+            filterService.filterAccommodationsType(type);
+        }
+        if (location != null) {
+            filterService.filterAccommodationsLocationName(location);
+        }
+        if(minNumberOfGuests != null){
+            filterService.filterAccommodationsMinNumberOfGuests(minNumberOfGuests);
+        }
+        if (minPrice != null) {
+            filterService.filterAccommodationsMinPrice(minPrice);
+        }
+        if (maxPrice != null) {
+            filterService.filterAccommodationsMaxPrice(maxPrice);
+        }
+        if (start != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDate = dateFormat.parse(start);
+            filterService.filterAccommodationsStart(startDate);
+        }
+        if (end != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date endDate = dateFormat.parse(end);
+            filterService.filterAccommodationsEnd(endDate);
+        }
+
+        ArrayList<AccommodationDTO> filteredAccommodations = new ArrayList<>(filterService.toDTO());
+        Collection<AccommodationDTO> cutFilteredAccommodations;
+
+
+        if(begin+offset > filteredAccommodations.size())
+            cutFilteredAccommodations = filteredAccommodations.subList(begin, filteredAccommodations.size());
+        else{
+            cutFilteredAccommodations = filteredAccommodations.subList(begin,begin+offset);
+        }
+
+        return new ResponseEntity<Collection<AccommodationDTO>>(cutFilteredAccommodations, HttpStatus.OK);
+    }
+
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody AccommodationDTO accommodationDto) throws Exception {
