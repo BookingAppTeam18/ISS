@@ -1,15 +1,20 @@
 package rest.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.enumerations.UserState;
 import rest.domain.enumerations.UserType;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name="accounts")
-public class Account {
+public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="account_id",length = 5)
@@ -22,6 +27,8 @@ public class Account {
     private String phone;
     private UserType userType;
     private UserState userState;
+    @Column(name = "last_password_reset_date")
+    private Timestamp lastPasswordResetDate;
 
     @ElementCollection
     @CollectionTable(
@@ -49,16 +56,43 @@ public class Account {
     }
 
     public Account(AccountDTO accountDTO) {
-        this(accountDTO.getId(), accountDTO.getFirstName(), accountDTO.getLastName(), accountDTO.getEmail(), accountDTO.getAddress(), accountDTO.getPhone());
+        this(accountDTO.getId(),
+                accountDTO.getFirstName(),
+                accountDTO.getLastName(),
+                accountDTO.getEmail(),
+                accountDTO.getAddress(),
+                accountDTO.getPhone(),
+                accountDTO.getPassword(),
+                accountDTO.getUserType(),
+                accountDTO.getUserState());
     }
 
-    public Account(Long id, String firstName, String lastName, String email, String address, String phone) {
+    public Account(Long id,
+                   String firstName,
+                   String lastName,
+                   String email,
+                   String address,
+                   String phone,
+                   String password,
+                   UserType userType,
+                   UserState userState) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.address = address;
         this.phone = phone;
+        this.password = password;
+        this.userType = userType;
+        this.userState = userState;
+    }
+
+    public Timestamp getLastPasswordResetDate() {
+        return lastPasswordResetDate;
+    }
+
+    public void setLastPasswordResetDate(Timestamp lastPasswordResetDate) {
+        this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
     public Long getId() {
@@ -93,8 +127,41 @@ public class Account {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return userState == UserState.ACTIVE;
     }
 
     public void setPassword(String password) {

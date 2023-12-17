@@ -10,8 +10,8 @@ import javax.persistence.*;
 @MappedSuperclass
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "my_sequence")
-    @SequenceGenerator(name = "my_sequence", sequenceName = "my_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_sequence")
+    @SequenceGenerator(name = "comment_sequence", sequenceName = "comment_sequence", allocationSize = 1)
     private Long id;
     private String message;
     private int rate;
