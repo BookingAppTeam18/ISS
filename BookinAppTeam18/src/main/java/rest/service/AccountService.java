@@ -41,6 +41,14 @@ public class AccountService implements IService<AccountDTO> {
         return accountDTOList;
     }
 
+    public AccountDTO findByEmail(String email) {
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            return null;
+        }
+        return new AccountDTO(account);
+    }
+
     @Override
     public AccountDTO findOne(Long id){
         Optional<Account> account = accountRepository.findById(id);
@@ -54,9 +62,9 @@ public class AccountService implements IService<AccountDTO> {
     public AccountDTO insert(AccountDTO accountDTO) throws Exception {
         Account account = new Account(accountDTO);
         try {
-            accountRepository.save(account);
+            Account savedAccount = accountRepository.save(account);
             accountRepository.flush();
-            return accountDTO;
+            return new AccountDTO(savedAccount);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
             StringBuilder sb = new StringBuilder(1000);

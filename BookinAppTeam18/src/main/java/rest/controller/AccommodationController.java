@@ -1,7 +1,10 @@
 package rest.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,22 +58,41 @@ public class AccommodationController {
             @RequestParam(name = "type", required = false) AccommodationType type,
             @RequestParam(name = "benefits", required = false) ArrayList<Benefit> benefits,
             @RequestParam(name = "location", required = false) String location,
-            @RequestParam(name = "minPrice", required = false) double minPrice,
-            @RequestParam(name = "maxPrice", required = false) double maxPrice
+            @RequestParam(name = "minNumberOfGuests", required = false) Integer minNumberOfGuests,
+            @RequestParam(name = "minPrice", required = false) Double minPrice,
+            @RequestParam(name = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(name = "start", required = false) String start,
+            @RequestParam(name = "end", required = false) String end
             // Add more filter parameters as needed
-    ) {
+    ) throws ParseException {
         filterService.FillFilter();
         if(benefits != null){
             filterService.filterAccommodationsBenefits(benefits);
         }
         if (type != null) {
             filterService.filterAccommodationsType(type);
-        }if (location != null) {
+        }
+        if (location != null) {
             filterService.filterAccommodationsLocationName(location);
-        }if (minPrice != 0) {
+        }
+        if(minNumberOfGuests != null){
+            filterService.filterAccommodationsMinNumberOfGuests(minNumberOfGuests);
+        }
+        if (minPrice != null) {
             filterService.filterAccommodationsMinPrice(minPrice);
-        }if (maxPrice != 0) {
+        }
+        if (maxPrice != null) {
             filterService.filterAccommodationsMaxPrice(maxPrice);
+        }
+        if (start != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDate = dateFormat.parse(start);
+            filterService.filterAccommodationsStart(startDate);
+        }
+        if (end != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date endDate = dateFormat.parse(end);
+            filterService.filterAccommodationsEnd(endDate);
         }
         Collection<AccommodationDTO> filteredAccommodations = filterService.toDTO();
         return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);
