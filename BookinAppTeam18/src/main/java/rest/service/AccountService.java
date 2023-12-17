@@ -11,6 +11,7 @@ import rest.domain.DTO.AccountDTO;
 import rest.domain.Reservation;
 import rest.domain.enumerations.UserType;
 import rest.repository.AccommodationRepository;
+import rest.repository.AccountCommentRepository;
 import rest.repository.AccountRepository;
 import rest.repository.ReservationRepository;
 
@@ -27,6 +28,8 @@ public class AccountService implements IService<AccountDTO> {
     private AccommodationRepository accommodationRepository;
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private AccountCommentRepository accountCommentRepository;
 
     @Override
     public Collection<AccountDTO> findAll(){
@@ -105,23 +108,47 @@ public class AccountService implements IService<AccountDTO> {
     public AccountDTO delete(Long id) {
         Account account = new Account(findOne(id)); // this will throw StudentNotFoundException if student is not found
         if(account.getUserType() == UserType.GUEST){
-            if(ReservationsExist(id))
+            if(ReservationsExist(id)){
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Guest has reservations");
+            }
         }
         if(account.getUserType() == UserType.OWNER){
             if(AccommodationsOwned(id))
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Owner owns accommodations");
+            //Ako ne postoje rezervacije za accommodatione koje poseduje owner, izbrisati sve accommodatione
+            // koje poseduje taj owner
+            deleteAccommodations(id);
         }
+//        accountCommentRepository.delete
         accountRepository.delete(account);
         accountRepository.flush();
         return new AccountDTO(account);
     }
 
     private boolean AccommodationsOwned(Long id) {
+        //Vraca listu svih accommodation-a koje poseduje owner
+        //Proci kroz listu i za svaki accommodation proveriti da li ima rezervacija
         Collection<Accommodation> accommodations = accommodationRepository.findAccommodationsOwned(id);
-        if(accommodations.isEmpty())
+        for(Accommodation accommodation : accommodations){
+            if(ReservationsExistByOwner(accommodation.getId()))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean ReservationsExistByOwner(Long id) {
+        Collection<Reservation> reservations = reservationRepository.findByAccommodationId(id);
+        if(reservations.isEmpty())
             return false;
         return true;
+    }
+
+    private void deleteAccommodations(Long id){
+        Collection<Accommodation> accommodations = accommodationRepository.findAccommodationsOwned(id);
+        for(Accommodation accommodation : accommodations){
+            accommodationRepository.delete(accommodation);
+            accommodationRepository.flush();
+        }
     }
 
     private boolean ReservationsExist(Long id) {

@@ -1,5 +1,6 @@
 package rest.domain;
 
+import org.apache.catalina.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -80,6 +81,7 @@ public class Account implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password=password;
         this.address = address;
         this.phone = phone;
         this.password = password;

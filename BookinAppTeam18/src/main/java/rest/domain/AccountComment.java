@@ -1,5 +1,6 @@
 package rest.domain;
 
+import org.hibernate.annotations.Cascade;
 import rest.domain.DTO.CommentDTO;
 import rest.domain.enumerations.Page;
 
@@ -10,7 +11,8 @@ import javax.persistence.*;
 public class AccountComment extends Comment{
 
     @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name = "accountId")
+    @JoinColumn(name = "accountId", nullable = false)
+    @Cascade(org.hibernate.annotations.CascadeType.REMOVE)
     private Account account;
     public void setAccountId(Account accountId) {
         this.account = accountId;
