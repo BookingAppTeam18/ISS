@@ -1,6 +1,7 @@
 package rest.domain;
 
 
+import org.hibernate.annotations.Cascade;
 import rest.domain.DTO.CommentDTO;
 import rest.domain.enumerations.Page;
 
@@ -16,7 +17,8 @@ public class Comment {
     private String message;
     private int rate;
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "writtenById")
+    @JoinColumn(name = "writtenById", nullable = false)
+    @Cascade(org.hibernate.annotations.CascadeType.REMOVE)
     private Account writtenBy;
 
     @Enumerated(EnumType.STRING)

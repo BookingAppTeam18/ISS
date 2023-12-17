@@ -11,6 +11,7 @@ import rest.domain.DTO.AccountDTO;
 import rest.domain.Reservation;
 import rest.domain.enumerations.UserType;
 import rest.repository.AccommodationRepository;
+import rest.repository.AccountCommentRepository;
 import rest.repository.AccountRepository;
 import rest.repository.ReservationRepository;
 
@@ -27,6 +28,8 @@ public class AccountService implements IService<AccountDTO> {
     private AccommodationRepository accommodationRepository;
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private AccountCommentRepository accountCommentRepository;
 
     @Override
     public Collection<AccountDTO> findAll(){
@@ -97,8 +100,9 @@ public class AccountService implements IService<AccountDTO> {
     public AccountDTO delete(Long id) {
         Account account = new Account(findOne(id)); // this will throw StudentNotFoundException if student is not found
         if(account.getUserType() == UserType.GUEST){
-            if(ReservationsExist(id))
+            if(ReservationsExist(id)){
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Guest has reservations");
+            }
         }
         if(account.getUserType() == UserType.OWNER){
             if(AccommodationsOwned(id))
@@ -107,6 +111,7 @@ public class AccountService implements IService<AccountDTO> {
             // koje poseduje taj owner
             deleteAccommodations(id);
         }
+//        accountCommentRepository.delete
         accountRepository.delete(account);
         accountRepository.flush();
         return new AccountDTO(account);
