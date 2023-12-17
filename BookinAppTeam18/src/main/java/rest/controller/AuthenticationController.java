@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import rest.domain.Account;
@@ -65,6 +66,8 @@ public class AuthenticationController {
         if (existUser != null) {
             throw new ResourceConflictException(accountRequest.getId(), "Username already exists");
         }
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        accountRequest.setPassword(encoder.encode(accountRequest.getPassword()));
 
         AccountDTO accountDTO = this.accountService.insert(accountRequest);
 

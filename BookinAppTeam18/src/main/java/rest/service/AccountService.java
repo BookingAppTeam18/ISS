@@ -41,7 +41,7 @@ public class AccountService implements IService<AccountDTO> {
     public AccountDTO findByEmail(String email) {
         Account account = accountRepository.findByEmail(email);
         if (account == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            return null;
         }
         return new AccountDTO(account);
     }
@@ -59,9 +59,9 @@ public class AccountService implements IService<AccountDTO> {
     public AccountDTO insert(AccountDTO accountDTO) throws Exception {
         Account account = new Account(accountDTO);
         try {
-            accountRepository.save(account);
+            Account savedAccount = accountRepository.save(account);
             accountRepository.flush();
-            return accountDTO;
+            return new AccountDTO(savedAccount);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
             StringBuilder sb = new StringBuilder(1000);
