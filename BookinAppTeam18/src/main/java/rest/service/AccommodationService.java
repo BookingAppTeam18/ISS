@@ -6,12 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Accommodation;
 import rest.domain.AccommodationComment;
-import rest.domain.Comment;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.DTO.CommentDTO;
 import rest.domain.Price;
-import rest.domain.enumerations.AccommodationType;
 import rest.repository.AccommodationCommentRepository;
 import rest.repository.AccommodationRepository;
 import rest.repository.AccountRepository;
@@ -19,7 +17,10 @@ import rest.repository.PriceRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AccommodationService implements IService<AccommodationDTO> {
@@ -47,6 +48,19 @@ public class AccommodationService implements IService<AccommodationDTO> {
             newAccommodation.setNextPrice(getNextPrice(newAccommodation.getId()));
         }
         return accommodationDTOS;
+    }
+    public Collection<AccommodationDTO> findNAccommodations(int start, int offset) {
+        ArrayList<AccommodationDTO> accommodationDTOS = new ArrayList<AccommodationDTO>();
+        for (Accommodation a : accommodationRepository.findAll()){
+            AccommodationDTO newAccommodation = new AccommodationDTO(a);
+            accommodationDTOS.add(newAccommodation);
+
+            newAccommodation.setRating(calculateRating(newAccommodation.getId()));
+            newAccommodation.setNextPrice(getNextPrice(newAccommodation.getId()));
+        }
+        if(start+offset > accommodationDTOS.size())
+            return accommodationDTOS.subList(start, accommodationDTOS.size());
+        return accommodationDTOS.subList(start,start+offset);
     }
 
     private double getNextPrice(Long id) {
@@ -151,4 +165,5 @@ public class AccommodationService implements IService<AccommodationDTO> {
         
         return accommodationDetailsDTO;
     }
+
 }

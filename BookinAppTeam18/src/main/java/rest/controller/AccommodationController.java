@@ -1,17 +1,10 @@
 package rest.controller;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationDetailsDTO;
@@ -19,6 +12,12 @@ import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
 import rest.service.AccommodationService;
 import rest.service.FilterService;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -33,6 +32,12 @@ public class AccommodationController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodations() {
         Collection<AccommodationDTO> accommodations = accommodationService.findAll();
+        return new ResponseEntity<Collection<AccommodationDTO>>(accommodations, HttpStatus.OK);
+    }
+
+    @GetMapping(value="/paging/{start}/{offset}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getNAccommodations(@PathVariable("start") int start, @PathVariable("offset") int offset) {
+        Collection<AccommodationDTO> accommodations= accommodationService.findNAccommodations(start,offset);
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodations, HttpStatus.OK);
     }
 
