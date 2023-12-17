@@ -49,16 +49,35 @@ public class Account {
     }
 
     public Account(AccountDTO accountDTO) {
-        this(accountDTO.getId(), accountDTO.getFirstName(), accountDTO.getLastName(), accountDTO.getEmail(), accountDTO.getAddress(), accountDTO.getPhone());
+        this(accountDTO.getId(),
+                accountDTO.getFirstName(),
+                accountDTO.getLastName(),
+                accountDTO.getEmail(),
+                accountDTO.getAddress(),
+                accountDTO.getPhone(),
+                accountDTO.getPassword(),
+                accountDTO.getUserType(),
+                accountDTO.getUserState());
     }
 
-    public Account(Long id, String firstName, String lastName, String email, String address, String phone) {
+    public Account(Long id,
+                   String firstName,
+                   String lastName,
+                   String email,
+                   String address,
+                   String phone,
+                   String password,
+                   UserType userType,
+                   UserState userState) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.address = address;
         this.phone = phone;
+        this.password = password;
+        this.userType = userType;
+        this.userState = userState;
     }
 
     public Long getId() {
