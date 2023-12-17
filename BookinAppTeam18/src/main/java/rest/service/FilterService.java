@@ -48,7 +48,6 @@ public class FilterService {
             }
         }
         accommodations.removeAll(badAccommodations);
-
     }
 
     //filter by location name

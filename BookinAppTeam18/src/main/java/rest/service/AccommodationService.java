@@ -6,13 +6,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Accommodation;
 import rest.domain.AccommodationComment;
+import rest.domain.Comment;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.DTO.CommentDTO;
+import rest.domain.Price;
 import rest.domain.enumerations.AccommodationType;
 import rest.repository.AccommodationCommentRepository;
 import rest.repository.AccommodationRepository;
 import rest.repository.AccountRepository;
+import rest.repository.PriceRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -26,6 +29,8 @@ public class AccommodationService implements IService<AccommodationDTO> {
 
     @Autowired
     private AccommodationCommentRepository accommodationCommentRepository;
+    @Autowired
+    private PriceRepository priceRepository;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -35,9 +40,30 @@ public class AccommodationService implements IService<AccommodationDTO> {
     public Collection<AccommodationDTO> findAll() {
         ArrayList<AccommodationDTO> accommodationDTOS = new ArrayList<AccommodationDTO>();
         for (Accommodation a : accommodationRepository.findAll()){
-            accommodationDTOS.add(new AccommodationDTO(a));
+            AccommodationDTO newAccommodation = new AccommodationDTO(a);
+            accommodationDTOS.add(newAccommodation);
+
+            newAccommodation.setRating(calculateRating(newAccommodation.getId()));
+            newAccommodation.setNextPrice(getNextPrice(newAccommodation.getId()));
         }
         return accommodationDTOS;
+    }
+
+    private double getNextPrice(Long id) {
+        Price nextAccommodationPrice =priceRepository.findNextPriceForAccommodation(id);
+        if(nextAccommodationPrice != null)
+            return nextAccommodationPrice.getAmount();
+        return 0;
+    }
+
+    private float calculateRating(Long id) {
+        Collection<AccommodationComment> accommodationComments = accommodationCommentRepository.FindAccommodationComments(id);
+        float rating = 0;
+        for (AccommodationComment comment:accommodationComments) {
+            rating += comment.getRate();
+        }
+        rating /= accommodationComments.size();
+        return rating;
     }
 
     @Override

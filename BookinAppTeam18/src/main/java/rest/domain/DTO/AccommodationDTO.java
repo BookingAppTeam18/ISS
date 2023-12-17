@@ -20,6 +20,16 @@ public class AccommodationDTO {
     private List<String> gallery;
     private List<Benefit> benefits;
     private AccommodationType accommodationType;
+    private double rating;
+    private double nextPrice;
+
+    public double getNextPrice() {
+        return nextPrice;
+    }
+
+    public void setNextPrice(double nextPrice) {
+        this.nextPrice = nextPrice;
+    }
 
     public AccommodationDTO(){
 
@@ -127,5 +137,13 @@ public class AccommodationDTO {
 
     public void setAccommodationType(AccommodationType accommodationType) {
         this.accommodationType = accommodationType;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 }
