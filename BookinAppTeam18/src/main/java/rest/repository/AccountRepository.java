@@ -9,12 +9,16 @@ import rest.domain.Account;
 import rest.domain.enumerations.AccommodationType;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     @Query("SELECT accommodation FROM Account a JOIN a.favouriteAccommodations accommodation WHERE a.id = :accountId")
     public Collection<Accommodation> findFavouriteAccommodation(@Param("accountId") Long accountId);
+
+    @Query("SELECT account FROM Account account where account.email=?1")
+    Account findByEmail(String email);
 
 
     //U odnosu na id usera dobiti njegovu listu accommodationa i onda dodati/ukloniti accommodation

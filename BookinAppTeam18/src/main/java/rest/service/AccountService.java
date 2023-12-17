@@ -38,6 +38,14 @@ public class AccountService implements IService<AccountDTO> {
         return accountDTOList;
     }
 
+    public AccountDTO findByEmail(String email) {
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return new AccountDTO(account);
+    }
+
     @Override
     public AccountDTO findOne(Long id){
         Optional<Account> account = accountRepository.findById(id);
