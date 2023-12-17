@@ -1,30 +1,35 @@
 package rest.domain.DTO;
 
 import rest.domain.Account;
+import rest.domain.enumerations.UserType;
 
 public class AccountDTO {
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
     private String address;
     private String phone;
+    private UserType userType;
 
     public AccountDTO(){
 
     }
 
     public AccountDTO(Account account){
-        this(account.getId(), account.getFirstName(), account.getLastName(), account.getEmail(), account.getAddress(), account.getPhone());
+        this(account.getId(), account.getFirstName(), account.getLastName(), account.getEmail(), account.getPassword(), account.getAddress(), account.getPhone(), account.getUserType());
     }
 
-    public AccountDTO(Long id, String firstName, String lastName, String email, String address, String phone) {
+    public AccountDTO(Long id, String firstName, String lastName, String email, String password, String address, String phone, UserType userType) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password=password;
         this.address = address;
         this.phone = phone;
+        this.userType = userType;
     }
 
     public Long getId() {
@@ -73,5 +78,21 @@ public class AccountDTO {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 }

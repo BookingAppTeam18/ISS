@@ -103,6 +103,9 @@ public class AccountService implements IService<AccountDTO> {
         if(account.getUserType() == UserType.OWNER){
             if(AccommodationsOwned(id))
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Owner owns accommodations");
+            //Ako ne postoje rezervacije za accommodatione koje poseduje owner, izbrisati sve accommodatione
+            // koje poseduje taj owner
+            deleteAccommodations(id);
         }
         accountRepository.delete(account);
         accountRepository.flush();
@@ -110,10 +113,29 @@ public class AccountService implements IService<AccountDTO> {
     }
 
     private boolean AccommodationsOwned(Long id) {
+        //Vraca listu svih accommodation-a koje poseduje owner
+        //Proci kroz listu i za svaki accommodation proveriti da li ima rezervacija
         Collection<Accommodation> accommodations = accommodationRepository.findAccommodationsOwned(id);
-        if(accommodations.isEmpty())
+        for(Accommodation accommodation : accommodations){
+            if(ReservationsExistByOwner(accommodation.getId()))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean ReservationsExistByOwner(Long id) {
+        Collection<Reservation> reservations = reservationRepository.findByAccommodationId(id);
+        if(reservations.isEmpty())
             return false;
         return true;
+    }
+
+    private void deleteAccommodations(Long id){
+        Collection<Accommodation> accommodations = accommodationRepository.findAccommodationsOwned(id);
+        for(Accommodation accommodation : accommodations){
+            accommodationRepository.delete(accommodation);
+            accommodationRepository.flush();
+        }
     }
 
     private boolean ReservationsExist(Long id) {

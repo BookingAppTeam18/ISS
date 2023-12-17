@@ -1,5 +1,6 @@
 package rest.domain;
 
+import org.apache.catalina.User;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.enumerations.UserState;
 import rest.domain.enumerations.UserType;
@@ -49,16 +50,18 @@ public class Account {
     }
 
     public Account(AccountDTO accountDTO) {
-        this(accountDTO.getId(), accountDTO.getFirstName(), accountDTO.getLastName(), accountDTO.getEmail(), accountDTO.getAddress(), accountDTO.getPhone());
+        this(accountDTO.getId(), accountDTO.getFirstName(), accountDTO.getLastName(), accountDTO.getEmail(), accountDTO.getPassword(),accountDTO.getAddress(), accountDTO.getPhone(), accountDTO.getUserType());
     }
 
-    public Account(Long id, String firstName, String lastName, String email, String address, String phone) {
+    public Account(Long id, String firstName, String lastName, String email, String password, String address, String phone, UserType userType) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password=password;
         this.address = address;
         this.phone = phone;
+        this.userType = userType;
     }
 
     public Long getId() {
