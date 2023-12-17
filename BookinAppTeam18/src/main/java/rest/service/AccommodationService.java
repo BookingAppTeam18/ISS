@@ -50,7 +50,7 @@ public class AccommodationService implements IService<AccommodationDTO> {
         return accommodationDTOS;
     }
     public Collection<AccommodationDTO> findNAccommodations(int start, int offset) {
-        ArrayList<AccommodationDTO> accommodationDTOS = new ArrayList<AccommodationDTO>();
+        ArrayList<AccommodationDTO> accommodationDTOS = new ArrayList<>();
         for (Accommodation a : accommodationRepository.findAll()){
             AccommodationDTO newAccommodation = new AccommodationDTO(a);
             accommodationDTOS.add(newAccommodation);
