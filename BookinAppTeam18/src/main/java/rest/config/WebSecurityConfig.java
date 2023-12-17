@@ -15,7 +15,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import rest.auth.RestAuthenticationEntryPoint;
+import rest.auth.TokenAuthenticationFilter;
 import rest.service.CustomAccountDetailsService;
+import rest.utils.TokenUtils;
 
 @Configuration
 // Injektovanje bean-a za bezbednost
