@@ -11,18 +11,22 @@ public class ReservationDTO {
     private double price;
     private Long accountId;
     private Long accommodationId;
+    private int numberOfGuests;
 
     public ReservationDTO(Reservation reservation){
-        this(reservation.getId(), reservation.getStartDate(), reservation.getEndDate(), reservation.getPrice(), reservation.getAccountId(), reservation.getAccommodationId());
+        this(reservation.getId(), reservation.getStartDate(), reservation.getEndDate(), reservation.getPrice(), reservation.getAccountId(), reservation.getAccommodationId(), reservation.getNumberOfGuests());
     }
+    public ReservationDTO(){
 
-    public ReservationDTO(Long id, Date startDate, Date endDate, double price, Long accountId, Long accommodationId) {
+    }
+    public ReservationDTO(Long id, Date startDate, Date endDate, double price, Long accountId, Long accommodationId, int numberOfGuests) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.price = price;
         this.accountId = accountId;
         this.accommodationId = accommodationId;
+        this.numberOfGuests = numberOfGuests;
     }
 
     public Long getId() {
@@ -71,5 +75,13 @@ public class ReservationDTO {
 
     public void setAccommodationId(Long accommodationId) {
         this.accommodationId = accommodationId;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public void setNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
     }
 }

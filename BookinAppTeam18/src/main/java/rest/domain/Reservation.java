@@ -17,14 +17,16 @@ public class Reservation {
     private double price;
     private Long accountId;
     private Long accommodationId;
+    private int numberOfGuests;
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
+
 
     public Reservation(){
 
     }
 
-    public Reservation(Long id, Date startDate, Date endDate, double price, Long accountId, Long accommodationId, ReservationStatus reservationStatus) {
+    public Reservation(Long id, Date startDate, Date endDate, double price, Long accountId, Long accommodationId,int numberOfGuests , ReservationStatus reservationStatus) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -32,10 +34,11 @@ public class Reservation {
         this.accountId = accountId;
         this.accommodationId = accommodationId;
         this.reservationStatus = reservationStatus;
+        this.numberOfGuests = numberOfGuests;
     }
 
     public Reservation(ReservationDTO reservationDTO){
-        this(reservationDTO.getId(), reservationDTO.getStartDate(), reservationDTO.getEndDate(), reservationDTO.getPrice(), reservationDTO.getAccountId(), reservationDTO.getAccommodationId(), ReservationStatus.CREATED);
+        this(reservationDTO.getId(), reservationDTO.getStartDate(), reservationDTO.getEndDate(), reservationDTO.getPrice(), reservationDTO.getAccountId(), reservationDTO.getAccommodationId(),reservationDTO.getNumberOfGuests(), ReservationStatus.CREATED);
     }
     public Long getId() {
         return id;
@@ -93,6 +96,14 @@ public class Reservation {
         this.reservationStatus = reservationStatus;
     }
 
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public void setNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public void copyValues(Reservation reservation){
         this.startDate = reservation.startDate;
         this.endDate = reservation.endDate;
@@ -100,5 +111,6 @@ public class Reservation {
         this.reservationStatus = reservation.reservationStatus;
         this.accountId = reservation.accountId;
         this.accommodationId = reservation.accommodationId;
+        this.numberOfGuests = reservation.numberOfGuests;
     }
 }
