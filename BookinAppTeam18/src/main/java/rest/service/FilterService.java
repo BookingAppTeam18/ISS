@@ -150,13 +150,4 @@ public class FilterService {
         }
         return accommodationsDTO;
     }
-
-    public void Search(String search) {
-        Collection<Accommodation> badAccommodations = new ArrayList<>();
-        for(Accommodation a :accommodations){
-            if(!a.getName().toLowerCase().contains(search.toLowerCase()))
-                badAccommodations.add(a);
-        }
-        accommodations.removeAll(badAccommodations);
-    }
 }
