@@ -9,6 +9,7 @@ import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
 import rest.service.AccountService;
 
+import java.security.Principal;
 import java.util.Collection;
 
 
@@ -36,6 +37,14 @@ public class AccountController {
         }
         return new ResponseEntity<>(accountDTO, HttpStatus.OK);
     }
+
+    //GET loged in user
+    @GetMapping("/whoami")
+    public ResponseEntity<AccountDTO> user(Principal account) {
+        return new ResponseEntity<>(accountService.findByEmail(account.getName()), HttpStatus.OK);
+    }
+
+
     //Get favourite accommodation for specific user
     @GetMapping(value="/favorites/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getFavoriteAccommodations(@PathVariable("userId") Long accountId){
