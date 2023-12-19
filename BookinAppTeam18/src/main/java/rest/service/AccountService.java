@@ -9,6 +9,7 @@ import rest.domain.Account;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.Reservation;
+import rest.domain.enumerations.UserState;
 import rest.domain.enumerations.UserType;
 import rest.repository.AccommodationRepository;
 import rest.repository.AccountCommentRepository;
@@ -62,6 +63,7 @@ public class AccountService implements IService<AccountDTO> {
     public AccountDTO insert(AccountDTO accountDTO) throws Exception {
         Account account = new Account(accountDTO);
         try {
+            account.setUserState(UserState.ACTIVE);
             Account savedAccount = accountRepository.save(account);
             accountRepository.flush();
             return new AccountDTO(savedAccount);

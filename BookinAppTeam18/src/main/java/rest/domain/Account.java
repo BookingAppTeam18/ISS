@@ -81,7 +81,6 @@ public class Account implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password=password;
         this.address = address;
         this.phone = phone;
         this.password = password;
