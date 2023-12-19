@@ -1,6 +1,7 @@
 package rest.domain.enumerations;
 
 public enum AccommodationType {
+    NONE,
     ROOM,
     APARTMENT,
     STUDIO,
@@ -11,14 +12,16 @@ public enum AccommodationType {
     public String toString() {
         switch(this.ordinal()){
             case 0:
-                return "Room";
+                return "None";
             case 1:
-                return "Apartment";
+                return "Room";
             case 2:
-                return "Studio";
+                return "Apartment";
             case 3:
-                return "Hotel";
+                return "Studio";
             case 4:
+                return "Hotel";
+            case 5:
                 return "Entire house";
             default:
                 return "";

@@ -20,10 +20,7 @@ public class Accommodation {
     private Account owner;
     private String name;
     private double longitude;
-
-
     private double latitude;
-
     private String location;
     private int minNumOfGuests;
     private int maxNumOfGuests;
@@ -38,8 +35,9 @@ public class Accommodation {
     private List<Benefit> benefits;
     @Enumerated(EnumType.STRING)
     private AccommodationType accommodetionType;
+    private String description;
 
-    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType) {
+    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType, String description) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -50,6 +48,7 @@ public class Accommodation {
         this.gallery = gallery;
         this.benefits = benefits;
         this.accommodetionType = accommodetionType;
+        this.description = description;
     }
 
     public Accommodation(AccommodationDTO accommodationDTO) {
@@ -61,8 +60,9 @@ public class Accommodation {
         this.minNumOfGuests = accommodationDTO.getMinNumOfGuests();
         this.maxNumOfGuests = accommodationDTO.getMaxNumOfGuests();
         this.gallery = new ArrayList<>();
-        this.benefits = new ArrayList<>();
+        this.benefits = accommodationDTO.getBenefits();
         this.accommodetionType = accommodationDTO.getAccommodationType();
+        this.description = accommodationDTO.getDescription();
     }
 
     public Accommodation() {
@@ -157,8 +157,15 @@ public class Accommodation {
         this.accommodetionType = accommodetionType;
     }
 
-    public void copyValues(Accommodation accommodation) {
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void copyValues(Accommodation accommodation) {
         this.id = accommodation.getId();
         this.owner = accommodation.getOwner();
         this.name = accommodation.getName();

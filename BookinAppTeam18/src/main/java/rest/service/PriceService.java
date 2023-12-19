@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import rest.domain.*;
+import rest.domain.DTO.CommentDTO;
 import rest.domain.DTO.PriceDTO;
-import rest.domain.Price;
+import rest.domain.enumerations.Page;
 import rest.repository.AccommodationRepository;
 import rest.repository.PriceRepository;
 
@@ -86,7 +88,8 @@ public class PriceService implements IService<PriceDTO> {
 
     @Override
     public PriceDTO delete(Long id) {
-        Price found = new Price(findOne(id)); // this will throw StudentNotFoundException if student is not found
+        PriceDTO founddto = findOne(id);
+        Price found = new Price(founddto); // this will throw StudentNotFoundException if student is not found
         priceRepository.delete(found);
         priceRepository.flush();
         return new PriceDTO(found);

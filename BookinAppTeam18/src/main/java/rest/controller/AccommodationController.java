@@ -47,6 +47,12 @@ public class AccommodationController {
         AccommodationDetailsDTO accommodationDetails = accommodationService.findAccommodationDetails(id);
         return new ResponseEntity<AccommodationDetailsDTO>(accommodationDetails, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/owner/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsByOwner(@PathVariable("id") Long ownerId) {
+        Collection<AccommodationDTO> accommodations = accommodationService.findAccommodationsForOwner(ownerId);
+        return new ResponseEntity<>(accommodations, HttpStatus.OK);
+    }
   
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> getAccommodation(@PathVariable("id") Long id) {

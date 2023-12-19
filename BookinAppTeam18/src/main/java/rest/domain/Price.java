@@ -36,7 +36,12 @@ public class Price {
         this.id = priceDTO.getId();
         this.start = priceDTO.getStartDate();
         this.endDate = priceDTO.getEndDate();
+<<<<<<< Updated upstream
         this.amount= priceDTO.getAmount();
+=======
+        this.amount = priceDTO.getAmount();
+
+>>>>>>> Stashed changes
     }
 
     public Long getId() {

@@ -11,6 +11,7 @@ import rest.service.PriceService;
 
 import java.util.Collection;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/prices")
 public class PriceController {
@@ -24,7 +25,7 @@ public class PriceController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/account/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/accommodation/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<PriceDTO>> getAccommodationPrices(@PathVariable("id") Long accommodationId) {
         Collection<PriceDTO> prices = priceService.findPricesForAccommodation(accommodationId);
         return new ResponseEntity<>(prices, HttpStatus.OK);

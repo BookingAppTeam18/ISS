@@ -10,8 +10,7 @@ public enum Benefit {
     BALCONY,
     BACKYARD,
     PET_FRIENDLY,
-    ELEVATOR,
-    BABY_HIGHCHAIR;
+    ELEVATOR;
 
 
     @Override
@@ -37,8 +36,6 @@ public enum Benefit {
                 return "Pet friendly";
             case 9:
                 return "Elevator";
-            case 10:
-                return "Baby highchair";
             default:
                 return "";
         }

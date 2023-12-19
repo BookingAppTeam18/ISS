@@ -41,7 +41,6 @@ public class Comment {
         this.page = commentDTO.getPage();
     }
 
-
     public Long getId() {
         return id;
     }

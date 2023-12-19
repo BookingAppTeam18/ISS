@@ -1,13 +1,11 @@
 package rest.domain.DTO;
 
 import rest.domain.Accommodation;
-import rest.domain.Price;
 import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
-
 import java.util.ArrayList;
 import java.util.List;
-//@Data
+
 public class AccommodationDTO {
     private Long id;
     private Long ownerId;
@@ -20,6 +18,7 @@ public class AccommodationDTO {
     private List<String> gallery;
     private List<Benefit> benefits;
     private AccommodationType accommodationType;
+<<<<<<< Updated upstream
     private double rating;
     private double nextPrice;
 
@@ -30,6 +29,9 @@ public class AccommodationDTO {
     public void setNextPrice(double nextPrice) {
         this.nextPrice = nextPrice;
     }
+=======
+    private String description;
+>>>>>>> Stashed changes
 
     public AccommodationDTO(){
 
@@ -49,6 +51,7 @@ public class AccommodationDTO {
         this.benefits = new ArrayList<Benefit>();
         this.benefits = accommodation.getBenefits();
         this.accommodationType = accommodation.getAccommodetionType();
+        this.description = accommodation.getDescription();
     }
 
     public Long getId() {
@@ -95,6 +98,10 @@ public class AccommodationDTO {
         return accommodationType;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -139,11 +146,16 @@ public class AccommodationDTO {
         this.accommodationType = accommodationType;
     }
 
+<<<<<<< Updated upstream
     public double getRating() {
         return rating;
     }
 
     public void setRating(float rating) {
         this.rating = rating;
+=======
+    public void setDescription(String description) {
+        this.description = description;
+>>>>>>> Stashed changes
     }
 }
