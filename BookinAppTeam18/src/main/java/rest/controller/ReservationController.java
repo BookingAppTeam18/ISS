@@ -12,7 +12,6 @@ import rest.service.ReservationService;
 
 import java.util.Collection;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/reservations")
 public class ReservationController {

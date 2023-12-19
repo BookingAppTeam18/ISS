@@ -21,7 +21,6 @@ import rest.utils.TokenUtils;
 
 import javax.servlet.http.HttpServletResponse;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {

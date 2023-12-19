@@ -11,7 +11,6 @@ import rest.service.PriceService;
 
 import java.util.Collection;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/prices")
 public class PriceController {

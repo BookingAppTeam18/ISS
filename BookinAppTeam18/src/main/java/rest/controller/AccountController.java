@@ -13,7 +13,6 @@ import java.security.Principal;
 import java.util.Collection;
 
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/users")
 public class AccountController {
