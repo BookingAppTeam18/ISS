@@ -9,13 +9,11 @@ import rest.domain.AccommodationComment;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.DTO.CommentDTO;
-<<<<<<< Updated upstream
-import rest.domain.Price;
-=======
+
 import rest.domain.DTO.PriceDTO;
 import rest.domain.Price;
 import rest.domain.enumerations.AccommodationType;
->>>>>>> Stashed changes
+
 import rest.repository.AccommodationCommentRepository;
 import rest.repository.AccommodationRepository;
 import rest.repository.AccountRepository;
@@ -172,8 +170,6 @@ public class AccommodationService implements IService<AccommodationDTO> {
         return accommodationDetailsDTO;
     }
 
-<<<<<<< Updated upstream
-=======
     public Collection<AccommodationDTO> findAccommodationsForOwner(Long ownerId) {
         ArrayList<AccommodationDTO>  accommodations = new ArrayList<>();
         for(Accommodation accommodation : accommodationRepository.findAccommodationsOwned(ownerId)){
@@ -181,5 +177,4 @@ public class AccommodationService implements IService<AccommodationDTO> {
         }
         return accommodations;
     }
->>>>>>> Stashed changes
 }
