@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
+    private final JavaMailSender javaMailSender;
+
     @Autowired
     private TokenUtils tokenUtils;
 
@@ -34,6 +38,11 @@ public class AuthenticationController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    public AuthenticationController(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
 
     // Prvi endpoint koji pogadja korisnik kada se loguje.
     // Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.
@@ -68,9 +77,18 @@ public class AuthenticationController {
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         accountRequest.setPassword(encoder.encode(accountRequest.getPassword()));
-
+        sendActivationEmail(accountRequest.getEmail());
         AccountDTO accountDTO = this.accountService.insert(accountRequest);
 
         return new ResponseEntity<>(accountDTO, HttpStatus.CREATED);
+    }
+    private void sendActivationEmail(String toEmail) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("bookingappteam18@gmail.com");  // Postavi svoj email
+        message.setTo(toEmail);
+        message.setSubject("Aktivacija naloga");
+        message.setText("Kliknite na sledeći link kako biste aktivirali svoj nalog: http://localhost:8080/api/activate?email=" + toEmail);
+
+        javaMailSender.send(message);
     }
 }
