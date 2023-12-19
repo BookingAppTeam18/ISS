@@ -23,7 +23,7 @@ public class AccountController {
 
     //GET all users
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<AccountDTO>> getUsers() {
+    public ResponseEntity<Collection<AccountDTO>> getAccounts() {
         Collection<AccountDTO> users = accountService.findAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
@@ -40,7 +40,7 @@ public class AccountController {
 
     //GET loged in user
     @GetMapping("/whoami")
-    public ResponseEntity<AccountDTO> user(Principal account) {
+    public ResponseEntity<AccountDTO> Account(Principal account) {
         return new ResponseEntity<>(accountService.findByEmail(account.getName()), HttpStatus.OK);
     }
 
