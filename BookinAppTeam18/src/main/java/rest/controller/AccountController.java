@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
@@ -21,6 +22,7 @@ public class AccountController {
     private AccountService accountService;
 
     //GET all users
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccountDTO>> getAccounts() {
         Collection<AccountDTO> users = accountService.findAll();
@@ -28,6 +30,7 @@ public class AccountController {
     }
 
     //GET user by id
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value="/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountDTO> getAccountById(@PathVariable("userId") Long accountId) {
         AccountDTO accountDTO = accountService.findOne(accountId);
@@ -38,6 +41,7 @@ public class AccountController {
     }
 
     //GET loged in user
+    @PreAuthorize("hasAnyAuthority('OWNER','GUEST', 'ADMIN')")
     @GetMapping("/whoami")
     public ResponseEntity<AccountDTO> Account(Principal account) {
         return new ResponseEntity<>(accountService.findByEmail(account.getName()), HttpStatus.OK);
@@ -45,6 +49,8 @@ public class AccountController {
 
 
     //Get favourite accommodation for specific user
+    @PreAuthorize("hasAnyAuthority('GUEST')")
+
     @GetMapping(value="/favorites/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getFavoriteAccommodations(@PathVariable("userId") Long accountId){
         Collection<AccommodationDTO> accommodationDTOS = accountService.findFavourite(accountId);
@@ -52,6 +58,7 @@ public class AccountController {
     }
 
     //Create account
+    @PreAuthorize("hasAnyAuthority('OWNER','GUEST')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountDTO> createAccount(@RequestBody AccountDTO accountDTO) throws Exception{
         return new ResponseEntity<>(accountService.insert(accountDTO), HttpStatus.CREATED);
@@ -65,6 +72,7 @@ public class AccountController {
 //    }
 
     //Update account
+    @PreAuthorize("hasAnyAuthority('OWNER','GUEST','ADMIN')")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountDTO> updateAccount(@RequestBody AccountDTO accountDTO, @PathVariable Long id)
             throws Exception {
@@ -78,6 +86,7 @@ public class AccountController {
     }
 
     //Delete account
+    @PreAuthorize("hasAnyAuthority('OWNER','GUEST')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<AccountDTO> deleteAccount(@PathVariable("id") Long id) {
         accountService.delete(id);
@@ -87,6 +96,7 @@ public class AccountController {
 
 
     //Delete favourite accommodation (remove from list)
+    @PreAuthorize("hasAnyAuthority('GUEST')")
     @DeleteMapping(value = "/{userId}/favourite/{favouriteId}")
     public ResponseEntity<AccommodationDTO> removeFromFavourites(@PathVariable("userId") Long userId, @PathVariable("favouriteId") Long favouriteId) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
