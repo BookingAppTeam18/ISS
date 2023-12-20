@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +17,7 @@ import rest.domain.Account;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.DTO.JwtAuthenticationRequest;
 import rest.domain.DTO.UserTokenState;
+import rest.domain.enumerations.UserState;
 import rest.exception.ResourceConflictException;
 import rest.service.AccountService;
 import rest.utils.TokenUtils;
@@ -25,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
+
     @Autowired
     private TokenUtils tokenUtils;
 
@@ -33,6 +37,7 @@ public class AuthenticationController {
 
     @Autowired
     private AccountService accountService;
+
 
     // Prvi endpoint koji pogadja korisnik kada se loguje.
     // Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.
@@ -67,9 +72,31 @@ public class AuthenticationController {
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         accountRequest.setPassword(encoder.encode(accountRequest.getPassword()));
-
+        accountService.sendActivationEmail(accountRequest.getEmail());
         AccountDTO accountDTO = this.accountService.insert(accountRequest);
 
         return new ResponseEntity<>(accountDTO, HttpStatus.CREATED);
     }
+    @PutMapping("/activate")
+    public ResponseEntity<String> activateAccount(@RequestParam String email) throws Exception {
+        AccountDTO accountDTO = accountService.findByEmail(email);
+
+        if (accountDTO == null) {
+            return new ResponseEntity<>("Account not found", HttpStatus.NOT_FOUND);
+        }
+
+        // Provera da li je nalog već aktiviran
+        if (accountDTO.getUserState().equals(UserState.ACTIVE)) {
+            return new ResponseEntity<>("Account is already activated", HttpStatus.BAD_REQUEST);
+        }
+
+        // Postavljanje statusa na aktiviran
+        accountDTO.setUserState(UserState.ACTIVE);
+        accountService.update(accountDTO);  // Metod za ažuriranje naloga
+
+        return new ResponseEntity<>("Account activated successfully", HttpStatus.OK);
+    }
+
+
+
 }

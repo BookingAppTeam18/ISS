@@ -2,6 +2,8 @@ package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Accommodation;
@@ -9,6 +11,7 @@ import rest.domain.Account;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.Reservation;
+import rest.domain.enumerations.UserState;
 import rest.domain.enumerations.UserType;
 import rest.repository.AccommodationRepository;
 import rest.repository.AccountCommentRepository;
@@ -22,6 +25,7 @@ import java.util.*;
 @Service
 public class AccountService implements IService<AccountDTO> {
 
+    private final JavaMailSender javaMailSender;
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
@@ -31,6 +35,10 @@ public class AccountService implements IService<AccountDTO> {
     @Autowired
     private AccountCommentRepository accountCommentRepository;
 
+    @Autowired
+    public AccountService(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
     @Override
     public Collection<AccountDTO> findAll(){
         List<AccountDTO> accountDTOList = new ArrayList<>();
@@ -62,6 +70,7 @@ public class AccountService implements IService<AccountDTO> {
     public AccountDTO insert(AccountDTO accountDTO) throws Exception {
         Account account = new Account(accountDTO);
         try {
+            account.setUserState(UserState.CREATED);
             Account savedAccount = accountRepository.save(account);
             accountRepository.flush();
             return new AccountDTO(savedAccount);
@@ -74,7 +83,17 @@ public class AccountService implements IService<AccountDTO> {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, sb.toString());
         }
     }
+    public void sendActivationEmail(String toEmail) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("bookingappteam18@gmail.com");  // Postavi svoj email
+        message.setTo(toEmail);
+        message.setSubject("Aktivacija naloga");
+        String link = "http://localhost:4200/activate?email="+toEmail;
 
+        message.setText("Kliknite na sledeći link kako biste aktivirali svoj nalog: " + link);
+
+        javaMailSender.send(message);
+    }
 
 
     @Override
