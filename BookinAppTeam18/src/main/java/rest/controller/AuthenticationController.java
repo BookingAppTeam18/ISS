@@ -17,6 +17,7 @@ import rest.domain.Account;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.DTO.JwtAuthenticationRequest;
 import rest.domain.DTO.UserTokenState;
+import rest.domain.enumerations.UserState;
 import rest.exception.ResourceConflictException;
 import rest.service.AccountService;
 import rest.utils.TokenUtils;
@@ -28,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
-    private final JavaMailSender javaMailSender;
 
     @Autowired
     private TokenUtils tokenUtils;
@@ -39,10 +39,6 @@ public class AuthenticationController {
     @Autowired
     private AccountService accountService;
 
-    @Autowired
-    public AuthenticationController(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
-    }
 
     // Prvi endpoint koji pogadja korisnik kada se loguje.
     // Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.
@@ -77,18 +73,31 @@ public class AuthenticationController {
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         accountRequest.setPassword(encoder.encode(accountRequest.getPassword()));
-        sendActivationEmail(accountRequest.getEmail());
+        accountService.sendActivationEmail(accountRequest.getEmail());
         AccountDTO accountDTO = this.accountService.insert(accountRequest);
 
         return new ResponseEntity<>(accountDTO, HttpStatus.CREATED);
     }
-    private void sendActivationEmail(String toEmail) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("bookingappteam18@gmail.com");  // Postavi svoj email
-        message.setTo(toEmail);
-        message.setSubject("Aktivacija naloga");
-        message.setText("Kliknite na sledeći link kako biste aktivirali svoj nalog: http://localhost:8080/api/activate?email=" + toEmail);
+    @PutMapping("/activate")
+    public ResponseEntity<String> activateAccount(@RequestParam String email) throws Exception {
+        AccountDTO accountDTO = accountService.findByEmail(email);
 
-        javaMailSender.send(message);
+        if (accountDTO == null) {
+            return new ResponseEntity<>("Account not found", HttpStatus.NOT_FOUND);
+        }
+
+        // Provera da li je nalog već aktiviran
+        if (accountDTO.getUserState().equals(UserState.ACTIVE)) {
+            return new ResponseEntity<>("Account is already activated", HttpStatus.BAD_REQUEST);
+        }
+
+        // Postavljanje statusa na aktiviran
+        accountDTO.setUserState(UserState.ACTIVE);
+        accountService.update(accountDTO);  // Metod za ažuriranje naloga
+
+        return new ResponseEntity<>("Account activated successfully", HttpStatus.OK);
     }
+
+
+
 }
