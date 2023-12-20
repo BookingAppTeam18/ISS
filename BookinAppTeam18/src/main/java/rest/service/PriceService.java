@@ -42,22 +42,31 @@ public class PriceService implements IService<PriceDTO> {
     }
 
     @Override
-    public PriceDTO insert(PriceDTO priceDTO){
+    public PriceDTO insert(PriceDTO priceDTO) {
         Price price = new Price(priceDTO);
-        price.setAccommodation(accommodationRepository.getOne(priceDTO.getAccommodationId()));
-        try {
-            Price savedPrice = priceRepository.save(price);
-            priceRepository.flush();
-            return new PriceDTO(savedPrice);
-        } catch (ConstraintViolationException ex) {
-            Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
-            StringBuilder sb = new StringBuilder(1000);
-            for (ConstraintViolation<?> error : errors) {
-                sb.append(error.getMessage() + "\n");
+        Optional<Accommodation> accommodationOptional = accommodationRepository.findById(priceDTO.getAccommodationId());
+
+        if (accommodationOptional.isPresent()) {
+            Accommodation accommodation = accommodationOptional.get();
+            price.setAccommodation(accommodation);
+
+            try {
+                Price savedPrice = priceRepository.save(price);
+                priceRepository.flush();
+                return new PriceDTO(savedPrice);
+            } catch (ConstraintViolationException ex) {
+                Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
+                StringBuilder sb = new StringBuilder(1000);
+                for (ConstraintViolation<?> error : errors) {
+                    sb.append(error.getMessage()).append("\n");
+                }
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, sb.toString());
             }
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, sb.toString());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Accommodation with ID " + priceDTO.getAccommodationId() + " not found");
         }
     }
+
 
     @Override
     public PriceDTO update(PriceDTO priceDTO) throws Exception {

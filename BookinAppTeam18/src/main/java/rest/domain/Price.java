@@ -18,7 +18,7 @@ public class Price {
     private double amount;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="accommodation_id")
     private Accommodation accommodation;
 
