@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest.domain.DTO.NotificationDTO;
 import rest.domain.Notification;
@@ -20,6 +21,7 @@ public class NotificationController {
     private NotificationService notificationService;
 
     //ALL Notifications
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<NotificationDTO>> getNotifications() {
         Collection<NotificationDTO> notifications = notificationService.findAll();
@@ -27,6 +29,7 @@ public class NotificationController {
     }
 
     //notification by id
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NotificationDTO> getNotification(@PathVariable("id") Long id) {
         NotificationDTO notification = notificationService.findOne(id);
@@ -39,6 +42,7 @@ public class NotificationController {
     }
 
     //unseen notifications for specific account
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value = "unseen/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<NotificationDTO>> getAccountUnseenNotifications(@PathVariable("id") Long accountId) {
         Collection<NotificationDTO> notification = notificationService.findAccountUnseenNotifications(accountId);
@@ -52,6 +56,7 @@ public class NotificationController {
 
 
     //all notifications for specific account
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value = "account/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<NotificationDTO>> getAccountNotifications(@PathVariable("id") Long accountId) {
         Collection<NotificationDTO> notification = notificationService.findAccountNotifications(accountId);
@@ -64,6 +69,7 @@ public class NotificationController {
     }
 
     //set seen Notification
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value = "seen/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NotificationDTO> setSeenNotification(@PathVariable("id") Long notificationId) {
         NotificationDTO notification = notificationService.setSeen(notificationId);
@@ -76,6 +82,7 @@ public class NotificationController {
     }
 
     //Create Notification
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NotificationDTO> createNotification(@RequestBody NotificationDTO notification) throws Exception {
         NotificationDTO savedNotification = notificationService.insert(notification);
@@ -83,6 +90,7 @@ public class NotificationController {
     }
 
     //Update Notification
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NotificationDTO> updateNotification(@RequestBody NotificationDTO notification, @PathVariable Long id)
             throws Exception {
@@ -96,6 +104,7 @@ public class NotificationController {
     }
 
     //Delete Notification
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Notification> deleteNotification(@PathVariable("id") Long id) {
         notificationService.delete(id);

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
@@ -20,12 +21,15 @@ public class ReservationController {
     private ReservationService reservationService;
 
     //Get all reservations
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReservationDTO>> getReservations() {
         Collection<ReservationDTO> reservations = reservationService.findAll();
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
+    //Get reservation by id
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @GetMapping(value="/reservation/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationDTO> getReservationById(@PathVariable("id") Long reservationId) {
         ReservationDTO reservationDTO = reservationService.findOne(reservationId);
@@ -36,6 +40,7 @@ public class ReservationController {
     }
 
     //Get all users who had reservation in specific accommodation
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER')")
     @GetMapping(value="/accommodation/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccountDTO>> getAccommodationGuests(@PathVariable("id") Long accommodationId) {
         Collection<AccountDTO> accounts = reservationService.findAccommodationGuests(accommodationId);
@@ -43,6 +48,7 @@ public class ReservationController {
     }
 
     //Get all
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'GUEST')")
     @GetMapping(value="/account/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getGuestAccommodations(@PathVariable("id") Long accountId) {
         Collection<AccommodationDTO> accommodations = reservationService.findUserAccommodations(accountId);
@@ -50,12 +56,14 @@ public class ReservationController {
     }
 
     // Create reservation
+    @PreAuthorize("hasAnyAuthority('GUEST')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) throws Exception{
         return new ResponseEntity<>(reservationService.insert(reservationDTO), HttpStatus.CREATED);
     }
 
     //Update reservation
+    @PreAuthorize("hasAnyAuthority('GUEST')")
     @PutMapping(value = "/{reservationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationDTO> updateReservation(@RequestBody ReservationDTO reservationDTO, @PathVariable Long reservationId)
             throws Exception {
@@ -69,7 +77,8 @@ public class ReservationController {
     }
 
 
-    //Delete account
+    //Delete reservation
+    @PreAuthorize("hasAnyAuthority('GUEST')")
     @DeleteMapping(value = "/{reservationId}")
     public ResponseEntity<AccountDTO> deleteReservation(@PathVariable("reservationId") Long reservationId) {
         reservationService.delete(reservationId);

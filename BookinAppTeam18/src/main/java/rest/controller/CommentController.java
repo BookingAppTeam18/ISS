@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest.domain.Comment;
 import rest.domain.DTO.CommentDTO;
@@ -19,6 +20,7 @@ public class CommentController {
     private CommentService commentService;
 
     //ALL comments
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<CommentDTO>> getComments() {
         Collection<CommentDTO> comments = commentService.findAll();
@@ -26,6 +28,7 @@ public class CommentController {
     }
 
     //comments for specific account
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value = "/account/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<CommentDTO>> getAccountComments(@PathVariable("id") Long accountId) {
         Collection<CommentDTO> comments = commentService.findAccountComments(accountId);
@@ -33,6 +36,7 @@ public class CommentController {
     }
 
     //comments for specific accommodation
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value = "/accommodation/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<CommentDTO>> getAccommodationComments(@PathVariable("id") Long accommodationId) {
         Collection<CommentDTO> comments = commentService.findAccommodationComments(accommodationId);
@@ -40,6 +44,7 @@ public class CommentController {
     }
 
     //comment by id
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDTO> getComment(@PathVariable("id") Long id) {
         CommentDTO comment = commentService.findOne(id);
@@ -52,6 +57,7 @@ public class CommentController {
     }
 
     //creating comment
+    @PreAuthorize("hasAnyAuthority('GUEST')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO comment) throws Exception {
         CommentDTO savedComment = commentService.insert(comment);
@@ -59,6 +65,7 @@ public class CommentController {
     }
 
     //update comment
+    @PreAuthorize("hasAnyAuthority('GUEST')")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDTO> updateComment(@RequestBody CommentDTO comment, @PathVariable Long id)
             throws Exception {
@@ -72,6 +79,7 @@ public class CommentController {
     }
 
     //delete comment
+    @PreAuthorize("hasAnyAuthority('GUEST')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Comment> deleteComment(@PathVariable("id") Long id) {
         commentService.delete(id);
