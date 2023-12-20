@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
@@ -28,13 +29,14 @@ public class AccommodationController {
     @Autowired
     private FilterService filterService;
 
-    //@PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodations() {
         Collection<AccommodationDTO> accommodations = accommodationService.findAll();
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodations, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value="/{start}/{offset}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getNAccommodations(@PathVariable("start") int start,
                                                                            @PathVariable("offset") int offset) {
@@ -42,18 +44,21 @@ public class AccommodationController {
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodations, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value="/details/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDetailsDTO> getAccommodationDetails(@PathVariable("id") Long id) {
         AccommodationDetailsDTO accommodationDetails = accommodationService.findAccommodationDetails(id);
         return new ResponseEntity<AccommodationDetailsDTO>(accommodationDetails, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('OWNER')")
     @GetMapping(value = "/owner/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsByOwner(@PathVariable("id") Long ownerId) {
         Collection<AccommodationDTO> accommodations = accommodationService.findAccommodationsForOwner(ownerId);
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
-  
+
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> getAccommodation(@PathVariable("id") Long id) {
         AccommodationDTO accommodationDTO = accommodationService.findOne(id);
@@ -65,6 +70,7 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value ="/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsByFilter(
             @RequestParam(name = "type", required = false) AccommodationType type,
@@ -115,6 +121,7 @@ public class AccommodationController {
         return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value ="/{start}/{offset}/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getNAccommodationsByFilter(
             @PathVariable("start") int begin,
@@ -176,13 +183,14 @@ public class AccommodationController {
         return new ResponseEntity<Collection<AccommodationDTO>>(cutFilteredAccommodations, HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasAnyAuthority('OWNER')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> createAccommodation(@RequestBody AccommodationDTO accommodationDto) throws Exception {
         AccommodationDTO savedAccommodation = accommodationService.insert(accommodationDto);
         return new ResponseEntity<AccommodationDTO>(savedAccommodation, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyAuthority('OWNER')")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody AccommodationDTO accommodation, @PathVariable Long id)
             throws Exception {
@@ -198,6 +206,7 @@ public class AccommodationController {
         return new ResponseEntity<AccommodationDTO>(updatedAccommodation, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('OWNER')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Accommodation> deleteAccommodation(@PathVariable("id") Long id) {
         accommodationService.delete(id);
