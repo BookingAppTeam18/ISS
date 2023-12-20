@@ -1,15 +1,14 @@
 package rest.domain;
 
-import org.apache.catalina.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.enumerations.UserState;
-import rest.domain.enumerations.UserType;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,6 +25,8 @@ public class Account implements UserDetails {
     private String password;
     private String address;
     private String phone;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="user_role")
     private UserType userType;
     private UserState userState;
     @Column(name = "last_password_reset_date")
@@ -56,16 +57,16 @@ public class Account implements UserDetails {
 
     }
 
-    public Account(AccountDTO accountDTO) {
-        this(accountDTO.getId(),
-                accountDTO.getFirstName(),
-                accountDTO.getLastName(),
-                accountDTO.getEmail(),
-                accountDTO.getAddress(),
-                accountDTO.getPhone(),
-                accountDTO.getPassword(),
-                accountDTO.getUserType(),
-                accountDTO.getUserState());
+    public Account(AccountDTO accountDTO, UserType userType) {
+        this.userType = userType;
+        this.id = accountDTO.getId();
+        this.firstName = accountDTO.getFirstName();
+        this.lastName = accountDTO.getLastName();
+        this.email = accountDTO.getEmail();
+        this.address = accountDTO.getAddress();
+        this.phone = accountDTO.getPhone();
+        this.password = accountDTO.getPassword();
+        this. userState = accountDTO.getUserState();
     }
 
     public Account(Long id,
@@ -130,7 +131,9 @@ public class Account implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        Collection<UserType> authorities = new ArrayList<UserType>();
+        authorities.add(this.userType);
+        return  authorities;
     }
 
     public String getPassword() {

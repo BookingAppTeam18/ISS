@@ -2,7 +2,7 @@ package rest.domain.DTO;
 
 import rest.domain.Account;
 import rest.domain.enumerations.UserState;
-import rest.domain.enumerations.UserType;
+import rest.domain.enumerations.UserTypeDTO;
 
 public class AccountDTO {
     private Long id;
@@ -12,7 +12,7 @@ public class AccountDTO {
     private String password;
     private String address;
     private String phone;
-    private UserType userType;
+    private UserTypeDTO userType;
     private UserState userState;
 
     public AccountDTO(){
@@ -20,15 +20,20 @@ public class AccountDTO {
     }
 
     public AccountDTO(Account account){
-        this(account.getId(),
-            account.getFirstName(),
-            account.getLastName(),
-            account.getEmail(),
-            account.getAddress(),
-            account.getPhone(),
-            account.getPassword(),
-            account.getUserType(),
-            account.getUserState());
+        if(account.getUserType().getName().equals("ADMIN"))
+            this.userType = UserTypeDTO.ADMIN;
+        if(account.getUserType().getName().equals("OWNER"))
+            this.userType = UserTypeDTO.OWNER;
+        if(account.getUserType().getName().equals("GUEST"))
+            this.userType = UserTypeDTO.GUEST;
+        this.id = account.getId();
+        this.firstName = account.getFirstName();
+        this.lastName = account.getLastName();
+        this.email = account.getEmail();
+        this.address = account.getAddress();
+        this.phone = account.getPhone();
+        this.password = account.getPassword();
+        this. userState = account.getUserState();
     }
 
     public AccountDTO(Long id,
@@ -38,7 +43,7 @@ public class AccountDTO {
                       String address,
                       String phone,
                       String password,
-                      UserType userType,
+                      UserTypeDTO userType,
                       UserState userState) {
         this.id = id;
         this.firstName = firstName;
@@ -107,11 +112,11 @@ public class AccountDTO {
         this.password = password;
     }
 
-    public UserType getUserType() {
+    public UserTypeDTO getUserType() {
         return userType;
     }
 
-    public void setUserType(UserType userType) {
+    public void setUserType(UserTypeDTO userType) {
         this.userType = userType;
     }
 

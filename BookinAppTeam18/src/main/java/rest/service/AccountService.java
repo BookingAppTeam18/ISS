@@ -12,11 +12,12 @@ import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.Reservation;
 import rest.domain.enumerations.UserState;
-import rest.domain.enumerations.UserType;
+import rest.domain.enumerations.UserTypeDTO;
+import rest.domain.UserType;
 import rest.repository.AccommodationRepository;
-import rest.repository.AccountCommentRepository;
 import rest.repository.AccountRepository;
 import rest.repository.ReservationRepository;
+import rest.repository.UserTypeRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -33,7 +34,7 @@ public class AccountService implements IService<AccountDTO> {
     @Autowired
     private ReservationRepository reservationRepository;
     @Autowired
-    private AccountCommentRepository accountCommentRepository;
+    private UserTypeRepository userTypeRepository;
 
     @Autowired
     public AccountService(JavaMailSender javaMailSender) {
@@ -68,7 +69,8 @@ public class AccountService implements IService<AccountDTO> {
 
     @Override
     public AccountDTO insert(AccountDTO accountDTO) throws Exception {
-        Account account = new Account(accountDTO);
+        UserType userType = userTypeRepository.findByName(accountDTO.getUserType().toString());
+        Account account = new Account(accountDTO, userType);
         try {
             account.setUserState(UserState.CREATED);
             Account savedAccount = accountRepository.save(account);
@@ -98,7 +100,8 @@ public class AccountService implements IService<AccountDTO> {
 
     @Override
     public AccountDTO update(AccountDTO accountDTO) throws Exception {
-        Account accountToUpdate = new Account(accountDTO);
+        UserType userType = userTypeRepository.findByName(accountDTO.getUserType().toString());
+        Account accountToUpdate = new Account(accountDTO, userType);
         try {
             findOne(accountDTO.getId()); // this will throw ResponseStatusException if student is not found
             accountRepository.save(accountToUpdate);
@@ -125,13 +128,15 @@ public class AccountService implements IService<AccountDTO> {
 
     @Override
     public AccountDTO delete(Long id) {
-        Account account = new Account(findOne(id)); // this will throw StudentNotFoundException if student is not found
-        if(account.getUserType() == UserType.GUEST){
+        AccountDTO accountDTO = findOne(id);
+        UserType userType = userTypeRepository.findByName(accountDTO.getUserType().toString());
+        Account account = new Account(accountDTO, userType); // this will throw StudentNotFoundException if student is not found
+        if(account.getUserType().getName().equals("GUEST")){
             if(ReservationsExist(id)){
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Guest has reservations");
             }
         }
-        if(account.getUserType() == UserType.OWNER){
+        if(account.getUserType().getName().equals("OWNER")){
             if(AccommodationsOwned(id))
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Owner owns accommodations");
             //Ako ne postoje rezervacije za accommodatione koje poseduje owner, izbrisati sve accommodatione
