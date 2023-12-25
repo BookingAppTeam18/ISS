@@ -28,6 +28,8 @@ public class Account implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_role")
     private UserType userType;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "user_state")
     private UserState userState;
     @Column(name = "last_password_reset_date")
     private Timestamp lastPasswordResetDate;
@@ -66,7 +68,7 @@ public class Account implements UserDetails {
         this.address = accountDTO.getAddress();
         this.phone = accountDTO.getPhone();
         this.password = accountDTO.getPassword();
-        this. userState = accountDTO.getUserState();
+        this.userState = accountDTO.getUserState();
     }
 
     public Account(Long id,

@@ -33,7 +33,7 @@ public class AccountDTO {
         this.address = account.getAddress();
         this.phone = account.getPhone();
         this.password = account.getPassword();
-        this. userState = account.getUserState();
+        this.userState = account.getUserState();
     }
 
     public AccountDTO(Long id,
