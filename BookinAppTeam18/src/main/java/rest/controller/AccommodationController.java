@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import rest.domain.Accommodation;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationDetailsDTO;
+import rest.domain.DTO.CommentDTO;
 import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
 import rest.service.AccommodationService;
@@ -192,10 +193,8 @@ public class AccommodationController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDTO> updateAccommodation(@RequestBody AccommodationDTO accommodation, @PathVariable Long id)
             throws Exception {
-        AccommodationDTO accommodationForUpdate = accommodationService.findOne(id);
-//        accommodationForUpdate.copyValues(accommodation);
-
-        AccommodationDTO updatedAccommodation = accommodationService.update(accommodationForUpdate);
+        accommodation.setId(id);
+        AccommodationDTO updatedAccommodation = accommodationService.update(accommodation);
 
         if (updatedAccommodation == null) {
             return new ResponseEntity<AccommodationDTO>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -115,6 +115,7 @@ public class AccommodationService implements IService<AccommodationDTO> {
     @Override
     public AccommodationDTO update(AccommodationDTO accommodationDTO) throws Exception {
         Accommodation accommodationToUpdate = new Accommodation(accommodationDTO);
+        accommodationToUpdate.setOwner(accountRepository.getOne(accommodationDTO.getOwnerId()));
         try {
             findOne(accommodationDTO.getId()); // this will throw ResponseStatusException if student is not found
             accommodationRepository.save(accommodationToUpdate);
