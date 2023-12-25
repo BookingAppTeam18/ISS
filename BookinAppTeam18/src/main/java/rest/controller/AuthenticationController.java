@@ -76,7 +76,7 @@ public class AuthenticationController {
 
         return new ResponseEntity<>(accountDTO, HttpStatus.CREATED);
     }
-    @PutMapping("/activate")
+    @GetMapping("/activate")
     public ResponseEntity<String> activateAccount(@RequestParam String email) throws Exception {
         AccountDTO accountDTO = accountService.findByEmail(email);
 

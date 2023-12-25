@@ -84,7 +84,7 @@ public class WebSecurityConfig {
 
         // sve neautentifikovane zahteve obradi uniformno i posalji 401 gresku
         http.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint);
-        http.authorizeRequests().antMatchers("/api/auth/***").permitAll()
+        http.authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/accommodations/*/*/filter").permitAll()// /auth/**
                 .antMatchers("/api/accommodations/details/*").permitAll()// /auth/**
                 // ukoliko ne zelimo da koristimo @PreAuthorize anotacije nad metodama kontrolera, moze se iskoristiti hasRole() metoda da se ogranici
@@ -117,7 +117,7 @@ public class WebSecurityConfig {
         // Autentifikacija ce biti ignorisana ispod navedenih putanja (kako bismo ubrzali pristup resursima)
         // Zahtevi koji se mecuju za web.ignoring().antMatchers() nemaju pristup SecurityContext-u
         // Dozvoljena POST metoda na ruti /auth/login, za svaki drugi tip HTTP metode greska je 401 Unauthorized
-        return (web) -> web.ignoring().antMatchers(HttpMethod.POST, "/api/auth/**")
+        return (web) -> web.ignoring().antMatchers(HttpMethod.POST, "/api/auth/***")
 
 
                 // Ovim smo dozvolili pristup statickim resursima aplikacije

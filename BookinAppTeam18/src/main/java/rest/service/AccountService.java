@@ -89,7 +89,7 @@ public class AccountService implements IService<AccountDTO> {
         message.setFrom("bookingappteam18@gmail.com");  // Postavi svoj email
         message.setTo(toEmail);
         message.setSubject("Aktivacija naloga");
-        String link = "http://localhost:4200/activate?email="+toEmail;
+        String link = "http://192.168.0.31:8080/api/auth/activate?email="+toEmail;
 
         message.setText("Kliknite na sledeći link kako biste aktivirali svoj nalog: " + link);
 

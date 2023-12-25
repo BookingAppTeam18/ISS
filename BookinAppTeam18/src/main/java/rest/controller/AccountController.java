@@ -40,7 +40,7 @@ public class AccountController {
         return new ResponseEntity<>(accountDTO, HttpStatus.OK);
     }
 
-    //GET loged in user
+    //GET logged in user
     @PreAuthorize("hasAnyAuthority('OWNER','GUEST', 'ADMIN')")
     @GetMapping("/whoami")
     public ResponseEntity<AccountDTO> Account(Principal account) {
