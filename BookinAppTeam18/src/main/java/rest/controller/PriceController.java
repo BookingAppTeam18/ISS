@@ -54,7 +54,7 @@ public class PriceController {
 
     @PreAuthorize("hasAnyAuthority('OWNER')")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PriceDTO> updateComment(@RequestBody PriceDTO price, @PathVariable Long id)
+    public ResponseEntity<PriceDTO> updatePrice(@RequestBody PriceDTO price, @PathVariable Long id)
             throws Exception {
         price.setId(id);
         PriceDTO updatedPrice = priceService.update(price);
@@ -67,7 +67,7 @@ public class PriceController {
 
     @PreAuthorize("hasAnyAuthority('OWNER')")
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Price> deleteComment(@PathVariable("id") Long id) {
+    public ResponseEntity<Price> deletePrice(@PathVariable("id") Long id) {
         priceService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
