@@ -162,10 +162,6 @@ public class AccommodationDTO {
 
     }
 
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
     public AccommodationState getAccommodationState() {
         return accommodationState;
     }
