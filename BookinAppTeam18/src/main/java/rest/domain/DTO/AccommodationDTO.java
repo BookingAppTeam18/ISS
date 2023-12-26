@@ -1,6 +1,7 @@
 package rest.domain.DTO;
 
 import rest.domain.Accommodation;
+import rest.domain.enumerations.AccommodationState;
 import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class AccommodationDTO {
 
     private String description;
 
+    private AccommodationState accommodationState;
+
 
     public AccommodationDTO() {
 
@@ -51,6 +54,7 @@ public class AccommodationDTO {
         this.benefits = accommodation.getBenefits();
         this.accommodationType = accommodation.getAccommodetionType();
         this.description = accommodation.getDescription();
+        this.accommodationState = accommodation.getAccommodationState();
     }
 
     public Long getId() {
@@ -156,5 +160,17 @@ public class AccommodationDTO {
     public void setDescription (String description){
         this.description = description;
 
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public AccommodationState getAccommodationState() {
+        return accommodationState;
+    }
+
+    public void setAccommodationState(AccommodationState accommodationState) {
+        this.accommodationState = accommodationState;
     }
 }

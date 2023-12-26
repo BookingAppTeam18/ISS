@@ -1,6 +1,7 @@
 package rest.domain;
 
 import rest.domain.DTO.AccommodationDTO;
+import rest.domain.enumerations.AccommodationState;
 import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
 
@@ -36,8 +37,10 @@ public class Accommodation {
     @Enumerated(EnumType.STRING)
     private AccommodationType accommodetionType;
     private String description;
+    @Enumerated(EnumType.STRING)
+    private AccommodationState accommodationState;
 
-    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType, String description) {
+    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType, String description, AccommodationState accommodationState) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -49,6 +52,7 @@ public class Accommodation {
         this.benefits = benefits;
         this.accommodetionType = accommodetionType;
         this.description = description;
+        this.accommodationState = accommodationState;
     }
 
     public Accommodation(AccommodationDTO accommodationDTO) {
@@ -63,6 +67,7 @@ public class Accommodation {
         this.benefits = accommodationDTO.getBenefits();
         this.accommodetionType = accommodationDTO.getAccommodationType();
         this.description = accommodationDTO.getDescription();
+        this.accommodationState = accommodationDTO.getAccommodationState();
     }
 
     public Accommodation() {
@@ -163,6 +168,14 @@ public class Accommodation {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public AccommodationState getAccommodationState() {
+        return accommodationState;
+    }
+
+    public void setAccommodationState(AccommodationState accommodationState) {
+        this.accommodationState = accommodationState;
     }
 
     public void copyValues(Accommodation accommodation) {
