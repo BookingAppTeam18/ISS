@@ -12,6 +12,7 @@ import rest.domain.DTO.CommentDTO;
 
 import rest.domain.DTO.PriceDTO;
 import rest.domain.Price;
+import rest.domain.enumerations.AccommodationState;
 import rest.domain.enumerations.AccommodationType;
 
 import rest.repository.AccommodationCommentRepository;
@@ -97,6 +98,7 @@ public class AccommodationService implements IService<AccommodationDTO> {
     public AccommodationDTO insert(AccommodationDTO accommodationDTO) throws Exception {
         Accommodation accommodation = new Accommodation(accommodationDTO);
         accommodation.setOwner(accountRepository.getOne(accommodationDTO.getOwnerId()));
+        accommodation.setAccommodationState(AccommodationState.PENDING);
         try {
             accommodationRepository.save(accommodation);
             accommodationRepository.flush();
