@@ -36,6 +36,13 @@ public class AccommodationController {
         return new ResponseEntity<Collection<AccommodationDTO>>(accommodations, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @GetMapping(value="/pending", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccommodationDTO>> getPendingAccommodations() {
+        Collection<AccommodationDTO> accommodations = accommodationService.findPendingAccommodations();
+        return new ResponseEntity<Collection<AccommodationDTO>>(accommodations, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value="/{start}/{offset}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getNAccommodations(@PathVariable("start") int start,
@@ -207,6 +214,14 @@ public class AccommodationController {
     public ResponseEntity<Accommodation> deleteAccommodation(@PathVariable("id") Long id) {
         accommodationService.delete(id);
         return new ResponseEntity<Accommodation>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PutMapping(value = "/approve/{id}/{option}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationDTO> approveAccommodation(@PathVariable("id") Long id, @PathVariable("option") int option) throws Exception {
+        AccommodationDTO accommodationDTO = accommodationService.approveAccommodation(id, option);
+        return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.OK);
     }
 
 }

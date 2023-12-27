@@ -176,4 +176,25 @@ public class AccommodationService implements IService<AccommodationDTO> {
         }
         return accommodations;
     }
+
+    public Collection<AccommodationDTO> findPendingAccommodations(){
+        ArrayList<AccommodationDTO> accommodations = new ArrayList<>();
+        for(Accommodation accommodation : accommodationRepository.findAll()){
+            if(accommodation.getAccommodationState().equals(AccommodationState.PENDING))
+                accommodations.add(new AccommodationDTO(accommodation));
+        }
+        return accommodations;
+    }
+
+    public AccommodationDTO approveAccommodation(Long accommodationId, int option) {
+        Accommodation accommodation = accommodationRepository.getOne(accommodationId);
+        System.out.println("approveAccommodation method called with id: " + accommodationId + ", option: " + option);
+        if(option == 0)
+            accommodation.setAccommodationState(AccommodationState.DECLINED);
+        else
+            accommodation.setAccommodationState(AccommodationState.APPROVED);
+        accommodationRepository.save(accommodation);
+        accommodationRepository.flush();
+        return new AccommodationDTO(accommodation);
+    }
 }
