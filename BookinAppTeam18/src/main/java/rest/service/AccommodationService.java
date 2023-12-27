@@ -9,12 +9,8 @@ import rest.domain.AccommodationComment;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccommodationDetailsDTO;
 import rest.domain.DTO.CommentDTO;
-
-import rest.domain.DTO.PriceDTO;
 import rest.domain.Price;
 import rest.domain.enumerations.AccommodationState;
-import rest.domain.enumerations.AccommodationType;
-
 import rest.repository.AccommodationCommentRepository;
 import rest.repository.AccommodationRepository;
 import rest.repository.AccountRepository;
@@ -100,9 +96,9 @@ public class AccommodationService implements IService<AccommodationDTO> {
         accommodation.setOwner(accountRepository.getOne(accommodationDTO.getOwnerId()));
         accommodation.setAccommodationState(AccommodationState.PENDING);
         try {
-            accommodationRepository.save(accommodation);
+            Accommodation savedAccommodation = accommodationRepository.save(accommodation);
             accommodationRepository.flush();
-            return accommodationDTO;
+            return new AccommodationDTO(savedAccommodation);
         } catch (ConstraintViolationException ex) {
             Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
             StringBuilder sb = new StringBuilder(1000);
