@@ -8,7 +8,7 @@ public enum Benefit {
     FREE_PARKING,
     TV,
     BALCONY,
-    BACKYARD,
+    YARD,
     PET_FRIENDLY,
     ELEVATOR;
 
@@ -31,7 +31,7 @@ public enum Benefit {
             case 6:
                 return "Balcony";
             case 7:
-                return "Backyard";
+                return "Yard";
             case 8:
                 return "Pet friendly";
             case 9:
