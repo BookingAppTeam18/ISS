@@ -4,10 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import rest.domain.*;
-import rest.domain.DTO.CommentDTO;
+import rest.domain.Accommodation;
 import rest.domain.DTO.PriceDTO;
-import rest.domain.enumerations.Page;
+import rest.domain.Price;
 import rest.repository.AccommodationRepository;
 import rest.repository.PriceRepository;
 
@@ -73,9 +72,9 @@ public class PriceService implements IService<PriceDTO> {
         Price priceToUpdate = new Price(priceDTO);
         try {
             findOne(priceDTO.getId()); // this will throw ResponseStatusException if student is not found
-            priceRepository.save(priceToUpdate);
+            Price savedPrice = priceRepository.save(priceToUpdate);
             priceRepository.flush();
-            return priceDTO;
+            return new PriceDTO(savedPrice);
         } catch (RuntimeException ex) {
             Throwable e = ex;
             Throwable c = null;
@@ -116,5 +115,38 @@ public class PriceService implements IService<PriceDTO> {
             accommodationPrices.add(new PriceDTO(price));
         }
         return accommodationPrices;
+    }
+
+    public PriceDTO updateOrCreate(PriceDTO priceDTO) {
+        Price priceToUpdate = new Price(priceDTO);
+        try {
+            findOne(priceDTO.getId());
+            Price savedPrice = priceRepository.save(priceToUpdate);
+            priceRepository.flush();
+            return new PriceDTO(savedPrice);
+        } catch (ResponseStatusException ex) {
+            if (ex.getStatus().equals(HttpStatus.NOT_FOUND)) {
+                // Price not found, create a new one
+                Price savedPrice = priceRepository.save(priceToUpdate);
+                priceRepository.flush();
+                return new PriceDTO(savedPrice);
+            } else {
+                Throwable e = ex;
+                Throwable c = null;
+                while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) {
+                    e = (RuntimeException) c;
+                }
+                if ((c != null) && (c instanceof ConstraintViolationException)) {
+                    ConstraintViolationException c2 = (ConstraintViolationException) c;
+                    Set<ConstraintViolation<?>> errors = c2.getConstraintViolations();
+                    StringBuilder sb = new StringBuilder(1000);
+                    for (ConstraintViolation<?> error : errors) {
+                        sb.append(error.getMessage() + "\n");
+                    }
+                    throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, sb.toString());
+                }
+                throw ex;
+            }
+        }
     }
 }
