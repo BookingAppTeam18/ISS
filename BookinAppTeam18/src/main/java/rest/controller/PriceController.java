@@ -67,15 +67,14 @@ public class PriceController {
 
     @PreAuthorize("hasAnyAuthority('OWNER')")
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PriceDTO> updateOrCreatePrice(@RequestBody PriceDTO price, @PathVariable Long id)
+    public ResponseEntity<Collection<PriceDTO>> updateOrCreatePrice(@RequestBody Collection<PriceDTO> prices)
             throws Exception {
-        price.setId(id);
-        PriceDTO updatedPrice = priceService.updateOrCreate(price);
+        Collection<PriceDTO> updatedPrices = priceService.updatePrices(prices);
 
-        if (updatedPrice == null) {
+        if (updatedPrices == null) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(updatedPrice, HttpStatus.OK);
+        return new ResponseEntity<>(updatedPrices, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('OWNER')")

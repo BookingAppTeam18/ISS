@@ -3,6 +3,7 @@ package rest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Accommodation;
 import rest.domain.DTO.PriceDTO;
@@ -117,36 +118,40 @@ public class PriceService implements IService<PriceDTO> {
         return accommodationPrices;
     }
 
-    public PriceDTO updateOrCreate(PriceDTO priceDTO) {
-        Price priceToUpdate = new Price(priceDTO);
-        try {
-            findOne(priceDTO.getId());
-            Price savedPrice = priceRepository.save(priceToUpdate);
-            priceRepository.flush();
-            return new PriceDTO(savedPrice);
-        } catch (ResponseStatusException ex) {
-            if (ex.getStatus().equals(HttpStatus.NOT_FOUND)) {
-                // Price not found, create a new one
-                Price savedPrice = priceRepository.save(priceToUpdate);
+
+    @Transactional
+    public Collection<PriceDTO> updatePrices(Collection<PriceDTO> prices) {
+        Collection<Price> newPrices = DTOToPrices(prices);
+        Collection<Price> originalPrices = priceRepository.findPricesForAccommodation(prices.iterator().next().getAccommodationId());
+        for (Price originalPrice: originalPrices) {
+            if(!newPrices.contains(originalPrice)){
+                PriceDTO foundPrice =  findOne(originalPrice.getId());
+                Price priceToDelete = new Price(foundPrice);
+                priceRepository.delete(priceToDelete);
                 priceRepository.flush();
-                return new PriceDTO(savedPrice);
-            } else {
-                Throwable e = ex;
-                Throwable c = null;
-                while ((e != null) && !((c = e.getCause()) instanceof ConstraintViolationException) ) {
-                    e = (RuntimeException) c;
-                }
-                if ((c != null) && (c instanceof ConstraintViolationException)) {
-                    ConstraintViolationException c2 = (ConstraintViolationException) c;
-                    Set<ConstraintViolation<?>> errors = c2.getConstraintViolations();
-                    StringBuilder sb = new StringBuilder(1000);
-                    for (ConstraintViolation<?> error : errors) {
-                        sb.append(error.getMessage() + "\n");
-                    }
-                    throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, sb.toString());
-                }
-                throw ex;
             }
         }
+        for (Price newPrice: newPrices) {
+            if(!originalPrices.contains(newPrice)){
+                insert(new PriceDTO(newPrice));
+            }
+        }
+        Collection<Price> NewOriginalPrices = priceRepository.findPricesForAccommodation(prices.iterator().next().getAccommodationId());;
+        return PricesToDTO(NewOriginalPrices);
+    }
+
+    private Collection<Price> DTOToPrices(Collection<PriceDTO> prices) {
+        Collection<Price> newPrices = new ArrayList<>();
+        for (PriceDTO priceDTO:prices) {
+            newPrices.add(new Price(priceDTO));
+        }
+        return newPrices;
+    }
+    private Collection<PriceDTO> PricesToDTO(Collection<Price> prices) {
+        Collection<PriceDTO> newPricesDTO = new ArrayList<>();
+        for (Price price:prices) {
+            newPricesDTO.add(new PriceDTO(price));
+        }
+        return newPricesDTO;
     }
 }
