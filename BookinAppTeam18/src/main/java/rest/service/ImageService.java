@@ -48,4 +48,9 @@ public class ImageService {
 
 
     }
+
+    public ArrayList<String> getAccommodationImages(Long accommodationId) {
+        Accommodation accommodation = accommodationRepository.getOne(accommodationId);
+        return new ArrayList<>(accommodation.getGallery());
+    }
 }
