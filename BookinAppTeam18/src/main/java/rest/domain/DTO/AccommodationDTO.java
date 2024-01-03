@@ -4,6 +4,7 @@ import rest.domain.Accommodation;
 import rest.domain.enumerations.AccommodationState;
 import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
+
 import java.util.ArrayList;
 import java.util.List;
 
