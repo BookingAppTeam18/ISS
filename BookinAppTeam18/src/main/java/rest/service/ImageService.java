@@ -33,11 +33,17 @@ public class ImageService {
             accommodation.getGallery().add(filePath.toString());
             System.out.println(filePath);
 
+
             // Sačuvajte fajl na željenu putanju
             file.transferTo(filePath.toFile());
 
             // Dodajte URL fajla u listu
             fileUrls.add(filePath.toString());
+
+
+
+            accommodationRepository.save(accommodation);
+            accommodationRepository.flush();
         }
 
 
