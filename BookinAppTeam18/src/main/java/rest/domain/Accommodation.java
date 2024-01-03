@@ -40,7 +40,7 @@ public class Accommodation {
     @Enumerated(EnumType.STRING)
     private AccommodationState accommodationState;
 
-    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType, String description, AccommodationState accommodationState) {
+    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, ArrayList<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType, String description, AccommodationState accommodationState) {
         this.id = id;
         this.owner = owner;
         this.name = name;
