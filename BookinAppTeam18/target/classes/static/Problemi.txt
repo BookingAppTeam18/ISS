@@ -1,0 +1,4 @@
+Problemi
+
+pri kreiranju rezervacije stavlja na denied
+pri kriranju naloga nema user type password i user status
