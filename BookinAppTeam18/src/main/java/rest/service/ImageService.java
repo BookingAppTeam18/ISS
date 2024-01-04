@@ -51,6 +51,19 @@ public class ImageService {
 
     public ArrayList<String> getAccommodationImages(Long accommodationId) {
         Accommodation accommodation = accommodationRepository.getOne(accommodationId);
-        return new ArrayList<>(accommodation.getGallery());
+        String begin = "http://localhost:8080/api/content/";
+
+        ArrayList<String> images = new ArrayList<>(accommodation.getGallery());
+
+        ArrayList<String> paths = new ArrayList<>();
+
+        for (String path : images) {
+            Path filePath = Paths.get(path);
+            String fileName = filePath.getFileName().toString();
+            String fullPath = begin + fileName;
+            paths.add(fullPath);
+        }
+
+        return paths;
     }
 }

@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/content")
+@RequestMapping("/api/image")
 public class ImageController {
 
     @Autowired
@@ -35,7 +35,6 @@ public class ImageController {
 
     @GetMapping("/{accommodationId}")
     public ResponseEntity<Collection<String>> getAccommodationImages(@PathVariable("accommodationId") Long accommodationId) {
-
         ArrayList<String> images = imageService.getAccommodationImages(accommodationId);
         if(images == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

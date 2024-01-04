@@ -13,11 +13,13 @@ import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
 import rest.service.AccommodationService;
 import rest.service.FilterService;
+import rest.service.ImageService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 @RestController
@@ -28,6 +30,8 @@ public class AccommodationController {
     private AccommodationService accommodationService;
     @Autowired
     private FilterService filterService;
+    @Autowired
+    private ImageService imageService;
 
     @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,6 +58,7 @@ public class AccommodationController {
     @GetMapping(value="/details/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDetailsDTO> getAccommodationDetails(@PathVariable("id") Long id) {
         AccommodationDetailsDTO accommodationDetails = accommodationService.findAccommodationDetails(id);
+        getAccommodationImages(accommodationDetails.getAccommodationDTO());
         return new ResponseEntity<AccommodationDetailsDTO>(accommodationDetails, HttpStatus.OK);
     }
 
@@ -61,6 +66,7 @@ public class AccommodationController {
     @GetMapping(value = "/owner/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getAccommodationsByOwner(@PathVariable("id") Long ownerId) {
         Collection<AccommodationDTO> accommodations = accommodationService.findAccommodationsForOwner(ownerId);
+        getAccommodationImages(accommodations);
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
@@ -72,7 +78,7 @@ public class AccommodationController {
         if (accommodationDTO == null) {
             return new ResponseEntity<AccommodationDTO>(HttpStatus.NOT_FOUND);
         }
-
+        getAccommodationImages(accommodationDTO);
         return new ResponseEntity<AccommodationDTO>(accommodationDTO, HttpStatus.OK);
     }
 
@@ -124,6 +130,8 @@ public class AccommodationController {
         }
 
         Collection<AccommodationDTO> filteredAccommodations = filterService.toDTO();
+        getAccommodationImages(filteredAccommodations);
+
         return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);
     }
 
@@ -179,13 +187,26 @@ public class AccommodationController {
         Collection<AccommodationDTO> cutFilteredAccommodations;
 
 
-        if(begin+offset > filteredAccommodations.size())
-            cutFilteredAccommodations = filteredAccommodations.subList(begin, filteredAccommodations.size());
-        else{
-            cutFilteredAccommodations = filteredAccommodations.subList(begin,begin+offset);
+        if (begin >= 0 && begin < filteredAccommodations.size() && offset > 0) {
+            int endIndex = Math.min(begin + offset, filteredAccommodations.size());
+            cutFilteredAccommodations = filteredAccommodations.subList(begin, endIndex);
+        } else{
+            cutFilteredAccommodations =  Collections.emptyList();
         }
 
+        getAccommodationImages(cutFilteredAccommodations);
+
         return new ResponseEntity<Collection<AccommodationDTO>>(cutFilteredAccommodations, HttpStatus.OK);
+    }
+
+    private void getAccommodationImages(Collection<AccommodationDTO> accommodations) {
+        for(AccommodationDTO accommodationDTO:accommodations){
+            accommodationDTO.setGallery(imageService.getAccommodationImages(accommodationDTO.getId()));
+        }
+    }
+
+    private void getAccommodationImages(AccommodationDTO accommodation) {
+        accommodation.setGallery(imageService.getAccommodationImages(accommodation.getId()));
     }
 
     @PreAuthorize("hasAnyAuthority('OWNER')")
