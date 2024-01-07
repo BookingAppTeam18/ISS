@@ -57,7 +57,7 @@ public class CommentController {
     }
 
     //creating comment
-    @PreAuthorize("hasAnyAuthority('GUEST')")
+    @PreAuthorize("hasAnyAuthority('GUEST','OWNER')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO comment) throws Exception {
         CommentDTO savedComment = commentService.insert(comment);
