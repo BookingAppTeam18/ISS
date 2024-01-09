@@ -19,14 +19,14 @@ public class PriceController {
     @Autowired
     private PriceService priceService;
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<PriceDTO>> getPrices() {
         Collection<PriceDTO> comments = priceService.findAll();
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(value = "/accommodation/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<PriceDTO>> getAccommodationPrices(@PathVariable("id") Long accommodationId) {
         Collection<PriceDTO> prices = priceService.findPricesForAccommodation(accommodationId);
