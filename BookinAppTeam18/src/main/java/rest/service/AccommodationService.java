@@ -46,8 +46,13 @@ public class AccommodationService implements IService<AccommodationDTO> {
             AccommodationDTO newAccommodation = new AccommodationDTO(a);
             accommodationDTOS.add(newAccommodation);
 
-            newAccommodation.setRating(calculateRating(newAccommodation.getId()));
-            newAccommodation.setNextPrice(getNextPrice(newAccommodation.getId()));
+            try {
+                newAccommodation.setRating(calculateRating(newAccommodation.getId()));
+                newAccommodation.setNextPrice(getNextPrice(newAccommodation.getId()));
+            } catch (Exception e) {
+                newAccommodation.setRating(-1);
+                newAccommodation.setNextPrice(-1);
+            }
         }
         return accommodationDTOS;
     }
