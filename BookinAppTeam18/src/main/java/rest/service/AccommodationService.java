@@ -16,6 +16,7 @@ import rest.repository.AccommodationRepository;
 import rest.repository.AccountRepository;
 import rest.repository.PriceRepository;
 
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
@@ -45,8 +46,13 @@ public class AccommodationService implements IService<AccommodationDTO> {
             AccommodationDTO newAccommodation = new AccommodationDTO(a);
             accommodationDTOS.add(newAccommodation);
 
-            newAccommodation.setRating(calculateRating(newAccommodation.getId()));
-            newAccommodation.setNextPrice(getNextPrice(newAccommodation.getId()));
+            try {
+                newAccommodation.setRating(calculateRating(newAccommodation.getId()));
+                newAccommodation.setNextPrice(getNextPrice(newAccommodation.getId()));
+            } catch (Exception e) {
+                newAccommodation.setRating(-1);
+                newAccommodation.setNextPrice(-1);
+            }
         }
         return accommodationDTOS;
     }
@@ -139,8 +145,13 @@ public class AccommodationService implements IService<AccommodationDTO> {
     }
 
     @Override
+    @Transactional
     public AccommodationDTO delete(Long id) {
-        Accommodation accommodation = new Accommodation(findOne(id)); // this will throw StudentNotFoundException if student is not found
+        AccommodationDTO found = findOne(id);
+        Accommodation accommodation = new Accommodation(found); // this will throw StudentNotFoundException if student is not found
+        accommodation.setOwner(accountRepository.getOne(found.getOwnerId()));
+        accommodationRepository.deleteBenefitsByAccommodationId(id);
+        priceRepository.deletePricesByAccommodationId(id);
         accommodationRepository.delete(accommodation);
         accommodationRepository.flush();
         return new AccommodationDTO(accommodation);
