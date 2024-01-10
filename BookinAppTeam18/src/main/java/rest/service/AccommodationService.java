@@ -140,7 +140,9 @@ public class AccommodationService implements IService<AccommodationDTO> {
 
     @Override
     public AccommodationDTO delete(Long id) {
-        Accommodation accommodation = new Accommodation(findOne(id)); // this will throw StudentNotFoundException if student is not found
+        AccommodationDTO found = findOne(id);
+        Accommodation accommodation = new Accommodation(found); // this will throw StudentNotFoundException if student is not found
+        accommodation.setOwner(accountRepository.getOne(found.getOwnerId()));
         accommodationRepository.delete(accommodation);
         accommodationRepository.flush();
         return new AccommodationDTO(accommodation);
