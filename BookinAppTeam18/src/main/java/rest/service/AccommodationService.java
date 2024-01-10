@@ -143,6 +143,7 @@ public class AccommodationService implements IService<AccommodationDTO> {
         AccommodationDTO found = findOne(id);
         Accommodation accommodation = new Accommodation(found); // this will throw StudentNotFoundException if student is not found
         accommodation.setOwner(accountRepository.getOne(found.getOwnerId()));
+        accommodationRepository.deleteBenefitsByAccommodationId(id);
         accommodationRepository.delete(accommodation);
         accommodationRepository.flush();
         return new AccommodationDTO(accommodation);
