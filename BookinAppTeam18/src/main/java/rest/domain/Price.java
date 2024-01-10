@@ -37,7 +37,6 @@ public class Price {
         this.start = priceDTO.getStartDate();
         this.endDate = priceDTO.getEndDate();
         this.amount = priceDTO.getAmount();
-
     }
 
     public Long getId() {

@@ -98,7 +98,8 @@ public class PriceService implements IService<PriceDTO> {
     @Override
     public PriceDTO delete(Long id) {
         PriceDTO founddto = findOne(id);
-        Price found = new Price(founddto); // this will throw StudentNotFoundException if student is not found
+        Price found = new Price(founddto);
+        found.setAccommodation(accommodationRepository.getOne(founddto.getAccommodationId()));
         priceRepository.delete(found);
         priceRepository.flush();
         return new PriceDTO(found);
