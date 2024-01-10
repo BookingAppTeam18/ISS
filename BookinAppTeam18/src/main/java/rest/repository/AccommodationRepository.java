@@ -19,13 +19,9 @@ public interface AccommodationRepository extends JpaRepository<Accommodation,Lon
     public Collection<Accommodation> findAccommodationLocation(double laongitude, double latitude);
     @Query("select a from Accommodation a where a.owner.id=?1")
     public Collection<Accommodation> findAccommodationsOwned(Long ownerId );
-
-
     @Transactional
     @Modifying
     @Query(value = "DELETE FROM benefits_mapping WHERE accommodation_id = :accommodationId", nativeQuery = true)
     void deleteBenefitsByAccommodationId(@Param("accommodationId") Long accommodationId);
-
-
 
 }
