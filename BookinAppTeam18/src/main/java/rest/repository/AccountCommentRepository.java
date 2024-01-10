@@ -8,5 +8,5 @@ import java.util.Collection;
 
 public interface AccountCommentRepository extends JpaRepository<AccountComment,Long> {
     @Query("select c from AccountComment c where c.account.id= ?1")
-    public Collection<AccountComment> FindAccommodationComments(Long id);
+    public Collection<AccountComment>  FindAccountComments(Long id);
 }

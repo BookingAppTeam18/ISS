@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
+import rest.domain.DTO.AccountDetailsDTO;
 import rest.service.AccountService;
 
 import java.security.Principal;
@@ -38,6 +39,13 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(accountDTO, HttpStatus.OK);
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping(value="/userDetails/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccountDetailsDTO> getAccountDetailsById(@PathVariable("userId") Long accountId) {
+        AccountDetailsDTO accountDetailsDTO = accountService.findAccountDetails(accountId);
+        return new ResponseEntity<AccountDetailsDTO>(accountDetailsDTO, HttpStatus.OK);
     }
 
     //GET logged in user

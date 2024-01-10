@@ -6,17 +6,10 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import rest.domain.Accommodation;
-import rest.domain.Account;
-import rest.domain.DTO.AccommodationDTO;
-import rest.domain.DTO.AccountDTO;
-import rest.domain.Reservation;
-import rest.domain.UserType;
+import rest.domain.*;
+import rest.domain.DTO.*;
 import rest.domain.enumerations.UserState;
-import rest.repository.AccommodationRepository;
-import rest.repository.AccountRepository;
-import rest.repository.ReservationRepository;
-import rest.repository.UserTypeRepository;
+import rest.repository.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -34,6 +27,9 @@ public class AccountService implements IService<AccountDTO> {
     private ReservationRepository reservationRepository;
     @Autowired
     private UserTypeRepository userTypeRepository;
+
+    @Autowired
+    private AccountCommentRepository accountCommentRepository;
 
     @Autowired
     public AccountService(JavaMailSender javaMailSender) {
@@ -204,4 +200,18 @@ public class AccountService implements IService<AccountDTO> {
         accountRepository.flush();
     }
 
+    public AccountDetailsDTO findAccountDetails(Long accountId) {
+
+        AccountDetailsDTO accountDetailsDTO = new AccountDetailsDTO();
+
+        Account account = accountRepository.getOne(accountId);
+        Collection<AccountComment> accountComments = accountCommentRepository.FindAccountComments(accountId);
+
+        accountDetailsDTO.setAccountDTO(new AccountDTO(account));
+        for (AccountComment accountComment: accountComments) {
+            accountDetailsDTO.getCommentsDTO().add(new CommentDTO(accountComment));
+        }
+
+        return accountDetailsDTO;
+    }
 }

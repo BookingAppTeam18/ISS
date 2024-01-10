@@ -182,7 +182,7 @@ public class CommentService implements IService<CommentDTO>{
     }
     public Collection<CommentDTO> findAccountComments(Long accountId) {
         ArrayList<CommentDTO>  accountComments= new ArrayList<>();
-        for(AccountComment accountComment:accountCommentRepository.FindAccommodationComments(accountId)){
+        for(AccountComment accountComment:accountCommentRepository.FindAccountComments(accountId)){
             accountComments.add(new CommentDTO(accountComment));
         }
         return accountComments;

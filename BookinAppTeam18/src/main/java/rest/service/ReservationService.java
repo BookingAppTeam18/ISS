@@ -51,6 +51,15 @@ public class ReservationService implements IService<ReservationDTO> {
         return accommodationDTOS;
     }
 
+    public Collection<ReservationDTO> findUserReservations(Long userId){
+        Collection<Reservation> reservations = reservationRepository.findGuestReservations(userId);
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<ReservationDTO>();
+        for(Reservation reservation : reservations){
+            reservationDTOS.add(new ReservationDTO(reservation));
+        }
+        return reservationDTOS;
+    }
+
     public Collection<AccountDTO> findAccommodationGuests(Long accommodationId){
         Collection<Account> accounts = reservationRepository.findAccommodationGuests(accommodationId);
         Collection<AccountDTO> accountDTOS = null;
