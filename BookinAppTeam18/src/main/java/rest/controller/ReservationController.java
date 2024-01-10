@@ -55,7 +55,7 @@ public class ReservationController {
         return new ResponseEntity<>(accommodations, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'GUEST')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'GUEST','OWNER')")
     @GetMapping(value="/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<ReservationDTO>> getGuestReservations(@PathVariable("id") Long accountId) {
         Collection<ReservationDTO> reservations = reservationService.findUserReservations(accountId);
