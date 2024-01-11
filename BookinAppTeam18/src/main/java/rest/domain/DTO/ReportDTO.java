@@ -17,6 +17,10 @@ public class ReportDTO {
         this.reportedCommentId = reportedCommentId;
     }
 
+    public ReportDTO(){
+
+    }
+
     public ReportDTO(Report report) {
         this.id = report.getId();
         Description = report.getDescription();
