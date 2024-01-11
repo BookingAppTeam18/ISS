@@ -69,6 +69,15 @@ public class ReservationService implements IService<ReservationDTO> {
         return accountDTOS;
     }
 
+    public Collection<ReservationDTO> findReservationsForAccommodation(Long accommodationId){
+        Collection<Reservation> reservations = reservationRepository.findByAccommodationId(accommodationId);
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<ReservationDTO>();
+        for(Reservation reservation : reservations){
+            reservationDTOS.add(new ReservationDTO(reservation));
+        }
+        return reservationDTOS;
+    }
+
     @Override
     public ReservationDTO insert(ReservationDTO reservationDTO) throws Exception {
         Reservation reservation = new Reservation(reservationDTO);
