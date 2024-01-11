@@ -73,6 +73,7 @@ public class PriceService implements IService<PriceDTO> {
         Price priceToUpdate = new Price(priceDTO);
         try {
             findOne(priceDTO.getId()); // this will throw ResponseStatusException if student is not found
+            priceToUpdate.setAccommodation(accommodationRepository.getOne(priceDTO.getAccommodationId()));
             Price savedPrice = priceRepository.save(priceToUpdate);
             priceRepository.flush();
             return new PriceDTO(savedPrice);

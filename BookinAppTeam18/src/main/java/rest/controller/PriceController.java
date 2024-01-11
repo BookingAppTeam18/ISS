@@ -57,7 +57,7 @@ public class PriceController {
     public ResponseEntity<PriceDTO> updatePrice(@RequestBody PriceDTO price, @PathVariable Long id)
             throws Exception {
         price.setId(id);
-        PriceDTO updatedPrice = priceService.update(price);
+        PriceDTO updatedPrice = priceService.insert(price);
 
         if (updatedPrice == null) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
