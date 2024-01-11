@@ -9,7 +9,9 @@ import rest.domain.Account;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.DTO.ReservationDTO;
+import rest.domain.Price;
 import rest.domain.Reservation;
+import rest.domain.enumerations.ReservationStatus;
 import rest.repository.ReservationRepository;
 
 import javax.validation.ConstraintViolation;
@@ -100,6 +102,7 @@ public class ReservationService implements IService<ReservationDTO> {
         Reservation reservationToUpdate = new Reservation(reservationDTO);
         try {
             findOne(reservationDTO.getId()); // this will throw ResponseStatusException if student is not found
+            reservationToUpdate.setReservationStatus(reservationDTO.getReservationStatus());
             reservationRepository.save(reservationToUpdate);
             reservationRepository.flush();
             return reservationDTO;
