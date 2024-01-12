@@ -79,6 +79,18 @@ public class AccountController {
 //        return new ResponseEntity<>(accountService.addInFavourites(accommodationDTO), HttpStatus.CREATED);
 //    }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PutMapping(value = "/block/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccountDTO> blockAccount(@PathVariable Long id)
+            throws Exception {
+        AccountDTO updatedAccount = accountService.blockAccount(id);
+
+        if (updatedAccount == null) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(updatedAccount, HttpStatus.OK);
+    }
+
     //Update account
     @PreAuthorize("hasAnyAuthority('OWNER','GUEST','ADMIN')")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
