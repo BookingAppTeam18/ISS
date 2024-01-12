@@ -6,8 +6,10 @@ public class AccommodationReportDTO {
     private Long id;
     private Long accommodationId;
     private int numberOfReservations;
-    private int income;
+    private double income;
     private Long ownerId;
+
+    public AccommodationReportDTO(){}
 
     public AccommodationReportDTO(AccommodationReport accommodationReport) {
         this.id = accommodationReport.getId();
@@ -41,11 +43,11 @@ public class AccommodationReportDTO {
         this.numberOfReservations = numberOfReservations;
     }
 
-    public int getIncome() {
+    public double getIncome() {
         return income;
     }
 
-    public void setIncome(int income) {
+    public void setIncome(double income) {
         this.income = income;
     }
 

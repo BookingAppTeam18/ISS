@@ -16,14 +16,14 @@ public class AccommodationReport {
     @JoinColumn(name="accommodation_id")
     private Accommodation accommodation;
     private int numberOfReservations;
-    private int income;
+    private double income;
     private Long ownerId;
 
     public AccommodationReport(){
 
     }
 
-    public AccommodationReport(Long id, Accommodation accommodation, int numberOfReservations, int income, Long ownerId) {
+    public AccommodationReport(Long id, Accommodation accommodation, int numberOfReservations, double income, Long ownerId) {
         this.id = id;
         this.accommodation = accommodation;
         this.numberOfReservations = numberOfReservations;
@@ -62,11 +62,11 @@ public class AccommodationReport {
         this.numberOfReservations = numberOfReservations;
     }
 
-    public int getIncome() {
+    public double getIncome() {
         return income;
     }
 
-    public void setIncome(int income) {
+    public void setIncome(double income) {
         this.income = income;
     }
 
