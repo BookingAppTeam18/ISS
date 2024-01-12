@@ -63,7 +63,7 @@ public class ReportController {
     }
 
     //create report
-    @PreAuthorize("hasAnyAuthority('OWNER')")
+    @PreAuthorize("hasAnyAuthority('OWNER','GUEST')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO report) throws Exception {
         ReportDTO savedReport = reportService.insert(report);
