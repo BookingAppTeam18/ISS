@@ -12,6 +12,7 @@ import rest.domain.DTO.ReservationDTO;
 import rest.domain.Price;
 import rest.domain.Reservation;
 import rest.domain.enumerations.ReservationStatus;
+import rest.repository.AccommodationRepository;
 import rest.repository.ReservationRepository;
 
 import javax.validation.ConstraintViolation;
@@ -26,6 +27,8 @@ public class ReservationService implements IService<ReservationDTO> {
 
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private AccommodationRepository accommodationRepository;
     @Override
     public Collection<ReservationDTO> findAll() {
         ArrayList<ReservationDTO> reservationDTOS = new ArrayList<ReservationDTO>();
@@ -80,10 +83,25 @@ public class ReservationService implements IService<ReservationDTO> {
         return reservationDTOS;
     }
 
+    public Collection<ReservationDTO> findApprovedReservationsForAccommodation(Long accommodationId){
+        Collection<Reservation> reservations = reservationRepository.findByAccommodationId(accommodationId);
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<ReservationDTO>();
+        for(Reservation reservation : reservations){
+            if(reservation.getReservationStatus() == ReservationStatus.APPROVED)
+                reservationDTOS.add(new ReservationDTO(reservation));
+        }
+        return reservationDTOS;
+    }
+
     @Override
     public ReservationDTO insert(ReservationDTO reservationDTO) throws Exception {
         Reservation reservation = new Reservation(reservationDTO);
+        Accommodation accommodation = accommodationRepository.findById(reservationDTO.getAccommodationId()).orElse(null);
         try {
+            if(accommodation != null && accommodation.isAutomaticallyReserved())
+                reservation.setReservationStatus(ReservationStatus.APPROVED);
+            else
+                reservation.setReservationStatus(ReservationStatus.CREATED);
             reservationRepository.save(reservation);
             reservationRepository.flush();
             return reservationDTO;

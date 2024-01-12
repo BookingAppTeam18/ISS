@@ -39,8 +39,8 @@ public class Accommodation {
     private String description;
     @Enumerated(EnumType.STRING)
     private AccommodationState accommodationState;
-
-    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, ArrayList<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType, String description, AccommodationState accommodationState) {
+    private boolean isAutomaticallyReserved;
+    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, ArrayList<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType, String description, AccommodationState accommodationState, boolean isAutomaticallyReserved) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -53,6 +53,7 @@ public class Accommodation {
         this.accommodetionType = accommodetionType;
         this.description = description;
         this.accommodationState = accommodationState;
+        this.isAutomaticallyReserved = isAutomaticallyReserved;
     }
 
     public Accommodation(AccommodationDTO accommodationDTO) {
@@ -68,6 +69,7 @@ public class Accommodation {
         this.accommodetionType = accommodationDTO.getAccommodationType();
         this.description = accommodationDTO.getDescription();
         this.accommodationState = accommodationDTO.getAccommodationState();
+        this.isAutomaticallyReserved = accommodationDTO.isAutomaticallyReserved();
     }
 
     public Accommodation() {
@@ -177,7 +179,12 @@ public class Accommodation {
     public void setAccommodationState(AccommodationState accommodationState) {
         this.accommodationState = accommodationState;
     }
-
+    public boolean isAutomaticallyReserved() {
+        return isAutomaticallyReserved;
+    }
+    public void setAutomaticallyReserved(boolean automaticallyReserved) {
+        isAutomaticallyReserved = automaticallyReserved;
+    }
     public void copyValues(Accommodation accommodation) {
         this.id = accommodation.getId();
         this.owner = accommodation.getOwner();
