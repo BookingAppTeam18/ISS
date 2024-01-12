@@ -47,6 +47,7 @@ public class AccommodationReportService implements IService<AccommodationReportD
     @Override
     public AccommodationReportDTO insert(AccommodationReportDTO accommodationReportDTO) throws Exception {
         AccommodationReport accommodation = new AccommodationReport(accommodationReportDTO);
+        accommodation.setId(null);
         accommodation.setAccommodation(accommodationRepository.getOne(accommodationReportDTO.getAccommodationId()));
         try {
             AccommodationReport savedAccommodation = accommodationReportRepository.save(accommodation);

@@ -37,10 +37,12 @@ public class AccommodationReportController {
     }
 
     @PreAuthorize("hasAnyAuthority('OWNER')")
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationReportDTO> createAccommodation(@RequestBody AccommodationReportDTO accommodationDto) throws Exception {
+    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationReportDTO> createAccommodationReport(
+            @RequestBody AccommodationReportDTO accommodationDto) throws Exception {
+
         AccommodationReportDTO savedAccommodation = accommodationReportService.insert(accommodationDto);
-        return new ResponseEntity<AccommodationReportDTO>(savedAccommodation, HttpStatus.CREATED);
+        return new ResponseEntity<>(savedAccommodation, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAnyAuthority('OWNER')")
