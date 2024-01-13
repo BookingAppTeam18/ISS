@@ -3,6 +3,7 @@ package rest.domain.DTO;
 import rest.domain.AccommodationComment;
 import rest.domain.AccountComment;
 import rest.domain.Comment;
+import rest.domain.enumerations.CommentState;
 import rest.domain.enumerations.Page;
 
 public class CommentDTO {
@@ -13,6 +14,7 @@ public class CommentDTO {
     private String writtenByName;
     private long writtenToId;
     private Page page;
+    private CommentState commentState;
     public CommentDTO( ) {
     }
 
@@ -63,6 +65,12 @@ public class CommentDTO {
     public void setPage(Page page) {
         this.page = page;
     }
+    public CommentState getCommentState() {
+        return commentState;
+    }
+    public void setCommentState(CommentState commentState) {
+        this.commentState = commentState;
+    }
 
     public CommentDTO(AccommodationComment comment) {
         this.id = comment.getId();
@@ -72,6 +80,7 @@ public class CommentDTO {
         this.writtenById = comment.getWrittenBy().getId();
         this.writtenByName = comment.getWrittenBy().getFirstName() +" " + comment.getWrittenBy().getLastName();
         this.page = comment.getPage();
+        this.commentState = comment.getCommentState();
     }
 
     public CommentDTO(AccountComment comment) {
@@ -82,6 +91,7 @@ public class CommentDTO {
         this.writtenById = comment.getWrittenBy().getId();
         this.writtenByName = comment.getWrittenBy().getFirstName() +" " + comment.getWrittenBy().getLastName();
         this.page = comment.getPage();
+        this.commentState = comment.getCommentState();
     }
 
     public String getWrittenByName() {
