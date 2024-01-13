@@ -126,31 +126,47 @@ public class NotificationController {
     public ResponseEntity<?> sendMessage(@RequestBody NotificationDTO notification) {
         String message = "0";
         if(notification.getMessage().equals("Comment on Account")){
-            //notification.message = generateCommentOnAccountMessage();
-            notification.setMessage("message");
+            notification.setMessage(generateCommentOnAccountMessage());
             this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
         }
         if(notification.getMessage().equals("Comment on Accommodation")){
-            //notification.message = generateCommentOnAccommodationMessage();
-            notification.setMessage("message");
+            notification.setMessage(generateCommentOnAccommodationMessage());
             this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
         }
         if(notification.getMessage().equals("Reservation Request")){
-            //notification.message = generateReservationRequestMessage();
-            notification.setMessage("message");
+            notification.setMessage(generateReservationRequestMessage());
             this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
         }
         if(notification.getMessage().equals("Reservation Cancel")){
-            //notification.message = generateReservationCancelMessage();
-            notification.setMessage("message");
+            notification.setMessage(generateReservationCancelMessage());
             this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
         }
         if(notification.getMessage().equals("Reservation Answer")){
-            //notification.message = generateReservationAnswerMessage();
-            notification.setMessage("message");
+            notification.setMessage(generateReservationAnswerMessage());
             this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
         }
+        notificationService.insert(notification);
         return new ResponseEntity<>(notification, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    private String generateReservationAnswerMessage() {
+        return "message";
+    }
+
+    private String generateReservationCancelMessage() {
+        return "message";
+    }
+
+    private String generateReservationRequestMessage() {
+        return "message";
+    }
+
+    private String generateCommentOnAccommodationMessage() {
+        return "User Commented on your accommodation";
+    }
+
+    private String generateCommentOnAccountMessage() {
+        return "User commented on your account";
     }
 
     /*
