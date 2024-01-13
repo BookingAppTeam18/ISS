@@ -9,7 +9,7 @@ import rest.repository.AccommodationRepository;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -47,23 +47,25 @@ public class ImageService {
             File bigFile = resizeImage(file, baseFileName + "_big" + fileExtension, absolutePath, bigWidth, bigHeight);
             accommodation.getGallery().add(bigFile.getAbsolutePath());
 
-            // Sačuvajte informacije o smeštaju
-            accommodationRepository.save(accommodation);
-            accommodationRepository.flush();
         }
+        accommodationRepository.save(accommodation);
+        accommodationRepository.flush();
     }
 
     private File resizeImage(MultipartFile file, String fileName, Path absolutePath, int width, int height) throws IOException {
-        File tempFile = Files.createTempFile("temp-", null).toFile();
-        file.transferTo(tempFile);
+        // Ne koristite tempFile u ovom trenutku, već koristite samo stream
+        try (InputStream inputStream = file.getInputStream()) {
+            Path filePath = absolutePath.resolve(fileName);
 
-        Path filePath = absolutePath.resolve(fileName);
+            // Prilagodite rezoluciju slike
+            Thumbnails.of(inputStream)
+                    .size(width, height)
+                    .toFile(filePath.toFile());
 
-        Thumbnails.of(tempFile)
-                .size(width, height)
-                .toFile(filePath.toFile());
+            // Nema potrebe za brisanjem tempFile-a, jer ga nismo ni kreirali
 
-        return filePath.toFile();
+            return filePath.toFile();
+        }
     }
 
     public ArrayList<String> getAccommodationImages(Long accommodationId) {
