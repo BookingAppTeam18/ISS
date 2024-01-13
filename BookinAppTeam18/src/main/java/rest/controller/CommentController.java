@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest.domain.Comment;
+import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.CommentDTO;
 import rest.service.CommentService;
 
@@ -84,6 +85,13 @@ public class CommentController {
     public ResponseEntity<Comment> deleteComment(@PathVariable("id") Long id) {
         commentService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PutMapping(value = "/approve/{id}/{option}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommentDTO> approveComment(@PathVariable("id") Long id, @PathVariable("option") int option) throws Exception {
+        CommentDTO commentDTO = commentService.approveComment(id, option);
+        return new ResponseEntity<CommentDTO>(commentDTO, HttpStatus.OK);
     }
 
 }

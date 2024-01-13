@@ -5,7 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.*;
+import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.CommentDTO;
+import rest.domain.enumerations.AccommodationState;
+import rest.domain.enumerations.CommentState;
 import rest.domain.enumerations.Page;
 import rest.repository.AccommodationCommentRepository;
 import rest.repository.AccommodationRepository;
@@ -186,5 +189,22 @@ public class CommentService implements IService<CommentDTO>{
             accountComments.add(new CommentDTO(accountComment));
         }
         return accountComments;
+    }
+    public CommentDTO approveComment(Long accommodationId, int option) {
+        Comment comment = accommodationCommentRepository.getOne(accommodationId);
+        if(option == 0)
+            comment.setCommentState(CommentState.DENIED);
+        else
+            comment.setCommentState(CommentState.APPROVED);
+        if(comment.getPage().equals(Page.ACCOUNT)) {
+            accountCommentRepository.save((AccountComment) comment);
+            accountCommentRepository.flush();
+            return new CommentDTO((AccountComment) comment);
+        }
+        else{
+            accommodationCommentRepository.save((AccommodationComment) comment);
+            accommodationCommentRepository.flush();
+            return new CommentDTO((AccommodationComment) comment);
+        }
     }
 }
