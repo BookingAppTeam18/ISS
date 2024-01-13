@@ -1,18 +1,23 @@
 package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import rest.domain.Accommodation;
 import rest.domain.DTO.NotificationDTO;
 import rest.domain.Notification;
+import rest.repository.AccommodationRepository;
 import rest.repository.AccountRepository;
 import rest.repository.NotificationRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class NotificationService implements IService<NotificationDTO> {
@@ -21,6 +26,10 @@ public class NotificationService implements IService<NotificationDTO> {
     private NotificationRepository notificationRepository;
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private AccommodationRepository accommodationRepository;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
  @Override
     public Collection<NotificationDTO> findAll() {
 
@@ -143,5 +152,59 @@ public class NotificationService implements IService<NotificationDTO> {
             }
             throw ex;
         }
+    }
+
+
+    public void sendMessage(NotificationDTO notification) {
+        if(notification.getMessage().contains("Comment on Account")){
+            notification.setMessage(generateCommentOnAccountMessage(notification));
+        }
+        if(notification.getMessage().contains("Comment on Accommodation")){
+            notification.setMessage(generateCommentOnAccommodationMessage(notification));
+        }
+        if(notification.getMessage().contains("Reservation Request")){
+            notification.setMessage(generateReservationRequestMessage(notification));
+        }
+        if(notification.getMessage().contains("Reservation Cancel")){
+            notification.setMessage(generateReservationCancelMessage(notification));
+        }
+        if(notification.getMessage().contains("Reservation Answer")){
+            notification.setMessage(generateReservationAnswerMessage(notification));
+        }
+        this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
+        insert(notification);
+    }
+
+    private String generateReservationAnswerMessage( NotificationDTO notification) {
+        return "message";
+    }
+
+    private String generateReservationCancelMessage( NotificationDTO notification) {
+        return "message";
+    }
+
+    private String generateReservationRequestMessage( NotificationDTO notification) {
+        return "message";
+    }
+
+    private String generateCommentOnAccommodationMessage( NotificationDTO notification) {
+        String message = notification.getMessage();
+        String[] words = message.split("\\s+");
+        String accommodationIdStr = words[words.length - 1];
+        Long accommodationId = Long.parseLong(accommodationIdStr);
+        Optional<Accommodation> accommodationOptional  = this.accommodationRepository.findById(accommodationId);
+
+        if (accommodationOptional.isPresent()) {
+            Accommodation accommodation = accommodationOptional.get();
+                return "User Commented on your accommodation: " + accommodation.getName();
+        } else {
+            return "Error";
+        }
+
+
+    }
+
+    private String generateCommentOnAccountMessage( NotificationDTO notification) {
+        return "User commented on your account";
     }
 }
