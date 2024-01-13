@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.AccommodationComment;
+import rest.domain.Account;
 import rest.domain.Comment;
+import rest.domain.DTO.AccountDTO;
 import rest.domain.DTO.CommentDTO;
 import rest.domain.Report;
 import rest.domain.DTO.ReportDTO;
@@ -123,6 +125,15 @@ public class ReportService implements IService<ReportDTO>{
     public void deleteAll() {
         reportRepository.deleteAll();
         reportRepository.flush();
+    }
+
+    //Pronalazi samo prijavljene accounte
+    public Collection<AccountDTO> findAccountsReports(){
+        ArrayList<AccountDTO>  accountsReports= new ArrayList<>();
+        for(Account accountReport:reportRepository.findAccountsReports()){
+            accountsReports.add(new AccountDTO(accountReport));
+        }
+        return accountsReports;
     }
     public Collection<ReportDTO> findAccountReports(Long accountId) {
         ArrayList<ReportDTO>  accountReports= new ArrayList<>();
