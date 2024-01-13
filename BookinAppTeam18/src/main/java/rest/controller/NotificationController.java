@@ -121,33 +121,34 @@ public class NotificationController {
 
     // REST enpoint
     @CrossOrigin(origins = "http://localhost:4200")
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @RequestMapping(value="/sendMessageRest", method = RequestMethod.POST)
     public ResponseEntity<?> sendMessage(@RequestBody NotificationDTO notification) {
         String message = "0";
         if(notification.getMessage().equals("Comment on Account")){
             //notification.message = generateCommentOnAccountMessage();
             notification.setMessage("message");
-            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification.getMessage());
+            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
         }
         if(notification.getMessage().equals("Comment on Accommodation")){
             //notification.message = generateCommentOnAccommodationMessage();
             notification.setMessage("message");
-            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification.getMessage());
+            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
         }
         if(notification.getMessage().equals("Reservation Request")){
             //notification.message = generateReservationRequestMessage();
             notification.setMessage("message");
-            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification.getMessage());
+            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
         }
         if(notification.getMessage().equals("Reservation Cancel")){
             //notification.message = generateReservationCancelMessage();
             notification.setMessage("message");
-            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification.getMessage());
+            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
         }
         if(notification.getMessage().equals("Reservation Answer")){
             //notification.message = generateReservationAnswerMessage();
             notification.setMessage("message");
-            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification.getMessage());
+            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
         }
         return new ResponseEntity<>(notification, new HttpHeaders(), HttpStatus.OK);
     }

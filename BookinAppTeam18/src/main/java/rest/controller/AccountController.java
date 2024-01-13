@@ -58,7 +58,6 @@ public class AccountController {
 
     //Get favourite accommodation for specific user
     @PreAuthorize("hasAnyAuthority('GUEST')")
-
     @GetMapping(value="/favorites/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getFavoriteAccommodations(@PathVariable("userId") Long accountId){
         Collection<AccommodationDTO> accommodationDTOS = accountService.findFavourite(accountId);
