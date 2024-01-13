@@ -20,6 +20,10 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query("SELECT account FROM Account account where account.email=?1")
     Account findByEmail(String email);
 
+    @Query(value = "SELECT a.* FROM accommodations a " +
+            "JOIN account_favourite_accommodations afa ON a.id = afa.accommodation_id " +
+            "WHERE afa.account_id = :accountId", nativeQuery = true)
+    Collection<Object[]> findFavouriteAccommodationsByAccountId(@Param("accountId") Long accountId);
 
     //U odnosu na id usera dobiti njegovu listu accommodationa i onda dodati/ukloniti accommodation
     // sa odredjenim idom (proslijediti id accommodationa i accounta)

@@ -8,11 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.*;
 import rest.domain.DTO.*;
+import rest.domain.enumerations.AccommodationState;
+import rest.domain.enumerations.AccommodationType;
+import rest.domain.enumerations.Benefit;
 import rest.domain.enumerations.UserState;
 import rest.repository.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.math.BigInteger;
 import java.util.*;
 
 @Service
@@ -179,11 +183,36 @@ public class AccountService implements IService<AccountDTO> {
     }
 
     public Collection<AccommodationDTO> findFavourite(Long id){
-        Collection<Accommodation> favouriteAccommodations = accountRepository.findFavouriteAccommodation(id);
-        Collection<AccommodationDTO> favouriteAccommodationDTOs = null;
-        for(Accommodation accommodation : favouriteAccommodations){
-            favouriteAccommodationDTOs.add(new AccommodationDTO(accommodation));
+
+        Collection<Object[]> result = accountRepository.findFavouriteAccommodationsByAccountId(id);
+        Collection<Accommodation> favouriteAccommodations = new ArrayList<>();
+        Collection<AccommodationDTO> favouriteAccommodationDTOs = new ArrayList<AccommodationDTO>();
+
+        for (Object[] row : result) {
+            AccommodationDTO accommodationDTO = new AccommodationDTO();
+
+            accommodationDTO.setId(((BigInteger) row[0]).longValue());
+            accommodationDTO.setAccommodationState(AccommodationState.valueOf((String) row[1]));
+            accommodationDTO.setAccommodationType(AccommodationType.valueOf((String) row[2]));
+            accommodationDTO.setDescription((String) row[3]);
+            accommodationDTO.setAutomaticallyReserved((Boolean) row[4]);
+            accommodationDTO.setLatitude((Double) row[5]);
+            accommodationDTO.setLocation((String) row[6]);
+            accommodationDTO.setLongitude((Double) row[7]);
+            accommodationDTO.setMaxNumOfGuests((Integer) row[8]);
+            accommodationDTO.setMinNumOfGuests((Integer) row[9]);
+            accommodationDTO.setName((String) row[10]);
+            accommodationDTO.setReservationDeadline((Integer) row[11]);
+            accommodationDTO.setOwnerId(((BigInteger) row[12]).longValue());
+
+            accommodationDTO.setBenefits(new ArrayList<Benefit>());
+            accommodationDTO.setGallery(new ArrayList<String>());
+
+            favouriteAccommodationDTOs.add(accommodationDTO);
         }
+
+
+
         return favouriteAccommodationDTOs;
     }
 
