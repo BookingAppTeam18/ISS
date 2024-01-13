@@ -98,6 +98,7 @@ public class AccountController {
             // Handle exceptions and return an appropriate HTTP status
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PutMapping(value = "/block/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
