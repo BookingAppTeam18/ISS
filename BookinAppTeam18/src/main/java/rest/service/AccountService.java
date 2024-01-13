@@ -214,7 +214,14 @@ public class AccountService implements IService<AccountDTO> {
                 benefitList.add(Benefit.valueOf((String) b[0]));
             }
             accommodationDTO.setBenefits(benefitList);
-            //            accommodationDTO.setBenefits(new ArrayList<>(benefits));
+
+            ArrayList<String> galeryList = new ArrayList<String>();
+
+            Collection<Object[]> gallery = accountRepository.findGalleryByAccommodationId(accommodationDTO.getId());
+            for (Object[] b : gallery){
+                galeryList.add((String) b[0]);
+            }
+            accommodationDTO.setGallery(galeryList);
 //
 //            // Dodajte slike koristeći dodatni upit
 //            Collection<String> gallery = accommodationRepository.findGalleryByAccommodationId(accommodationDTO.getId());
