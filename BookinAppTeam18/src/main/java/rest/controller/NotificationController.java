@@ -1,9 +1,11 @@
 package rest.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest.domain.DTO.NotificationDTO;
@@ -19,6 +21,9 @@ public class NotificationController {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     //ALL Notifications
     @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
@@ -110,5 +115,86 @@ public class NotificationController {
         notificationService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    // EndPoints for Web Socket sending and receive notifications
+
+
+    // REST enpoint
+    @CrossOrigin(origins = "http://localhost:4200")
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
+    @RequestMapping(value="/sendMessageRest", method = RequestMethod.POST)
+    public ResponseEntity<?> sendMessage(@RequestBody NotificationDTO notification) {
+        String message = "0";
+        if(notification.getMessage().equals("Comment on Account")){
+            //notification.message = generateCommentOnAccountMessage();
+            notification.setMessage("message");
+            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
+        }
+        if(notification.getMessage().equals("Comment on Accommodation")){
+            //notification.message = generateCommentOnAccommodationMessage();
+            notification.setMessage("message");
+            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
+        }
+        if(notification.getMessage().equals("Reservation Request")){
+            //notification.message = generateReservationRequestMessage();
+            notification.setMessage("message");
+            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
+        }
+        if(notification.getMessage().equals("Reservation Cancel")){
+            //notification.message = generateReservationCancelMessage();
+            notification.setMessage("message");
+            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
+        }
+        if(notification.getMessage().equals("Reservation Answer")){
+            //notification.message = generateReservationAnswerMessage();
+            notification.setMessage("message");
+            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
+        }
+        return new ResponseEntity<>(notification, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    /*
+     * WebSockets endpoint
+     *
+     * Kao sto smo koristili @RequestMapping za RestController, @MessageMapping se koristi za websocket-e
+     *
+     * Poruka ce biti poslata svim klijentima koji su pretplatili na /socket-publisher topic,
+     * a poruka koja im se salje je messageConverted (simpMessagingTemplate.convertAndSend metoda).
+     *
+     * Na ovaj endpoint klijenti salju poruke, ruta na koju klijenti salju poruke je /send/message (parametar @MessageMapping anotacije)
+     *
+     *//*
+    @MessageMapping("/send/message")
+    public NotificationDTO broadcastNotification(Notification notification) {
+        NotificationDTO messageConverted = parseMessage(message);
+
+        if (messageConverted != null) {
+            if (messageConverted.containsKey("toId") && messageConverted.get("toId") != null
+                    && !messageConverted.get("toId").equals("")) {
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + messageConverted.get("toId"),
+                        messageConverted);
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + messageConverted.get("fromId"),
+                        messageConverted);
+            } else {
+                this.simpMessagingTemplate.convertAndSend("/socket-publisher", messageConverted);
+            }
+        }
+
+        return messageConverted;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, String> parseMessage(String message) {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> retVal;
+
+        try {
+            retVal = mapper.readValue(message, Map.class); // parsiranje JSON stringa
+        } catch (IOException e) {
+            retVal = null;
+        }
+
+        return retVal;
+    }*/
 }
 

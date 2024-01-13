@@ -19,6 +19,8 @@ public class NotificationDTO {
             this.Seen = false;
     }
 
+    public NotificationDTO(){}
+
     public NotificationDTO(Notification notification ) {
         this.id = notification.getId();
         this.message = notification.getMessage();
