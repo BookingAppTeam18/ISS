@@ -25,6 +25,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             "WHERE afa.account_id = :accountId", nativeQuery = true)
     Collection<Object[]> findFavouriteAccommodationsByAccountId(@Param("accountId") Long accountId);
 
+    @Query(nativeQuery = true, value = "SELECT benefit FROM benefits_mapping WHERE accommodation_id = :accommodationId")
+    Collection<Object[]> findBenefitsByAccommodationId(@Param("accommodationId") Long accommodationId);
+
     //U odnosu na id usera dobiti njegovu listu accommodationa i onda dodati/ukloniti accommodation
     // sa odredjenim idom (proslijediti id accommodationa i accounta)
 

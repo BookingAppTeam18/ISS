@@ -205,8 +205,20 @@ public class AccountService implements IService<AccountDTO> {
             accommodationDTO.setReservationDeadline((Integer) row[11]);
             accommodationDTO.setOwnerId(((BigInteger) row[12]).longValue());
 
-            accommodationDTO.setBenefits(new ArrayList<Benefit>());
             accommodationDTO.setGallery(new ArrayList<String>());
+
+            ArrayList<Benefit> benefitList = new ArrayList<Benefit>();
+
+            Collection<Object[]> benefits = accountRepository.findBenefitsByAccommodationId(accommodationDTO.getId());
+            for (Object[] b : benefits){
+                benefitList.add(Benefit.valueOf((String) b[0]));
+            }
+            accommodationDTO.setBenefits(benefitList);
+            //            accommodationDTO.setBenefits(new ArrayList<>(benefits));
+//
+//            // Dodajte slike koristeći dodatni upit
+//            Collection<String> gallery = accommodationRepository.findGalleryByAccommodationId(accommodationDTO.getId());
+//            accommodationDTO.setGallery(new ArrayList<>(gallery));
 
             favouriteAccommodationDTOs.add(accommodationDTO);
         }
