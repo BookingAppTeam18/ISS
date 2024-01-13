@@ -22,6 +22,8 @@ public class AccommodationDTO {
     private AccommodationType accommodationType;
     private double rating;
     private double nextPrice;
+    private boolean isAutomaticallyReserved;
+    private int reservationDeadline;
 
     public double getNextPrice() {
         return nextPrice;
@@ -56,6 +58,8 @@ public class AccommodationDTO {
         this.accommodationType = accommodation.getAccommodetionType();
         this.description = accommodation.getDescription();
         this.accommodationState = accommodation.getAccommodationState();
+        this.isAutomaticallyReserved = accommodation.isAutomaticallyReserved();
+        this.reservationDeadline = accommodation.getReservationDeadline();
     }
 
     public Long getId() {
@@ -162,12 +166,23 @@ public class AccommodationDTO {
         this.description = description;
 
     }
-
+    public boolean isAutomaticallyReserved() {
+        return isAutomaticallyReserved;
+    }
+    public void setAutomaticallyReserved(boolean automaticallyReserved) {
+        isAutomaticallyReserved = automaticallyReserved;
+    }
     public AccommodationState getAccommodationState() {
         return accommodationState;
     }
 
     public void setAccommodationState(AccommodationState accommodationState) {
         this.accommodationState = accommodationState;
+    }
+    public int getReservationDeadline() {
+        return reservationDeadline;
+    }
+    public void setReservationDeadline(int reservationDeadline) {
+        this.reservationDeadline = reservationDeadline;
     }
 }

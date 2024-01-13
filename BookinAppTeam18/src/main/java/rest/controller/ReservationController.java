@@ -47,6 +47,14 @@ public class ReservationController {
         return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
+    //Get all reservations for owner
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER')")
+    @GetMapping(value="/owner/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReservationDTO>> getReservationsForOwner(@PathVariable("id") Long accommodationId) {
+        Collection<ReservationDTO> reservations = reservationService.findOwnerReservations(accommodationId);
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
+    }
+
     //Get all
     @PreAuthorize("hasAnyAuthority('ADMIN', 'GUEST')")
     @GetMapping(value="/account/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -62,6 +70,19 @@ public class ReservationController {
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('OWNER','GUEST')")
+    @GetMapping(value="/accommodations/{accommodationId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReservationDTO>> getReservationsForSpecificAccommodation(@PathVariable("accommodationId") Long accommodationId) {
+        Collection<ReservationDTO> reservations = reservationService.findReservationsForAccommodation(accommodationId);
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
+    }
+    @PreAuthorize("hasAnyAuthority('OWNER','GUEST')")
+    @GetMapping(value="/approvedAccommodations/{accommodationId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<ReservationDTO>> getApprovedReservationsForSpecificAccommodation(@PathVariable("accommodationId") Long accommodationId) {
+        Collection<ReservationDTO> reservations = reservationService.findApprovedReservationsForAccommodation(accommodationId);
+        return new ResponseEntity<>(reservations, HttpStatus.OK);
+    }
+
     // Create reservation
     @PreAuthorize("hasAnyAuthority('GUEST')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,7 +91,7 @@ public class ReservationController {
     }
 
     //Update reservation
-    @PreAuthorize("hasAnyAuthority('GUEST')")
+    @PreAuthorize("hasAnyAuthority('GUEST', 'OWNER')")
     @PutMapping(value = "/{reservationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationDTO> updateReservation(@RequestBody ReservationDTO reservationDTO, @PathVariable Long reservationId)
             throws Exception {

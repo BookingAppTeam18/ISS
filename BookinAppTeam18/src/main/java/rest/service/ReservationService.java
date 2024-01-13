@@ -9,7 +9,10 @@ import rest.domain.Account;
 import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.DTO.ReservationDTO;
+import rest.domain.Price;
 import rest.domain.Reservation;
+import rest.domain.enumerations.ReservationStatus;
+import rest.repository.AccommodationRepository;
 import rest.repository.ReservationRepository;
 
 import javax.validation.ConstraintViolation;
@@ -24,6 +27,8 @@ public class ReservationService implements IService<ReservationDTO> {
 
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private AccommodationRepository accommodationRepository;
     @Override
     public Collection<ReservationDTO> findAll() {
         ArrayList<ReservationDTO> reservationDTOS = new ArrayList<ReservationDTO>();
@@ -69,10 +74,43 @@ public class ReservationService implements IService<ReservationDTO> {
         return accountDTOS;
     }
 
+    public Collection<ReservationDTO> findOwnerReservations(Long ownerId){
+        Collection<Reservation> reservations = reservationRepository.findOwnerReservations(ownerId);
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<ReservationDTO>();
+        for(Reservation reservation : reservations){
+            reservationDTOS.add(new ReservationDTO(reservation));
+        }
+        return reservationDTOS;
+    }
+
+    public Collection<ReservationDTO> findReservationsForAccommodation(Long accommodationId){
+        Collection<Reservation> reservations = reservationRepository.findByAccommodationId(accommodationId);
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<ReservationDTO>();
+        for(Reservation reservation : reservations){
+            reservationDTOS.add(new ReservationDTO(reservation));
+        }
+        return reservationDTOS;
+    }
+
+    public Collection<ReservationDTO> findApprovedReservationsForAccommodation(Long accommodationId){
+        Collection<Reservation> reservations = reservationRepository.findByAccommodationId(accommodationId);
+        Collection<ReservationDTO> reservationDTOS = new ArrayList<ReservationDTO>();
+        for(Reservation reservation : reservations){
+            if(reservation.getReservationStatus() == ReservationStatus.APPROVED)
+                reservationDTOS.add(new ReservationDTO(reservation));
+        }
+        return reservationDTOS;
+    }
+
     @Override
     public ReservationDTO insert(ReservationDTO reservationDTO) throws Exception {
         Reservation reservation = new Reservation(reservationDTO);
+        Accommodation accommodation = accommodationRepository.findById(reservationDTO.getAccommodationId()).orElse(null);
         try {
+            if(accommodation != null && accommodation.isAutomaticallyReserved())
+                reservation.setReservationStatus(ReservationStatus.APPROVED);
+            else
+                reservation.setReservationStatus(ReservationStatus.CREATED);
             reservationRepository.save(reservation);
             reservationRepository.flush();
             return reservationDTO;
@@ -91,6 +129,7 @@ public class ReservationService implements IService<ReservationDTO> {
         Reservation reservationToUpdate = new Reservation(reservationDTO);
         try {
             findOne(reservationDTO.getId()); // this will throw ResponseStatusException if student is not found
+            reservationToUpdate.setReservationStatus(reservationDTO.getReservationStatus());
             reservationRepository.save(reservationToUpdate);
             reservationRepository.flush();
             return reservationDTO;
