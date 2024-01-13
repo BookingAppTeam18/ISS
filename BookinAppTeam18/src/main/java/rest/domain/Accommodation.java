@@ -39,8 +39,9 @@ public class Accommodation {
     private String description;
     @Enumerated(EnumType.STRING)
     private AccommodationState accommodationState;
-
-    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, ArrayList<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType, String description, AccommodationState accommodationState) {
+    private boolean isAutomaticallyReserved;
+    private int reservationDeadline;
+    public Accommodation(Long id, Account owner, String name, double longitude, double latitude, double activePrice, int minNumOfGuests, int maxNumOfGuests, ArrayList<String> gallery, List<Benefit> benefits, AccommodationType accommodetionType, String description, AccommodationState accommodationState, boolean isAutomaticallyReserved, int reservationDeadline) {
         this.id = id;
         this.owner = owner;
         this.name = name;
@@ -53,6 +54,8 @@ public class Accommodation {
         this.accommodetionType = accommodetionType;
         this.description = description;
         this.accommodationState = accommodationState;
+        this.isAutomaticallyReserved = isAutomaticallyReserved;
+        this.reservationDeadline = reservationDeadline;
     }
 
     public Accommodation(AccommodationDTO accommodationDTO) {
@@ -68,6 +71,8 @@ public class Accommodation {
         this.accommodetionType = accommodationDTO.getAccommodationType();
         this.description = accommodationDTO.getDescription();
         this.accommodationState = accommodationDTO.getAccommodationState();
+        this.isAutomaticallyReserved = accommodationDTO.isAutomaticallyReserved();
+        this.reservationDeadline = accommodationDTO.getReservationDeadline();
     }
 
     public Accommodation() {
@@ -177,7 +182,18 @@ public class Accommodation {
     public void setAccommodationState(AccommodationState accommodationState) {
         this.accommodationState = accommodationState;
     }
-
+    public boolean isAutomaticallyReserved() {
+        return isAutomaticallyReserved;
+    }
+    public void setAutomaticallyReserved(boolean automaticallyReserved) {
+        isAutomaticallyReserved = automaticallyReserved;
+    }
+    public int getReservationDeadline() {
+        return reservationDeadline;
+    }
+    public void setReservationDeadline(int reservationDeadline) {
+        this.reservationDeadline = reservationDeadline;
+    }
     public void copyValues(Accommodation accommodation) {
         this.id = accommodation.getId();
         this.owner = accommodation.getOwner();
