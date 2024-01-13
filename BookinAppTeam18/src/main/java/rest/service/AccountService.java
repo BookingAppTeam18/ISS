@@ -104,8 +104,7 @@ public class AccountService implements IService<AccountDTO> {
             if(ReservationsExist(id)){
                 Collection<Reservation> reservations = reservationRepository.findGuestReservations(id);
                 for(Reservation reservation : reservations){
-                    reservation.setReservationStatus(ReservationStatus.CANCELLED);
-                    //Dodati promjenu datuma na slobodne nakon otkazivanja rezervacije
+                    reservation.setReservationStatus(ReservationStatus.DENIED);
                     //Dodati notifikaciju da je otkazana
                     reservationRepository.save(reservation);
                     reservationRepository.flush();
