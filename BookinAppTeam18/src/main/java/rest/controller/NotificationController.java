@@ -5,7 +5,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest.domain.DTO.NotificationDTO;
@@ -22,8 +21,6 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
 
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
 
     //ALL Notifications
     @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
@@ -124,50 +121,10 @@ public class NotificationController {
     @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @RequestMapping(value="/sendMessageRest", method = RequestMethod.POST)
     public ResponseEntity<?> sendMessage(@RequestBody NotificationDTO notification) {
-        String message = "0";
-        if(notification.getMessage().equals("Comment on Account")){
-            notification.setMessage(generateCommentOnAccountMessage());
-            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
-        }
-        if(notification.getMessage().equals("Comment on Accommodation")){
-            notification.setMessage(generateCommentOnAccommodationMessage());
-            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
-        }
-        if(notification.getMessage().equals("Reservation Request")){
-            notification.setMessage(generateReservationRequestMessage());
-            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
-        }
-        if(notification.getMessage().equals("Reservation Cancel")){
-            notification.setMessage(generateReservationCancelMessage());
-            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
-        }
-        if(notification.getMessage().equals("Reservation Answer")){
-            notification.setMessage(generateReservationAnswerMessage());
-            this.simpMessagingTemplate.convertAndSend("/socket-publisher/" + notification.getAccountId(), notification);
-        }
-        notificationService.insert(notification);
+        this.notificationService.sendMessage(notification);
         return new ResponseEntity<>(notification, new HttpHeaders(), HttpStatus.OK);
     }
 
-    private String generateReservationAnswerMessage() {
-        return "message";
-    }
-
-    private String generateReservationCancelMessage() {
-        return "message";
-    }
-
-    private String generateReservationRequestMessage() {
-        return "message";
-    }
-
-    private String generateCommentOnAccommodationMessage() {
-        return "User Commented on your accommodation";
-    }
-
-    private String generateCommentOnAccountMessage() {
-        return "User commented on your account";
-    }
 
     /*
      * WebSockets endpoint
