@@ -87,6 +87,7 @@ public class AccountController {
         }
     }
 
+
     @PreAuthorize("hasAnyAuthority('GUEST')")
     @GetMapping("/favouriteAccommodations")
     public ResponseEntity<Collection<AccommodationDTO>> getFavouriteAccommodations(@RequestParam Long userId) {
@@ -97,6 +98,18 @@ public class AccountController {
             // Handle exceptions and return an appropriate HTTP status
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PutMapping(value = "/block/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccountDTO> blockAccount(@PathVariable Long id)
+            throws Exception {
+        AccountDTO updatedAccount = accountService.blockAccount(id);
+
+        if (updatedAccount == null) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(updatedAccount, HttpStatus.OK);
+
     }
 
     //Update account

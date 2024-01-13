@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.*;
 import rest.domain.DTO.*;
+
 import rest.domain.enumerations.AccommodationState;
 import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
+
+import rest.domain.enumerations.ReservationStatus;
+
 import rest.domain.enumerations.UserState;
 import rest.repository.*;
 
@@ -96,6 +100,32 @@ public class AccountService implements IService<AccountDTO> {
         javaMailSender.send(message);
     }
 
+    public AccountDTO blockAccount(Long id) {
+        AccountDTO accountDTO = findOne(id);
+        UserType userType = userTypeRepository.findByName(accountDTO.getUserType().toString());
+        Account account = new Account(accountDTO, userType);
+        account.setUserState(UserState.BANNED);
+        System.out.println(account.getUserState());
+
+        if(account.getUserType().getName().equals("GUEST")){
+            if(ReservationsExist(id)){
+                Collection<Reservation> reservations = reservationRepository.findGuestReservations(id);
+                for(Reservation reservation : reservations){
+                    reservation.setReservationStatus(ReservationStatus.DENIED);
+                    //Dodati notifikaciju da je otkazana
+                    reservationRepository.save(reservation);
+                    reservationRepository.flush();
+                }
+                //Provjeriti moze li se ovako sacuvati
+//                reservationRepository.saveAll(reservations);
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Guest has reservations");
+            }
+        }
+
+        accountRepository.save(account);
+        accountRepository.flush();
+        return new AccountDTO(account);
+    }
 
     @Override
     public AccountDTO update(AccountDTO accountDTO) throws Exception {
