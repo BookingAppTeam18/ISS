@@ -73,11 +73,19 @@ public class AccountController {
     }
 
     //Add accommodation in favourites (Post?)
-//    @PostMapping(value="addFavorites",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<AccommodationDTO> addInFavourites(@RequestBody AccommodationDTO accommodationDTO) throws Exception{
-//
-//        return new ResponseEntity<>(accountService.addInFavourites(accommodationDTO), HttpStatus.CREATED);
-//    }
+    @PreAuthorize("hasAnyAuthority('GUEST')")
+    @PostMapping(value = "/addFavorites", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccommodationDTO> addInFavourites(
+            @RequestParam Long userId,
+            @RequestBody AccommodationDTO accommodationDTO) {
+        try {
+            AccommodationDTO result = accountService.addInFavourites(userId, accommodationDTO);
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
+        } catch (Exception e) {
+            // Handle exceptions and return an appropriate HTTP status
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     //Update account
     @PreAuthorize("hasAnyAuthority('OWNER','GUEST','ADMIN')")

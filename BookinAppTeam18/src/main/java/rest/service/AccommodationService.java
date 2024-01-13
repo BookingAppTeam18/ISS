@@ -115,7 +115,6 @@ public class AccommodationService implements IService<AccommodationDTO> {
         }
     }
 
-
     @Override
     public AccommodationDTO update(AccommodationDTO accommodationDTO) throws Exception {
         Accommodation accommodationToUpdate = new Accommodation(accommodationDTO);

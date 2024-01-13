@@ -189,9 +189,27 @@ public class AccountService implements IService<AccountDTO> {
 
 
 
-//    public AccommodationDTO addInFavourites(AccommodationDTO accommodationDTO){
-//        return null;
-//    }
+    public AccommodationDTO addInFavourites(Long userId, AccommodationDTO accommodationDTO) {
+        // Retrieve the user account from the repository based on the userId
+        Account userAccount = accountRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Check if the accommodation is already in favorites to avoid duplicates
+        if (!userAccount.getFavouriteAccommodations().contains(accommodationDTO.getId())) {
+            // Add the accommodation to the user's favorites
+            userAccount.getFavouriteAccommodations().add(accommodationDTO.getId());
+
+            // Save the updated user account
+            accountRepository.save(userAccount);
+            accountRepository.flush();
+
+            // Return the modified accommodationDTO or a confirmation DTO
+            return accommodationDTO;
+        } else {
+            // Optionally, handle the case where the accommodation is already in favorites
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Accommodation is already in favorites");
+        }
+    }
 
 
     @Override

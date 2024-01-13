@@ -4,6 +4,9 @@ import rest.domain.Account;
 import rest.domain.enumerations.UserState;
 import rest.domain.enumerations.UserTypeDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AccountDTO {
     private Long id;
     private String firstName;
@@ -14,6 +17,8 @@ public class AccountDTO {
     private String phone;
     private UserTypeDTO userType;
     private UserState userState;
+
+    private List<Long> favouriteAccommodations;
 
     public AccountDTO(){
 
@@ -34,6 +39,8 @@ public class AccountDTO {
         this.phone = account.getPhone();
         this.password = account.getPassword();
         this.userState = account.getUserState();
+        this.favouriteAccommodations = new ArrayList<Long>();
+        this.favouriteAccommodations = account.getFavouriteAccommodations();
     }
 
     public AccountDTO(Long id,
@@ -126,5 +133,13 @@ public class AccountDTO {
 
     public void setUserState(UserState userState) {
         this.userState = userState;
+    }
+
+    public List<Long> getFavouriteAccommodations() {
+        return favouriteAccommodations;
+    }
+
+    public void setFavouriteAccommodations(List<Long> favouriteAccommodations) {
+        this.favouriteAccommodations = favouriteAccommodations;
     }
 }
