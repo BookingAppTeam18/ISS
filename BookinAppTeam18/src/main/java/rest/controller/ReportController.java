@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import rest.domain.DTO.AccountDTO;
 import rest.domain.DTO.ReportDTO;
 import rest.service.ReportService;
 
@@ -59,6 +60,13 @@ public class ReportController {
         if (report == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(report, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @GetMapping(value = "accounts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<AccountDTO>> getAccountsReports() {
+        Collection<AccountDTO> report = reportService.findAccountsReports();
         return new ResponseEntity<>(report, HttpStatus.OK);
     }
 
