@@ -23,6 +23,7 @@ public class AccommodationDTO {
     private double rating;
     private double nextPrice;
     private boolean isAutomaticallyReserved;
+    private int reservationDeadline;
 
     public double getNextPrice() {
         return nextPrice;
@@ -58,6 +59,7 @@ public class AccommodationDTO {
         this.description = accommodation.getDescription();
         this.accommodationState = accommodation.getAccommodationState();
         this.isAutomaticallyReserved = accommodation.isAutomaticallyReserved();
+        this.reservationDeadline = accommodation.getReservationDeadline();
     }
 
     public Long getId() {
@@ -176,5 +178,11 @@ public class AccommodationDTO {
 
     public void setAccommodationState(AccommodationState accommodationState) {
         this.accommodationState = accommodationState;
+    }
+    public int getReservationDeadline() {
+        return reservationDeadline;
+    }
+    public void setReservationDeadline(int reservationDeadline) {
+        this.reservationDeadline = reservationDeadline;
     }
 }
