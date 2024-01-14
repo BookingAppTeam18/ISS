@@ -40,6 +40,9 @@ public class AccountService implements IService<AccountDTO> {
     private AccountCommentRepository accountCommentRepository;
 
     @Autowired
+    private ImageService imageService;
+
+    @Autowired
     public AccountService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }
@@ -245,13 +248,8 @@ public class AccountService implements IService<AccountDTO> {
             }
             accommodationDTO.setBenefits(benefitList);
 
-            ArrayList<String> galeryList = new ArrayList<String>();
 
-            Collection<Object[]> gallery = accountRepository.findGalleryByAccommodationId(accommodationDTO.getId());
-            for (Object[] b : gallery){
-                galeryList.add((String) b[0]);
-            }
-            accommodationDTO.setGallery(galeryList);
+            accommodationDTO.setGallery(imageService.getAccommodationImages(accommodationDTO.getId()));
 //
 //            // Dodajte slike koristeći dodatni upit
 //            Collection<String> gallery = accommodationRepository.findGalleryByAccommodationId(accommodationDTO.getId());
