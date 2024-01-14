@@ -3,6 +3,7 @@ package rest.domain;
 
 import org.hibernate.annotations.Cascade;
 import rest.domain.DTO.CommentDTO;
+import rest.domain.enumerations.CommentState;
 import rest.domain.enumerations.Page;
 
 import javax.persistence.*;
@@ -23,22 +24,25 @@ public class Comment {
 
     @Enumerated(EnumType.STRING)
     private Page page;
-
+    @Enumerated(EnumType.STRING)
+    private CommentState commentState;
     public Comment() {
 
     }
 
-    public Comment(Long id, String message, int rate, Page page) {
+    public Comment(Long id, String message, int rate, Page page, CommentState commentState){
         this.id = id;
         this.message = message;
         this.rate = rate;
         this.page = page;
+        this.commentState = commentState;
     }
     public Comment(CommentDTO commentDTO) {
         this.id = commentDTO.getId();
         this.message = commentDTO.getMessage();
         this.rate = commentDTO.getRate();
         this.page = commentDTO.getPage();
+        this.commentState = commentDTO.getCommentState();
     }
 
     public Long getId() {
@@ -85,6 +89,12 @@ public class Comment {
 
     public void setPage(Page page) {
         this.page = page;
+    }
+    public CommentState getCommentState() {
+        return commentState;
+    }
+    public void setCommentState(CommentState commentState) {
+        this.commentState = commentState;
     }
 
 }
