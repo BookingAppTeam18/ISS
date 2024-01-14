@@ -200,8 +200,6 @@ public class NotificationService implements IService<NotificationDTO> {
         } else {
             return "Error";
         }
-
-
     }
 
     private String generateCommentOnAccountMessage( NotificationDTO notification) {
