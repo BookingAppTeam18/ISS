@@ -1,11 +1,13 @@
 package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.Accommodation;
+import rest.domain.Account;
 import rest.domain.DTO.NotificationDTO;
 import rest.domain.Notification;
 import rest.repository.AccommodationRepository;
@@ -184,7 +186,21 @@ public class NotificationService implements IService<NotificationDTO> {
     }
 
     private String generateReservationRequestMessage( NotificationDTO notification) {
-        return "message";
+        String message = notification.getMessage();
+        String[] words = message.split("\\s+");
+        String accommodationIdStr = words[words.length - 1];
+        Long accommodationId = Long.parseLong(accommodationIdStr);
+        String accountIdStr = words[words.length - 2];
+        Long accountId = Long.parseLong(accountIdStr);
+        Optional<Account> accountOptional  = this.accountRepository.findById(accountId);
+        Optional<Accommodation> accommodationOptional  = this.accommodationRepository.findById(accommodationId);
+        if (accommodationOptional.isPresent() && accountOptional.isPresent()) {
+            Accommodation accommodation = accommodationOptional.get();
+            Account account = accountOptional.get();
+            return "User: "+ account.getFirstName()+" "+account.getLastName() +" made a reservation on your accommodation: " + accommodation.getName();
+        } else {
+            return "Error";
+        }
     }
 
     private String generateCommentOnAccommodationMessage( NotificationDTO notification) {
