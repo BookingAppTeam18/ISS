@@ -178,7 +178,19 @@ public class NotificationService implements IService<NotificationDTO> {
     }
 
     private String generateReservationAnswerMessage( NotificationDTO notification) {
-        return "message";
+        String message = notification.getMessage();
+        String[] words = message.split("\\s+");
+        String accommodationIdStr = words[words.length - 1];
+        Long accommodationId = Long.parseLong(accommodationIdStr);
+        String reservationStatus = words[words.length - 2];
+        Optional<Accommodation> accommodationOptional  = this.accommodationRepository.findById(accommodationId);
+
+        if (accommodationOptional.isPresent()) {
+            Accommodation accommodation = accommodationOptional.get();
+            return "Your reservation for accommodation: " + accommodation.getName()+" is "+reservationStatus;
+        } else {
+            return "Error";
+        }
     }
 
     private String generateReservationCancelMessage( NotificationDTO notification) {

@@ -96,9 +96,9 @@ public class ReservationService implements IService<ReservationDTO> {
         Collection<Reservation> reservations = reservationRepository.findByAccommodationId(accommodationId);
         Collection<ReservationDTO> reservationDTOS = new ArrayList<ReservationDTO>();
         for(Reservation reservation : reservations){
-            if(reservation.getReservationStatus() == ReservationStatus.APPROVED)
+            if(reservation.getReservationStatus() == ReservationStatus.APPROVED){
                 reservationDTOS.add(new ReservationDTO(reservation));
-        }
+        }}
         return reservationDTOS;
     }
 
@@ -109,7 +109,7 @@ public class ReservationService implements IService<ReservationDTO> {
         try {
             if(accommodation != null && accommodation.isAutomaticallyReserved())
                 reservation.setReservationStatus(ReservationStatus.APPROVED);
-            else
+            if(accommodation != null && !accommodation.isAutomaticallyReserved())
                 reservation.setReservationStatus(ReservationStatus.CREATED);
             reservationRepository.save(reservation);
             reservationRepository.flush();
