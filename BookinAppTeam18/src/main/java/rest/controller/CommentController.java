@@ -94,4 +94,11 @@ public class CommentController {
         return new ResponseEntity<CommentDTO>(commentDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @GetMapping(value = "/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<CommentDTO>> getUnapprovedComments() {
+        Collection<CommentDTO> comments = commentService.findUnapprovedComments();
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
 }

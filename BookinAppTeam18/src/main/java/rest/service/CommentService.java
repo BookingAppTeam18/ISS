@@ -207,4 +207,17 @@ public class CommentService implements IService<CommentDTO>{
             return new CommentDTO((AccommodationComment) comment);
         }
     }
+
+    public Collection<CommentDTO> findUnapprovedComments(){
+        ArrayList<CommentDTO> comments = new ArrayList<>();
+        for(AccommodationComment accommodationComment:accommodationCommentRepository.findAll()){
+            if(accommodationComment.getCommentState().equals(CommentState.WRITTEN))
+                comments.add(new CommentDTO(accommodationComment));
+        }
+        for(AccountComment accountComment:accountCommentRepository.findAll()){
+            if(accountComment.getCommentState().equals(CommentState.WRITTEN))
+                comments.add(new CommentDTO(accountComment));
+        }
+        return comments;
+    }
 }
