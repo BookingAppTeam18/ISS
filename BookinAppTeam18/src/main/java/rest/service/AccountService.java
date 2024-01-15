@@ -115,7 +115,6 @@ public class AccountService implements IService<AccountDTO> {
                 Collection<Reservation> reservations = reservationRepository.findGuestReservations(id);
                 for(Reservation reservation : reservations){
                     reservation.setReservationStatus(ReservationStatus.DENIED);
-                    //Dodati notifikaciju da je otkazana
                     reservationRepository.save(reservation);
                     reservationRepository.flush();
                 }
@@ -123,6 +122,10 @@ public class AccountService implements IService<AccountDTO> {
 //                reservationRepository.saveAll(reservations);
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Guest has reservations");
             }
+        }
+        if(account.getUserType().getName().equals("OWNER")){
+            if(AccommodationsOwned(id))
+                denyAccommodations(id);
         }
 
         accountRepository.save(account);
@@ -190,6 +193,15 @@ public class AccountService implements IService<AccountDTO> {
                 return true;
         }
         return false;
+    }
+
+    private void denyAccommodations(Long id){
+        Collection<Accommodation> accommodations = accommodationRepository.findAccommodationsOwned(id);
+        for(Accommodation accommodation : accommodations){
+            accommodation.setAccommodationState(AccommodationState.DECLINED);
+            accommodationRepository.save(accommodation);
+            accommodationRepository.flush();
+        }
     }
 
     private boolean ReservationsExistByOwner(Long id) {
