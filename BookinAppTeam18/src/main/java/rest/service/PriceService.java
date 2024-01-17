@@ -122,9 +122,9 @@ public class PriceService implements IService<PriceDTO> {
 
 
     @Transactional
-    public Collection<PriceDTO> updatePrices(Collection<PriceDTO> prices) {
+    public Collection<PriceDTO> updatePrices(Collection<PriceDTO> prices,Long accommodationId) {
         Collection<Price> newPrices = DTOToPrices(prices);
-        Collection<Price> originalPrices = priceRepository.findPricesForAccommodation(prices.iterator().next().getAccommodationId());
+        Collection<Price> originalPrices = priceRepository.findPricesForAccommodation(accommodationId);
         for (Price originalPrice: originalPrices) {
             if(!newPrices.contains(originalPrice)){
                 PriceDTO foundPrice =  findOne(originalPrice.getId());
@@ -138,14 +138,22 @@ public class PriceService implements IService<PriceDTO> {
                 insert(new PriceDTO(newPrice));
             }
         }
-        Collection<Price> NewOriginalPrices = priceRepository.findPricesForAccommodation(prices.iterator().next().getAccommodationId());;
+        Collection<Price> NewOriginalPrices = priceRepository.findPricesForAccommodation(accommodationId);;
         return PricesToDTO(NewOriginalPrices);
     }
 
     private Collection<Price> DTOToPrices(Collection<PriceDTO> prices) {
         Collection<Price> newPrices = new ArrayList<>();
         for (PriceDTO priceDTO:prices) {
-            newPrices.add(new Price(priceDTO));
+            Optional<Accommodation> accommodationOptional = accommodationRepository.findById(priceDTO.getAccommodationId());
+            Price price = new Price(priceDTO);
+
+            if(accommodationOptional.isPresent()){
+                price.setAccommodation(accommodationOptional.get());
+            }else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Accommodation with ID " + priceDTO.getAccommodationId() + " not found");
+            }
+            newPrices.add(price);
         }
         return newPrices;
     }

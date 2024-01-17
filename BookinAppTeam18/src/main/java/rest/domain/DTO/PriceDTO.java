@@ -1,23 +1,22 @@
 package rest.domain.DTO;
 
-import rest.domain.Accommodation;
 import rest.domain.Price;
+
 import java.util.Date;
 
 public class PriceDTO {
     private Long id;
-    private Date startDate;
-    private Date endDate;
+    private long startDate;
+    private long endDate;
     private double amount;
     private Long accommodationId;
 
     public PriceDTO(Price price){
         this.id = price.getId();
-        this.startDate = price.getStart();
-        this.endDate = price.getEndDate();
+        this.startDate = price.getStart().getTime();
+        this.endDate = price.getEndDate().getTime();
         this.amount = price.getAmount();
         this.accommodationId = price.getAccommodation().getId();
-
     }
 
     public PriceDTO(){
@@ -33,19 +32,19 @@ public class PriceDTO {
     }
 
     public Date getStartDate() {
-        return startDate;
+        return new Date(startDate);
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = startDate.getTime();
     }
 
     public Date getEndDate() {
-        return endDate;
+        return new Date(endDate);
     }
 
     public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        this.endDate = endDate.getTime();
     }
 
     public double getAmount() {

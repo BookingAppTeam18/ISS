@@ -10,6 +10,7 @@ import rest.domain.DTO.PriceDTO;
 import rest.domain.Price;
 import rest.service.PriceService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RestController
@@ -53,10 +54,22 @@ public class PriceController {
     }
 
     @PreAuthorize("hasAnyAuthority('OWNER')")
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PriceDTO> updatePrice(@RequestBody PriceDTO price, @PathVariable Long id)
+    @PostMapping(value = "/addMultiple",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<PriceDTO>> createPrices(@RequestBody Collection<PriceDTO> prices) throws Exception {
+        Collection<PriceDTO> savedPrices = new ArrayList<>();
+
+        for (PriceDTO price:prices) {
+            PriceDTO savedPrice = priceService.insert(price);
+            savedPrices.add(savedPrice);
+        }
+        return new ResponseEntity<>(savedPrices, HttpStatus.CREATED);
+    }
+
+
+    @PreAuthorize("hasAnyAuthority('OWNER')")
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PriceDTO> updatePrice(@RequestBody PriceDTO price)
             throws Exception {
-        price.setId(id);
         PriceDTO updatedPrice = priceService.insert(price);
 
         if (updatedPrice == null) {
@@ -66,10 +79,10 @@ public class PriceController {
     }
 
     @PreAuthorize("hasAnyAuthority('OWNER')")
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Collection<PriceDTO>> updateOrCreatePrice(@RequestBody Collection<PriceDTO> prices)
+    @PutMapping(value = "/accommodation/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Collection<PriceDTO>> updatePrices(@RequestBody Collection<PriceDTO> prices,@PathVariable("id") Long accommodationId)
             throws Exception {
-        Collection<PriceDTO> updatedPrices = priceService.updatePrices(prices);
+        Collection<PriceDTO> updatedPrices = priceService.updatePrices(prices,accommodationId);
 
         if (updatedPrices == null) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
