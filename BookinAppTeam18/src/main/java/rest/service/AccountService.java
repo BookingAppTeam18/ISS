@@ -120,14 +120,12 @@ public class AccountService implements IService<AccountDTO> {
                 }
                 //Provjeriti moze li se ovako sacuvati
 //                reservationRepository.saveAll(reservations);
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Guest has reservations");
             }
         }
         if(account.getUserType().getName().equals("OWNER")){
             if(AccommodationsOwned(id))
                 denyAccommodations(id);
         }
-
         accountRepository.save(account);
         accountRepository.flush();
         return new AccountDTO(account);

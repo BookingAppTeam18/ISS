@@ -191,20 +191,32 @@ public class CommentService implements IService<CommentDTO>{
         return accountComments;
     }
     public CommentDTO approveComment(Long accommodationId, int option) {
-        Comment comment = accommodationCommentRepository.getOne(accommodationId);
-        if(option == 0)
+       Optional<AccommodationComment> accommodationCommentOptional = accommodationCommentRepository.findById(accommodationId);
+       if(accommodationCommentOptional.isPresent()){
+           AccommodationComment accommodationComment = accommodationCommentOptional.get();
+           handleCommentApproval(accommodationComment, option);
+           accommodationCommentRepository.save(accommodationComment);
+           accommodationCommentRepository.flush();
+           return new CommentDTO(accommodationComment);
+       }
+       else{
+           Optional<AccountComment> accountCommentOptional = accountCommentRepository.findById(accommodationId);
+           if(accountCommentOptional.isPresent()) {
+               AccountComment accountComment = accountCommentOptional.get();
+               handleCommentApproval(accountComment, option);
+               accountCommentRepository.save(accountComment);
+               accountCommentRepository.flush();
+               return new CommentDTO(accountComment);
+           }
+       }
+       return null;
+    }
+
+    private void handleCommentApproval(Comment comment, int option) {
+        if (option == 0) {
             comment.setCommentState(CommentState.DENIED);
-        else
+        } else {
             comment.setCommentState(CommentState.APPROVED);
-        if(comment.getPage().equals(Page.ACCOUNT)) {
-            accountCommentRepository.save((AccountComment) comment);
-            accountCommentRepository.flush();
-            return new CommentDTO((AccountComment) comment);
-        }
-        else{
-            accommodationCommentRepository.save((AccommodationComment) comment);
-            accommodationCommentRepository.flush();
-            return new CommentDTO((AccommodationComment) comment);
         }
     }
 
