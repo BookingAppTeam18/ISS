@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.informatika.rest;
+package rest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
