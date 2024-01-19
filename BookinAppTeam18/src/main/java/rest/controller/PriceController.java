@@ -47,10 +47,10 @@ public class PriceController {
     }
 
     @PreAuthorize("hasAnyAuthority('OWNER')")
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PriceDTO> createPrice(@RequestBody PriceDTO price) throws Exception {
         PriceDTO savedPrice = priceService.insert(price);
-        return new ResponseEntity<>(savedPrice, HttpStatus.CREATED);
+        return new ResponseEntity<>(savedPrice, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('OWNER')")
