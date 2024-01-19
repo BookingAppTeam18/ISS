@@ -2,9 +2,11 @@ package rest.student3.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -12,6 +14,7 @@ import org.springframework.http.*;
 
 import rest.domain.DTO.ReservationDTO;
 import rest.domain.enumerations.ReservationStatus;
+import rest.service.ReservationService;
 import rest.utils.TokenUtils;
 
 import java.util.Calendar;
@@ -41,7 +44,7 @@ public class ReservationControllerIntegrationTest{
         calendar.add(Calendar.DAY_OF_MONTH, 7);
         mockEndDate = calendar.getTime();
 
-        ReservationDTO reservationDTO = new ReservationDTO(7L, mockStartDate, mockEndDate, 4000, 1L, 3L, 2, ReservationStatus.CREATED);
+        ReservationDTO reservationDTO = new ReservationDTO(null, mockStartDate, mockEndDate, 4000, 1L, 3L, 2, ReservationStatus.CREATED);
 
         // Postavljanje zaglavlja HTTP zahteva
         String username = "guest@gmail.com";
@@ -76,9 +79,6 @@ public class ReservationControllerIntegrationTest{
 
         // Provera HTTP status koda
         assertEquals(201, responseEntity.getStatusCodeValue());
-
-        // Provera povratnih podataka (vraćenog ReservationDTO objekta)
-        ReservationDTO createdReservation = responseEntity.getBody();
 
     }
 
