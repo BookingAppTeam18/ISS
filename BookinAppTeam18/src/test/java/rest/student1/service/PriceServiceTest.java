@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import rest.domain.Accommodation;
 import rest.domain.DTO.PriceDTO;
 import rest.domain.Price;
@@ -21,7 +20,6 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration,rest.student1.config.TestSecurityConfig")
 public class PriceServiceTest {
 
     @Mock
