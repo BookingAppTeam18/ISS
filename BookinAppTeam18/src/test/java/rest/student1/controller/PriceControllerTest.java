@@ -1,7 +1,8 @@
 package rest.student1.controller;
 
 
-import org.hamcrest.Matchers;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import rest.controller.PriceController;
 import rest.domain.DTO.PriceDTO;
@@ -19,9 +22,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PriceController.class)
+@ActiveProfiles("MyTest")  // Postavljanje profila na "test"
 public class PriceControllerTest {
 
     @MockBean
@@ -30,32 +35,48 @@ public class PriceControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+
+    @BeforeEach
+    void setUp() {
+        // Postavljanje Mockito kada je potrebno
+    }
     @Test
-    @WithMockUser(authorities = "OWNER")
-    @DisplayName("Should List All Posts When making GET request to endpoint - /api/posts/")
-    public void shouldCreatePost() throws Exception {
+    @DisplayName("Return inserted price")
+    @WithUserDetails("owner")
+    public void ShouldCreatePrice() throws Exception {
+        // Priprema podataka
         Date mockStartDate = new Date();
         Date mockEndDate = new Date(mockStartDate.getTime());
-
-        // Dodajemo nedelju dana na krajnji datum
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(mockEndDate);
         calendar.add(Calendar.DAY_OF_MONTH, 7);
         mockEndDate = calendar.getTime();
 
-        PriceDTO priceDTO = new PriceDTO(1L, mockStartDate.getTime(), mockEndDate.getTime(), 100, 2L);
+        PriceDTO priceDTO = new PriceDTO();
+        priceDTO.setStartDate(mockStartDate);
+        priceDTO.setEndDate(mockEndDate);
+        priceDTO.setAmount(100.0);
+        priceDTO.setAccommodationId(2L);
+        // Dodajte potrebne informacije u priceDTO
+
+        // Postavljanje Mockito kada je potrebno
+        Mockito.when(priceService.insert(Mockito.any(PriceDTO.class))).thenReturn(priceDTO);
+
+        // Simulacija HTTP POST zahteva
+        mockMvc.perform(post("/api/prices")
+                        .content(objectMapper.writeValueAsString(priceDTO))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.startDate").value(priceDTO.getStartDate().getTime()))
+                .andExpect(jsonPath("$.endDate").value(priceDTO.getEndDate().getTime()))
+                .andExpect(jsonPath("$.amount").value(priceDTO.getAmount()))
+                .andExpect(jsonPath("$.accommodationId").value(priceDTO.getAccommodationId()));
 
 
-        Mockito.when(priceService.insert(priceDTO)).thenReturn(priceDTO);
-
-        mockMvc.perform(post("http://localhost8080/api/prices",priceDTO))
-                .andExpect(status().is(200))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.size()", Matchers.is(1)))
-                .andExpect(jsonPath("$[0].id", Matchers.is(1)))
-                .andExpect(jsonPath("$[0].startDate", Matchers.is(mockStartDate.getTime())))
-                .andExpect(jsonPath("$[0].endDate", Matchers.is(mockEndDate.getTime())))
-                .andExpect(jsonPath("$[0].amount", Matchers.is(100)))
-                .andExpect(jsonPath("$[0].accommodationId", Matchers.is(2)));
+        // Provera poziva metode u priceService
+        Mockito.verify(priceService, Mockito.times(1)).insert(Mockito.any(PriceDTO.class));
     }
 }

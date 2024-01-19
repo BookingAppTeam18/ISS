@@ -90,4 +90,9 @@ public class Price {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+
+    public float getAccommodationId() {
+        return accommodation.getId();
+    }
 }
