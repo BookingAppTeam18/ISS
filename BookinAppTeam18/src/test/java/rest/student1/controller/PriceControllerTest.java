@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import rest.controller.PriceController;
 import rest.domain.DTO.PriceDTO;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PriceController.class)
+@ActiveProfiles("MyTest")  // Postavljanje profila na "test"
 public class PriceControllerTest {
 
     @MockBean
@@ -43,7 +45,7 @@ public class PriceControllerTest {
     @Test
     @DisplayName("Return inserted price")
     @WithUserDetails("owner")
-    public void shouldCreatePrice() throws Exception {
+    public void ShouldCreatePrice() throws Exception {
         // Priprema podataka
         Date mockStartDate = new Date();
         Date mockEndDate = new Date(mockStartDate.getTime());
