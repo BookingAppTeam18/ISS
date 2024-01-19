@@ -17,10 +17,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 @EnableWebSecurity
 @Order(1) // Setiranje prioriteta konfiguracije
-@Profile("test")  // Konfiguracija se primenjuje samo u profilu test
+@Profile("MyTest")  // Konfiguracija se primenjuje samo u profilu test
 public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
+    @Bean("testUserDetailsService")
     @Override
     public UserDetailsService userDetailsService() {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();

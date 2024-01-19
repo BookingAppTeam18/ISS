@@ -26,13 +26,13 @@ import rest.utils.TokenUtils;
 // Injektovanje bean-a za bezbednost
 @EnableWebSecurity
 
+@Profile("!test")
 // Ukljucivanje podrske za anotacije "@Pre*" i "@Post*" koje ce aktivirati autorizacione provere za svaki pristup metodi
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
 
     // Servis koji se koristi za citanje podataka o korisnicima aplikacije
     @Bean
-    @Profile("!test")  // Konfiguracija se ne primenjuje u profilu test
     public UserDetailsService userDetailsService() {
         return new CustomAccountDetailsService();
     }

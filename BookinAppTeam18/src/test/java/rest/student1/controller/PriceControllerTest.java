@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PriceController.class)
-@ActiveProfiles("test")  // Postavljanje profila na "test"
+@ActiveProfiles("MyTest")  // Postavljanje profila na "test"
 public class PriceControllerTest {
 
     @MockBean
@@ -45,7 +45,7 @@ public class PriceControllerTest {
     @Test
     @DisplayName("Return inserted price")
     @WithUserDetails("owner")
-    public void shouldCreatePrice() throws Exception {
+    public void ShouldCreatePrice() throws Exception {
         // Priprema podataka
         Date mockStartDate = new Date();
         Date mockEndDate = new Date(mockStartDate.getTime());
