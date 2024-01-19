@@ -1,10 +1,8 @@
 package rest.student1.controller;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -20,11 +18,9 @@ import rest.service.PriceService;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Optional;
 
-import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PriceController.class)
@@ -38,46 +34,46 @@ public class PriceControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+
+    @BeforeEach
+    void setUp() {
+        // Postavljanje Mockito kada je potrebno
+    }
     @Test
     @DisplayName("Return inserted price")
     @WithUserDetails("owner")
-    public void shouldCreatePost() throws Exception {
+    public void shouldCreatePrice() throws Exception {
+        // Priprema podataka
         Date mockStartDate = new Date();
         Date mockEndDate = new Date(mockStartDate.getTime());
-        // Dodajemo nedelju dana na krajnji datum
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(mockEndDate);
         calendar.add(Calendar.DAY_OF_MONTH, 7);
         mockEndDate = calendar.getTime();
 
-        PriceDTO priceDTO = new PriceDTO(1L, mockStartDate.getTime(), mockEndDate.getTime(), 100, 2L);
+        PriceDTO priceDTO = new PriceDTO();
+        priceDTO.setStartDate(mockStartDate);
+        priceDTO.setEndDate(mockEndDate);
+        priceDTO.setAmount(100.0);
+        priceDTO.setAccommodationId(2L);
+        // Dodajte potrebne informacije u priceDTO
 
+        // Postavljanje Mockito kada je potrebno
+        Mockito.when(priceService.insert(Mockito.any(PriceDTO.class))).thenReturn(priceDTO);
 
-        Mockito.when(priceService.insert(priceDTO)).thenReturn(priceDTO);
-
-        String responseJson = this.mockMvc.perform(post("/api/prices")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(priceDTO)))  // Dodavanje stvarnih podataka u zahtev
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(content().string(Matchers.not(isEmptyOrNullString())))
+        // Simulacija HTTP POST zahteva
+        mockMvc.perform(post("/api/prices")
+                        .content(objectMapper.writeValueAsString(priceDTO))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andExpect(jsonPath("$.startDate").value(priceDTO.getStartDate().getTime()))
+                .andExpect(jsonPath("$.endDate").value(priceDTO.getEndDate().getTime()))
+                .andExpect(jsonPath("$.amount").value(priceDTO.getAmount()))
+                .andExpect(jsonPath("$.accommodationId").value(priceDTO.getAccommodationId()));
 
-        // Sada možete izvući atribute iz odgovora
-        JsonNode responseNode = objectMapper.readTree(responseJson);
-        Long id = responseNode.get("id").asLong();
-        Long startDate = responseNode.get("startDate").asLong();
-        Long endDate = responseNode.get("endDate").asLong();
-        int amount = responseNode.get("amount").asInt();
-        Long accommodationId = responseNode.get("accommodationId").asLong();
 
-        // Sada možete raditi sa izvučenim vrednostima kako vam odgovara
-        Assertions.assertEquals(Optional.of(1L), id);
-        Assertions.assertEquals(Optional.of(mockStartDate.getTime()), startDate);
-        Assertions.assertEquals(Optional.of(mockEndDate.getTime()), endDate);
-        Assertions.assertEquals(100, amount);
-        Assertions.assertEquals(Optional.of(2L), accommodationId);
+        // Provera poziva metode u priceService
+        Mockito.verify(priceService, Mockito.times(1)).insert(Mockito.any(PriceDTO.class));
     }
 }
