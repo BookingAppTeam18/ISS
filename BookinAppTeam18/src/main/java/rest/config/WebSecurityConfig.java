@@ -3,6 +3,7 @@ package rest.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,6 +32,7 @@ public class WebSecurityConfig {
 
     // Servis koji se koristi za citanje podataka o korisnicima aplikacije
     @Bean
+    @Profile("!test")  // Konfiguracija se ne primenjuje u profilu test
     public UserDetailsService userDetailsService() {
         return new CustomAccountDetailsService();
     }
