@@ -23,6 +23,14 @@ public class PriceDTO {
         
     }
 
+    public PriceDTO(Long id, long startDate, long endDate, double amount, Long accommodationId) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.amount = amount;
+        this.accommodationId = accommodationId;
+    }
+
     public Long getId() {
         return id;
     }
