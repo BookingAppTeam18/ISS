@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import rest.controller.PriceController;
 import rest.domain.DTO.PriceDTO;
@@ -30,6 +31,7 @@ public class PriceControllerTest {
     private MockMvc mockMvc;
 
     @Test
+    @WithMockUser(authorities = "OWNER")
     @DisplayName("Should List All Posts When making GET request to endpoint - /api/posts/")
     public void shouldCreatePost() throws Exception {
         Date mockStartDate = new Date();
@@ -46,7 +48,7 @@ public class PriceControllerTest {
 
         Mockito.when(priceService.insert(priceDTO)).thenReturn(priceDTO);
 
-        mockMvc.perform(post("api/prices",priceDTO))
+        mockMvc.perform(post("http://localhost8080/api/prices",priceDTO))
                 .andExpect(status().is(200))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.size()", Matchers.is(1)))
