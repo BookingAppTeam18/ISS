@@ -46,7 +46,7 @@ public class PriceControllerIntegrationTest {
         priceDTO.setStartDate(mockStartDate);
         priceDTO.setEndDate(mockEndDate);
         priceDTO.setAmount(100.0);
-        priceDTO.setAccommodationId(2L);
+        priceDTO.setAccommodationId(3L);
 
 // Korisničko ime za koje želite generisati JWT token
         String username = "owner@gmail.com";
