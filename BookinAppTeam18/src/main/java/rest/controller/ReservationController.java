@@ -29,7 +29,7 @@ public class ReservationController {
     }
 
     //Get reservation by id
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER')")
     @GetMapping(value="/reservation/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationDTO> getReservationById(@PathVariable("id") Long reservationId) {
         ReservationDTO reservationDTO = reservationService.findOne(reservationId);
