@@ -1,6 +1,7 @@
 package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +14,8 @@ import rest.repository.PriceRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
 @Service
 public class PriceService implements IService<PriceDTO> {
 
@@ -72,7 +71,7 @@ public class PriceService implements IService<PriceDTO> {
     public PriceDTO update(PriceDTO priceDTO) throws Exception {
         Price priceToUpdate = new Price(priceDTO);
         try {
-            findOne(priceDTO.getId()); // this will throw ResponseStatusException if student is not found
+            findOne(priceDTO.getId());
             priceToUpdate.setAccommodation(accommodationRepository.getOne(priceDTO.getAccommodationId()));
             Price savedPrice = priceRepository.save(priceToUpdate);
             priceRepository.flush();
@@ -122,9 +121,13 @@ public class PriceService implements IService<PriceDTO> {
 
 
     @Transactional
-    public Collection<PriceDTO> updatePrices(Collection<PriceDTO> prices,Long accommodationId) {
+    public Collection<PriceDTO> updatePrices(Collection<PriceDTO> prices,Long accommodationId)throws Exception {
+        if(PricesCollide(prices))
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"prices dates collide");
+
         Collection<Price> newPrices = DTOToPrices(prices);
         Collection<Price> originalPrices = priceRepository.findPricesForAccommodation(accommodationId);
+
         for (Price originalPrice: originalPrices) {
             if(!newPrices.contains(originalPrice)){
                 PriceDTO foundPrice =  findOne(originalPrice.getId());
@@ -133,13 +136,30 @@ public class PriceService implements IService<PriceDTO> {
                 priceRepository.flush();
             }
         }
+        Collection<PriceDTO> savedPricesDTO = new ArrayList<>();
+        PriceDTO savedPrice;
         for (Price newPrice: newPrices) {
-            if(!originalPrices.contains(newPrice)){
-                insert(new PriceDTO(newPrice));
+            savedPrice = insert(new PriceDTO(newPrice));
+            savedPricesDTO.add(savedPrice);
+        }
+        return savedPricesDTO;
+    }
+
+    public boolean PricesCollide(Collection<PriceDTO> prices) {
+        List<PriceDTO> sortedPrices = new ArrayList<>(prices);
+        Collections.sort(sortedPrices, Comparator.comparing(PriceDTO::getStartDate));
+
+        for (int i = 0; i < sortedPrices.size() - 1; i++) {
+            PriceDTO currentPrice = sortedPrices.get(i);
+            PriceDTO nextPrice = sortedPrices.get(i + 1);
+
+            if (currentPrice.getEndDate().compareTo(nextPrice.getStartDate()) >= 0) {
+                // Postoji presek između trenutne cene i sledeće cene
+                return true;
             }
         }
-        Collection<Price> NewOriginalPrices = priceRepository.findPricesForAccommodation(accommodationId);;
-        return PricesToDTO(NewOriginalPrices);
+
+        return false;
     }
 
     private Collection<Price> DTOToPrices(Collection<PriceDTO> prices) {
@@ -163,5 +183,12 @@ public class PriceService implements IService<PriceDTO> {
             newPricesDTO.add(new PriceDTO(price));
         }
         return newPricesDTO;
+    }
+
+    public double findNextPrice(Long id) {
+        List<Price> nextPrice = priceRepository.findNextPriceForAccommodation(id, Pageable.ofSize(1));
+        if(nextPrice.isEmpty())
+            return 0;
+        return nextPrice.get(0).getAmount();
     }
 }

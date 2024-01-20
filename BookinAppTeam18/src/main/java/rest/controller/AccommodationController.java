@@ -14,6 +14,7 @@ import rest.domain.enumerations.Benefit;
 import rest.service.AccommodationService;
 import rest.service.FilterService;
 import rest.service.ImageService;
+import rest.service.PriceService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +33,8 @@ public class AccommodationController {
     private FilterService filterService;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private PriceService priceService;
 
     @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -137,6 +140,7 @@ public class AccommodationController {
         return new ResponseEntity<Collection<AccommodationDTO>>(filteredAccommodations, HttpStatus.OK);
     }
 
+
     @GetMapping(value ="/{start}/{offset}/filter", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<AccommodationDTO>> getNAccommodationsByFilter(
             @PathVariable("start") int begin,
@@ -197,9 +201,17 @@ public class AccommodationController {
         }
 
         getAccommodationImages(cutFilteredAccommodations);
+        getAccommodationsNextPrice(filteredAccommodations);
 
         return new ResponseEntity<Collection<AccommodationDTO>>(cutFilteredAccommodations, HttpStatus.OK);
     }
+
+    private void getAccommodationsNextPrice(Collection<AccommodationDTO> accommodations) {
+        for(AccommodationDTO accommodationDTO:accommodations){
+            accommodationDTO.setNextPrice(priceService.findNextPrice(accommodationDTO.getId()));
+        }
+    }
+
 
     private void getAccommodationImages(Collection<AccommodationDTO> accommodations) {
         for(AccommodationDTO accommodationDTO:accommodations){

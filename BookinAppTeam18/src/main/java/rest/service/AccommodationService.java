@@ -1,6 +1,7 @@
 package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,10 +20,7 @@ import rest.repository.PriceRepository;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class AccommodationService implements IService<AccommodationDTO> {
@@ -71,9 +69,9 @@ public class AccommodationService implements IService<AccommodationDTO> {
     }
 
     private double getNextPrice(Long id) {
-        Price nextAccommodationPrice =priceRepository.findNextPriceForAccommodation(id);
+        List<Price> nextAccommodationPrice =priceRepository.findNextPriceForAccommodation(id, Pageable.ofSize(1));
         if(nextAccommodationPrice != null)
-            return nextAccommodationPrice.getAmount();
+            return nextAccommodationPrice.get(0).getAmount();
         return 0;
     }
 
