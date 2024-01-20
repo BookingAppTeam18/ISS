@@ -5,14 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-<<<<<<< Updated upstream
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-=======
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
->>>>>>> Stashed changes
 import org.springframework.security.core.context.SecurityContextHolder;
 import rest.domain.DTO.PriceDTO;
 import rest.utils.TokenUtils;
@@ -63,9 +59,7 @@ public class PriceControllerIntegrationTest {
 
         ResponseEntity<PriceDTO> response = restTemplate.postForEntity("/api/prices", request, PriceDTO.class);
 
-<<<<<<< Updated upstream
-        PriceDTO savedPrice = response.getBody();
-=======
+
         // Provera odgovora
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Očekivani status koda nije vraćen");
         assertNotNull(response.getBody());
@@ -73,7 +67,6 @@ public class PriceControllerIntegrationTest {
         // Provera da li je cena zaista sačuvana u bazi podataka
         PriceDTO savedPrice = response.getBody();
 
->>>>>>> Stashed changes
         assertNotNull(savedPrice, "Cena nije sačuvana u bazi podataka");
         assertEquals(priceDTO.getStartDate(), savedPrice.getStartDate(), "Pogrešan datum početka cene");
         assertEquals(priceDTO.getEndDate(), savedPrice.getEndDate(), "Pogrešan datum kraja cene");
@@ -85,13 +78,9 @@ public class PriceControllerIntegrationTest {
     }
 
     @Test
-<<<<<<< Updated upstream
-    @DisplayName("Cancel Price")
-    public void shouldCancelSecondPriceIntegration() {
-=======
+
     @DisplayName("Prices with same date")
     public void shouldntCreatePricesWithSameDate() {
->>>>>>> Stashed changes
         // Priprema podataka
         Date mockStartDate = new Date();
         Date mockEndDate = new Date(mockStartDate.getTime());
@@ -100,15 +89,13 @@ public class PriceControllerIntegrationTest {
         calendar.add(Calendar.DAY_OF_MONTH, 7);
         mockEndDate = calendar.getTime();
 
-<<<<<<< Updated upstream
-=======
+
         PriceDTO priceDTO2 = new PriceDTO();
         priceDTO2.setStartDate(mockStartDate);
         priceDTO2.setEndDate(mockEndDate);
         priceDTO2.setAmount(100.0);
         priceDTO2.setAccommodationId(2L);
 
->>>>>>> Stashed changes
         PriceDTO priceDTO = new PriceDTO();
         priceDTO.setStartDate(mockStartDate);
         priceDTO.setEndDate(mockEndDate);
@@ -124,28 +111,6 @@ public class PriceControllerIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + jwtToken);
 
-<<<<<<< Updated upstream
-        HttpEntity<PriceDTO> request = new HttpEntity<>(priceDTO, headers);
-
-        ResponseEntity<PriceDTO> response = restTemplate.postForEntity("/api/prices", request, PriceDTO.class);
-
-        PriceDTO savedPrice = response.getBody();
-        assertNotNull(savedPrice, "Cena nije sačuvana u bazi podataka");
-        assertEquals(priceDTO.getStartDate(), savedPrice.getStartDate(), "Pogrešan datum početka cene");
-        assertEquals(priceDTO.getEndDate(), savedPrice.getEndDate(), "Pogrešan datum kraja cene");
-        assertEquals(priceDTO.getAmount(), savedPrice.getAmount(), 0.01, "Pogrešan iznos cene");
-        assertEquals(priceDTO.getAccommodationId(), savedPrice.getAccommodationId(), "Pogrešan ID smeštaja");
-
-
-        ResponseEntity<PriceDTO> response2 = restTemplate.postForEntity("/api/prices", request, PriceDTO.class);
-
-        PriceDTO savedPrice2 = response2.getBody();
-        assertNotNull(savedPrice2, "Cena nije sačuvana u bazi podataka");
-        assertEquals(priceDTO.getStartDate(), savedPrice2.getStartDate(), "Pogrešan datum početka cene");
-        assertEquals(priceDTO.getEndDate(), savedPrice2.getEndDate(), "Pogrešan datum kraja cene");
-        assertEquals(priceDTO.getAmount(), savedPrice2.getAmount(), 0.01, "Pogrešan iznos cene");
-        assertEquals(priceDTO.getAccommodationId(), savedPrice2.getAccommodationId(), "Pogrešan ID smeštaja");
-=======
         ArrayList<PriceDTO> prices = new ArrayList<>();
         prices.add(priceDTO);
         prices.add(priceDTO2);
@@ -254,7 +219,6 @@ public class PriceControllerIntegrationTest {
 
         // Provera odgovora
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Očekivani status koda nije vraćen");
->>>>>>> Stashed changes
 
         // Resetujte autentifikaciju nakon testa
         SecurityContextHolder.clearContext();
