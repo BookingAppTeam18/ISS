@@ -35,7 +35,7 @@ public class ReservationControllerIntegrationTest{
     @DisplayName("Create reservations")
     public void shouldCreateReservation() throws Exception {
         // Kreiranje ReservationDTO objekta koji će biti poslat kao deo tela zahteva
-        Date mockStartDate = new Date();
+        Date mockStartDate = new Date(2025, 1, 1);
         Date mockEndDate = new Date(mockStartDate.getTime());
 
         // Dodajte nedelju dana na datum završetka

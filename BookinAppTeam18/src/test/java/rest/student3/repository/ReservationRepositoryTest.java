@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
-import rest.domain.DTO.ReservationDTO;
 import rest.domain.Reservation;
 import rest.domain.enumerations.ReservationStatus;
 import rest.repository.ReservationRepository;
