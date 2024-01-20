@@ -36,9 +36,9 @@ import static org.junit.jupiter.api.Assertions.*;
         @MethodSource("provideTestCases")
         @DisplayName("Should change reservation status")
         public void shouldChangeReservationStatus(Long reservationId, int expectedStatusCode) {
-            Date mockStartDate = new Date();
+            Date mockStartDate = new Date(2024-1900, 0,20);
             Date mockEndDate = new Date(mockStartDate.getTime());
-
+            System.out.println(mockStartDate.toString());
             // Dodajte nedelju dana na datum završetka
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(mockEndDate);
@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
             // Slanje HTTP PUT zahtjeva s cijelom rezervacijom u tijelu zahtjeva
             ResponseEntity<ReservationDTO> responseEntity = restTemplate.exchange(
-                    "/api/reservations/{reservationId}",
+                    "/api/reservations/approve/{reservationId}",
                     HttpMethod.PUT,
                     new HttpEntity<>(reservationDTO, headers),
                     ReservationDTO.class,

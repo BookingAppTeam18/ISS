@@ -17,10 +17,7 @@ import rest.repository.ReservationRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ReservationService implements IService<ReservationDTO> {
@@ -163,6 +160,39 @@ public class ReservationService implements IService<ReservationDTO> {
             throw ex;
         }
     }
+
+    public ReservationDTO approveReservation(ReservationDTO reservationDTO){
+//        Reservation reservation = new Reservation(reservationDTO);
+        Reservation reservation = reservationRepository.getOne(reservationDTO.getId());
+        if (!reservationRepository.existsById(reservationDTO.getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        reservation.setReservationStatus(ReservationStatus.APPROVED);
+
+        denyOtherReservations(reservation);
+        reservationRepository.save(reservation);
+        reservationRepository.flush();
+
+
+        return reservationDTO;
+    }
+
+    public void denyOtherReservations(Reservation reservation){
+        Collection<ReservationDTO> reservations = this.findPendingReservations(reservation.getAccommodationId());
+        for(ReservationDTO res : reservations){
+            if (!Objects.equals(res.getId(), reservation.getId()) &&
+                    ((res.getStartDate().before(reservation.getEndDate()) && res.getEndDate().after(reservation.getStartDate())) ||
+                            (res.getStartDate().after(reservation.getStartDate()) && res.getStartDate().before(reservation.getEndDate())) ||
+                            (res.getEndDate().after(reservation.getStartDate()) && res.getEndDate().before(reservation.getEndDate())))) {
+                Reservation savedReservation = new Reservation(res);
+                savedReservation.setReservationStatus(ReservationStatus.DENIED);
+                reservationRepository.save(savedReservation);
+                reservationRepository.flush();
+            }
+        }
+    }
+
+
 
     @Override
     public ReservationDTO delete(Long id) {

@@ -38,7 +38,7 @@ public class Reservation {
     }
 
     public Reservation(ReservationDTO reservationDTO){
-        this(reservationDTO.getId(), reservationDTO.getStartDate(), reservationDTO.getEndDate(), reservationDTO.getPrice(), reservationDTO.getAccountId(), reservationDTO.getAccommodationId(),reservationDTO.getNumberOfGuests(), ReservationStatus.CREATED);
+        this(reservationDTO.getId(), reservationDTO.getStartDate(), reservationDTO.getEndDate(), reservationDTO.getPrice(), reservationDTO.getAccountId(), reservationDTO.getAccommodationId(),reservationDTO.getNumberOfGuests(), reservationDTO.getReservationStatus());
     }
     public Long getId() {
         return id;
