@@ -1,6 +1,7 @@
 package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -71,7 +72,7 @@ public class AccommodationService implements IService<AccommodationDTO> {
     }
 
     private double getNextPrice(Long id) {
-        Price nextAccommodationPrice =priceRepository.findNextPriceForAccommodation(id);
+        Price nextAccommodationPrice =priceRepository.findNextPriceForAccommodation(id, Pageable.ofSize(1));
         if(nextAccommodationPrice != null)
             return nextAccommodationPrice.getAmount();
         return 0;

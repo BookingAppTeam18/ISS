@@ -32,6 +32,14 @@ public class Price {
         this.amount = value;
     }
 
+    public Price(Date start, Date end, double value, Accommodation accommodation) {
+        this.id = null;
+        this.start = start;
+        this.endDate = end;
+        this.amount = value;
+        this.accommodation = accommodation;
+    }
+
     public Price(PriceDTO priceDTO){
         this.id = priceDTO.getId();
         this.start = priceDTO.getStartDate();

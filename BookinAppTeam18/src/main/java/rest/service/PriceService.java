@@ -70,7 +70,7 @@ public class PriceService implements IService<PriceDTO> {
     public PriceDTO update(PriceDTO priceDTO) throws Exception {
         Price priceToUpdate = new Price(priceDTO);
         try {
-            findOne(priceDTO.getId()); // this will throw ResponseStatusException if student is not found
+            findOne(priceDTO.getId());
             priceToUpdate.setAccommodation(accommodationRepository.getOne(priceDTO.getAccommodationId()));
             Price savedPrice = priceRepository.save(priceToUpdate);
             priceRepository.flush();
@@ -121,10 +121,12 @@ public class PriceService implements IService<PriceDTO> {
 
     @Transactional
     public Collection<PriceDTO> updatePrices(Collection<PriceDTO> prices,Long accommodationId)throws Exception {
-        Collection<Price> newPrices = DTOToPrices(prices);
         if(PricesCollide(prices))
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"prices dates collide");
+
+        Collection<Price> newPrices = DTOToPrices(prices);
         Collection<Price> originalPrices = priceRepository.findPricesForAccommodation(accommodationId);
+
         for (Price originalPrice: originalPrices) {
             if(!newPrices.contains(originalPrice)){
                 PriceDTO foundPrice =  findOne(originalPrice.getId());
@@ -133,13 +135,13 @@ public class PriceService implements IService<PriceDTO> {
                 priceRepository.flush();
             }
         }
+        Collection<PriceDTO> savedPricesDTO = new ArrayList<>();
+        PriceDTO savedPrice;
         for (Price newPrice: newPrices) {
-            if(!originalPrices.contains(newPrice)){
-                insert(new PriceDTO(newPrice));
-            }
+            savedPrice = insert(new PriceDTO(newPrice));
+            savedPricesDTO.add(savedPrice);
         }
-        Collection<Price> NewOriginalPrices = priceRepository.findPricesForAccommodation(accommodationId);;
-        return PricesToDTO(NewOriginalPrices);
+        return savedPricesDTO;
     }
 
     public boolean PricesCollide(Collection<PriceDTO> prices) {
