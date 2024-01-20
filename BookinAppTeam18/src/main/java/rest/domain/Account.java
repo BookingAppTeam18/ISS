@@ -25,6 +25,8 @@ public class Account implements UserDetails {
     private String password;
     private String address;
     private String phone;
+
+    private String profileImage;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_role")
     private UserType userType;
@@ -41,6 +43,14 @@ public class Account implements UserDetails {
     )
     @Column(name = "accommodation_id")
     private List<Long> favouriteAccommodations;
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
 
     public Account(Long id, String firstName, String lastName, String email, String password, String address, String phone, UserType userType, UserState userState, List<Long> favouriteAccommodations) {
         this.id = id;

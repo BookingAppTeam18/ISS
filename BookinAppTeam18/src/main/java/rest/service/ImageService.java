@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import rest.domain.Accommodation;
+import rest.domain.Account;
 import rest.repository.AccommodationRepository;
+import rest.repository.AccountRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +22,8 @@ public class ImageService {
 
     @Autowired
     AccommodationRepository accommodationRepository;
+    @Autowired
+    AccountRepository accountRepository;
 
     public void saveImages(List<MultipartFile> files, Long accommodationId) throws IOException {
         Accommodation accommodation = accommodationRepository.getOne(accommodationId);
@@ -50,6 +54,28 @@ public class ImageService {
         }
         accommodationRepository.save(accommodation);
         accommodationRepository.flush();
+    }
+
+
+    public void saveProfileImage(MultipartFile file, Long accountId) throws IOException {
+        Account account = accountRepository.getOne(accountId);
+
+        String relativePath = "BookinAppTeam18/src/main/resources/static/";
+
+        // Koristimo Paths za kreiranje apsolutne putanje
+        Path absolutePath = Paths.get(System.getProperty("user.dir"), relativePath);
+
+
+        String fileName = file.getOriginalFilename();
+
+            // Prilagodite rezoluciju slike za malu sliku
+        int smallWidth = 200;
+        int smallHeight = 200;
+        File smallFile = resizeImage(file, fileName, absolutePath, smallWidth, smallHeight);
+        account.setProfileImage(smallFile.getAbsolutePath());
+
+        accountRepository.save(account);
+        accountRepository.flush();
     }
 
     private File resizeImage(MultipartFile file, String fileName, Path absolutePath, int width, int height) throws IOException {
@@ -84,5 +110,20 @@ public class ImageService {
         }
 
         return paths;
+    }
+
+    public String getAccountImage(Long accountId) {
+        Account account = accountRepository.getOne(accountId);
+        String begin = "http://localhost:8080/api/content/";
+        if(account.getProfileImage() == null)
+            return "";
+
+        String image = account.getProfileImage();
+
+        Path filePath = Paths.get(image);
+        String fileName = filePath.getFileName().toString();
+        String fullPath = begin + fileName;
+
+        return fullPath;
     }
 }

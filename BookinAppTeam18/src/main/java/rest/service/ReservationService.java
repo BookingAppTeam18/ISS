@@ -17,7 +17,12 @@ import rest.repository.ReservationRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.*;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ReservationService implements IService<ReservationDTO> {
@@ -124,12 +129,22 @@ public class ReservationService implements IService<ReservationDTO> {
             reservationRepository.flush();
             return reservationDTO;
         } catch (ConstraintViolationException ex) {
-            Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
+            Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+            Set<ConstraintViolation<ReservationDTO>> errors = validator.validate(reservationDTO);
+//            Set<ConstraintViolation<?>> errors = ex.getConstraintViolations();
             StringBuilder sb = new StringBuilder(1000);
+
+            sb.append("Constraint violations occurred:\n");
+
             for (ConstraintViolation<?> error : errors) {
-                sb.append(error.getMessage() + "\n");
+                sb.append("Property '")
+                        .append(error.getPropertyPath())
+                        .append("': ")
+                        .append(error.getMessage())
+                        .append("\n");
             }
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, sb.toString());
+
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, sb.toString(), ex);
         }
     }
 

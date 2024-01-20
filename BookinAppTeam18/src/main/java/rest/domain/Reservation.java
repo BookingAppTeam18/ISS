@@ -4,6 +4,8 @@ import rest.domain.DTO.ReservationDTO;
 import rest.domain.enumerations.ReservationStatus;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 @Entity
 @Table(name="reservations")
@@ -12,7 +14,11 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="reservation_id",length = 5)
     private Long id;
+    @NotNull
+    @Future(message = "Start date must be in the future")
     private Date startDate;
+    @NotNull
+    @Future(message = "End date must be in the future")
     private Date endDate;
     private double price;
     private Long accountId;
