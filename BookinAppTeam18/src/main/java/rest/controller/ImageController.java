@@ -20,12 +20,26 @@ public class ImageController {
     private ImageService imageService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") List<MultipartFile> files, @RequestParam("accommodationId") Long accommodationId) {
+    public ResponseEntity<String> handleAccommodationImage(@RequestParam("file") List<MultipartFile> files, @RequestParam("accommodationId") Long accommodationId) {
         if (files.isEmpty()) {
             return ResponseEntity.badRequest().body("Select file to upload");
         }
         try {
             imageService.saveImages(files,accommodationId);
+            return ResponseEntity.ok("Files successfully uploaded");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Failed to upload files");
+        }
+    }
+
+    @PostMapping("/profileImage")
+    public ResponseEntity<String> handleProfileImage(@RequestParam("file") MultipartFile file, @RequestParam("accountId") Long accountId) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Select file to upload");
+        }
+        try {
+            imageService.saveProfileImage(file,accountId);
             return ResponseEntity.ok("Files successfully uploaded");
         } catch (IOException e) {
             e.printStackTrace();

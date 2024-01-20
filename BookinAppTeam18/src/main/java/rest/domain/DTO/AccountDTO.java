@@ -18,6 +18,16 @@ public class AccountDTO {
     private UserTypeDTO userType;
     private UserState userState;
 
+    private String profileImage;
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
     private List<Long> favouriteAccommodations;
 
     public AccountDTO(){

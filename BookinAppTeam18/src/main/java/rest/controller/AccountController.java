@@ -10,6 +10,7 @@ import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.DTO.AccountDetailsDTO;
 import rest.service.AccountService;
+import rest.service.ImageService;
 
 import java.security.Principal;
 import java.util.Collection;
@@ -22,6 +23,8 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private ImageService imageService;
     //GET all users
     @PreAuthorize("hasAnyAuthority('ADMIN','OWNER','GUEST')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,6 +38,7 @@ public class AccountController {
     @GetMapping(value="/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountDTO> getAccountById(@PathVariable("userId") Long accountId) {
         AccountDTO accountDTO = accountService.findOne(accountId);
+        accountDTO.setProfileImage(imageService.getAccountImage(accountDTO.getId()));
         if(accountDTO == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -45,6 +49,7 @@ public class AccountController {
     @GetMapping(value="/userDetails/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountDetailsDTO> getAccountDetailsById(@PathVariable("userId") Long accountId) {
         AccountDetailsDTO accountDetailsDTO = accountService.findAccountDetails(accountId);
+        accountDetailsDTO.getAccountDTO().setProfileImage(imageService.getAccountImage(accountId));
         return new ResponseEntity<AccountDetailsDTO>(accountDetailsDTO, HttpStatus.OK);
     }
 
