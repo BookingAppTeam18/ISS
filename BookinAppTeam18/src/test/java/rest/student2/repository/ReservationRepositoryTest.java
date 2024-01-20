@@ -30,7 +30,7 @@ public class ReservationRepositoryTest {
     }
     @Test
     public void shouldSaveReservation(){
-        Date mockStartDate = new Date();
+        Date mockStartDate = new Date(2024-1900, 2, 28);
         Date mockEndDate = new Date(mockStartDate.getTime());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(mockEndDate);
@@ -48,7 +48,7 @@ public class ReservationRepositoryTest {
     @Test
     public void shouldReplaceIfExistingReservation() {
         // Arrange
-        Date mockStartDate = new Date();
+        Date mockStartDate = new Date(2024-1900, 2, 28);
         Date mockEndDate = new Date(mockStartDate.getTime());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(mockEndDate);
@@ -74,7 +74,7 @@ public class ReservationRepositoryTest {
     @Test
     public void shouldCheckIfReservationExists() {
         // Arrange
-        Date mockStartDate = new Date();
+        Date mockStartDate = new Date(2024-1900, 2, 28);
         Date mockEndDate = new Date(mockStartDate.getTime());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(mockEndDate);
@@ -109,8 +109,8 @@ public class ReservationRepositoryTest {
     public void testFindByAccommodationId() {
         // Arrange
         Long accommodationId = 1L; // zamijenite s vašim stvarnim accommodationId
-        Reservation reservation = new Reservation(1L, new Date(), new Date(), 100.0, 1L, accommodationId, 1, ReservationStatus.APPROVED);
-        Reservation noAccommodationIdReservation = new Reservation(2L, new Date(), new Date(), 100.0, 1L, 2L, 1, ReservationStatus.APPROVED);
+        Reservation reservation = new Reservation(1L, new Date(2024-1900, 2, 20), new Date(2024-1900, 2, 28), 100.0, 1L, accommodationId, 1, ReservationStatus.APPROVED);
+        Reservation noAccommodationIdReservation = new Reservation(2L, new Date(2024-1900, 2, 20), new Date(2024-1900, 2, 28), 100.0, 1L, 2L, 1, ReservationStatus.APPROVED);
         reservationRepository.save(reservation);
         reservationRepository.save(noAccommodationIdReservation);
 
@@ -128,7 +128,7 @@ public class ReservationRepositoryTest {
     public void testFindByAccommodationIdNoReservations() {
         // Arrange
         Long accommodationId = 1L; // zamijenite s vašim stvarnim accommodationId
-        Reservation noAccommodationIdReservation = new Reservation(2L, new Date(), new Date(), 100.0, 1L, 2L, 1, ReservationStatus.APPROVED);
+        Reservation noAccommodationIdReservation = new Reservation(2L, new Date(2024-1900, 2, 20), new Date(2024-1900, 2, 28), 100.0, 1L, 2L, 1, ReservationStatus.APPROVED);
         reservationRepository.save(noAccommodationIdReservation);
 
         // Act
