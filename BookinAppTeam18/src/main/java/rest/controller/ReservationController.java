@@ -29,7 +29,7 @@ public class ReservationController {
     }
 
     //Get reservation by id
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER')")
     @GetMapping(value="/reservation/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationDTO> getReservationById(@PathVariable("id") Long reservationId) {
         ReservationDTO reservationDTO = reservationService.findOne(reservationId);
@@ -103,6 +103,19 @@ public class ReservationController {
             throws Exception {
         reservationDTO.setId(reservationId);
         ReservationDTO updatedReservation = reservationService.update(reservationDTO);
+
+        if (updatedReservation == null) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('OWNER')")
+    @PutMapping(value = "/approve/{reservationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReservationDTO> approveReservation(@RequestBody ReservationDTO reservationDTO, @PathVariable Long reservationId)
+            throws Exception {
+        reservationDTO.setId(reservationId);
+        ReservationDTO updatedReservation = reservationService.approveReservation(reservationDTO);
 
         if (updatedReservation == null) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

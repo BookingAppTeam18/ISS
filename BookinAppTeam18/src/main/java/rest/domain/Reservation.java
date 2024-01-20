@@ -44,7 +44,7 @@ public class Reservation {
     }
 
     public Reservation(ReservationDTO reservationDTO){
-        this(reservationDTO.getId(), reservationDTO.getStartDate(), reservationDTO.getEndDate(), reservationDTO.getPrice(), reservationDTO.getAccountId(), reservationDTO.getAccommodationId(),reservationDTO.getNumberOfGuests(), ReservationStatus.CREATED);
+        this(reservationDTO.getId(), reservationDTO.getStartDate(), reservationDTO.getEndDate(), reservationDTO.getPrice(), reservationDTO.getAccountId(), reservationDTO.getAccommodationId(),reservationDTO.getNumberOfGuests(), reservationDTO.getReservationStatus());
     }
     public Long getId() {
         return id;
@@ -119,4 +119,26 @@ public class Reservation {
         this.accommodationId = reservation.accommodationId;
         this.numberOfGuests = reservation.numberOfGuests;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Reservation that = (Reservation) obj;
+
+        // Usporedba svih relevantnih polja
+        if (!id.equals(that.id)) return false;
+        if (!startDate.equals(that.startDate)) return false;
+        if (!endDate.equals(that.endDate)) return false;
+        if (!(price==that.price)) return false;
+        if(!accountId.equals(that.accountId)) return false;
+        if(!accommodationId.equals(that.accommodationId)) return false;
+        if(!(numberOfGuests==that.numberOfGuests)) return false;
+        if(!reservationStatus.equals(that.reservationStatus)) return false;
+        // Dodajte ostala polja koja želite usporediti
+
+        return true;
+    }
+
 }
