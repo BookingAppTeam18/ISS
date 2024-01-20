@@ -57,12 +57,14 @@ public class PriceController {
     @PostMapping(value = "/addMultiple",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Collection<PriceDTO>> createPrices(@RequestBody Collection<PriceDTO> prices) throws Exception {
         Collection<PriceDTO> savedPrices = new ArrayList<>();
-
-        for (PriceDTO price:prices) {
-            PriceDTO savedPrice = priceService.insert(price);
-            savedPrices.add(savedPrice);
+        if(!priceService.PricesCollide(prices)){
+            for (PriceDTO price:prices) {
+                PriceDTO savedPrice = priceService.insert(price);
+                savedPrices.add(savedPrice);
+            }
+            return new ResponseEntity<>(savedPrices, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(savedPrices, HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 

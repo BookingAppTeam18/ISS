@@ -13,10 +13,8 @@ import rest.repository.PriceRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
 @Service
 public class PriceService implements IService<PriceDTO> {
 
@@ -122,8 +120,10 @@ public class PriceService implements IService<PriceDTO> {
 
 
     @Transactional
-    public Collection<PriceDTO> updatePrices(Collection<PriceDTO> prices,Long accommodationId) {
+    public Collection<PriceDTO> updatePrices(Collection<PriceDTO> prices,Long accommodationId)throws Exception {
         Collection<Price> newPrices = DTOToPrices(prices);
+        if(PricesCollide(prices))
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"prices dates collide");
         Collection<Price> originalPrices = priceRepository.findPricesForAccommodation(accommodationId);
         for (Price originalPrice: originalPrices) {
             if(!newPrices.contains(originalPrice)){
@@ -140,6 +140,23 @@ public class PriceService implements IService<PriceDTO> {
         }
         Collection<Price> NewOriginalPrices = priceRepository.findPricesForAccommodation(accommodationId);;
         return PricesToDTO(NewOriginalPrices);
+    }
+
+    public boolean PricesCollide(Collection<PriceDTO> prices) {
+        List<PriceDTO> sortedPrices = new ArrayList<>(prices);
+        Collections.sort(sortedPrices, Comparator.comparing(PriceDTO::getStartDate));
+
+        for (int i = 0; i < sortedPrices.size() - 1; i++) {
+            PriceDTO currentPrice = sortedPrices.get(i);
+            PriceDTO nextPrice = sortedPrices.get(i + 1);
+
+            if (currentPrice.getEndDate().compareTo(nextPrice.getStartDate()) >= 0) {
+                // Postoji presek između trenutne cene i sledeće cene
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private Collection<Price> DTOToPrices(Collection<PriceDTO> prices) {
