@@ -162,15 +162,17 @@ public class ReservationService implements IService<ReservationDTO> {
     }
 
     public ReservationDTO approveReservation(ReservationDTO reservationDTO){
-//        Reservation reservation = new Reservation(reservationDTO);
         Reservation reservation = reservationRepository.getOne(reservationDTO.getId());
         if (!reservationRepository.existsById(reservationDTO.getId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         reservation.setReservationStatus(ReservationStatus.APPROVED);
+        reservationDTO.setReservationStatus(ReservationStatus.APPROVED);
+
+        reservationRepository.save(reservation);
 
         denyOtherReservations(reservation);
-        reservationRepository.save(reservation);
+
         reservationRepository.flush();
 
 
@@ -187,7 +189,7 @@ public class ReservationService implements IService<ReservationDTO> {
                 Reservation savedReservation = new Reservation(res);
                 savedReservation.setReservationStatus(ReservationStatus.DENIED);
                 reservationRepository.save(savedReservation);
-                reservationRepository.flush();
+//                reservationRepository.flush();
             }
         }
     }

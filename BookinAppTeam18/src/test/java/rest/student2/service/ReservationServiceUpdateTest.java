@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class ReservationServiceTest {
+public class ReservationServiceUpdateTest {
 
     @Mock
     private ReservationRepository reservationRepository;
