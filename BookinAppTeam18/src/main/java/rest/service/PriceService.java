@@ -1,6 +1,7 @@
 package rest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -182,5 +183,12 @@ public class PriceService implements IService<PriceDTO> {
             newPricesDTO.add(new PriceDTO(price));
         }
         return newPricesDTO;
+    }
+
+    public double findNextPrice(Long id) {
+        List<Price> nextPrice = priceRepository.findNextPriceForAccommodation(id, Pageable.ofSize(1));
+        if(nextPrice.isEmpty())
+            return 0;
+        return nextPrice.get(0).getAmount();
     }
 }

@@ -136,10 +136,10 @@ public class PriceRepositoryTest {
         // Pozivanje metode koju testiramo
         try {
             // Koristimo Pageable objekat direktno
-            Price nextPrice = priceRepository.findNextPriceForAccommodation(savedAccommodation.getId(), Pageable.ofSize(1));
+            List<Price> nextPrices = priceRepository.findNextPriceForAccommodation(savedAccommodation.getId(), Pageable.ofSize(1));
 
+            assertThat(nextPrices.get(0)).isNotNull();
             // Provera rezultata
-            assertThat(nextPrice).isNotNull();
             // Dodajte ostale provere prema potrebi
         } catch (NonUniqueResultException ex) {
             // Obrada situacije kada ima više od jedne sledeće cene
@@ -155,4 +155,24 @@ public class PriceRepositoryTest {
         Date endDate = calendar.getTime();
         return new Price(startDate, endDate, 100, accommodation);
     }
+
+    @Test
+    void testDeletePricesByAccommodationId() {
+        // Postavljanje testnih podataka
+        Accommodation accommodation = new Accommodation();
+        accommodation.setId(1L);
+        Accommodation savedAccommodation = accommodationRepository.save(accommodation);
+
+        // Dodavanje cena u bazu
+        Price price1 = createPrice(savedAccommodation, 1);
+        Price price2 = createPrice(savedAccommodation, 2);
+        priceRepository.saveAll(List.of(price1, price2));
+
+        // Poziv metode koja se testira
+        priceRepository.deletePricesByAccommodationId(savedAccommodation.getId());
+
+        // Verifikacija da su cene izbrisane
+        assertThat(priceRepository.findPricesForAccommodation(savedAccommodation.getId())).isEmpty();
+    }
+
 }

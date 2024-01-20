@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import rest.domain.Price;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface PriceRepository extends JpaRepository<Price,Long> {
 
@@ -15,7 +16,7 @@ public interface PriceRepository extends JpaRepository<Price,Long> {
     public Collection<Price> findPricesForAccommodation(Long accommodationId);
 
     @Query("select p from Price p where p.accommodation.id= ?1 AND p.start >= CURRENT_DATE  ORDER BY p.start ASC")
-    public Price findNextPriceForAccommodation(Long accommodationId, Pageable pageable);
+    public List<Price> findNextPriceForAccommodation(Long accommodationId, Pageable pageable);
 
     @Modifying
     @Query("DELETE FROM Price p WHERE p.accommodation.id = :accommodationId")
