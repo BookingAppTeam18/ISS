@@ -4,6 +4,7 @@ import rest.domain.Account;
 import rest.domain.enumerations.UserState;
 import rest.domain.enumerations.UserTypeDTO;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class AccountDTO {
     private UserState userState;
 
     private String profileImage;
+    private Timestamp lastPasswordResetDate;
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
@@ -51,6 +53,7 @@ public class AccountDTO {
         this.userState = account.getUserState();
         this.favouriteAccommodations = new ArrayList<Long>();
         this.favouriteAccommodations = account.getFavouriteAccommodations();
+        this.lastPasswordResetDate = account.getLastPasswordResetDate();
     }
 
     public AccountDTO(Long id,
@@ -151,5 +154,11 @@ public class AccountDTO {
 
     public void setFavouriteAccommodations(List<Long> favouriteAccommodations) {
         this.favouriteAccommodations = favouriteAccommodations;
+    }
+    public Timestamp getLastPasswordResetDate() {
+        return lastPasswordResetDate;
+    }
+    public Timestamp setLastPasswordResetDate(Timestamp lastPasswordResetDate) {
+        return this.lastPasswordResetDate = lastPasswordResetDate;
     }
 }
