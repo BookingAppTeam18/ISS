@@ -10,6 +10,7 @@ public class PriceDTO {
     private long endDate;
     private double amount;
     private Long accommodationId;
+    private boolean isPerNight;
 
     public PriceDTO(Price price){
         this.id = price.getId();
@@ -17,18 +18,20 @@ public class PriceDTO {
         this.endDate = price.getEndDate().getTime();
         this.amount = price.getAmount();
         this.accommodationId = price.getAccommodation().getId();
+        this.isPerNight = price.isPerNight();
     }
 
     public PriceDTO(){
         
     }
 
-    public PriceDTO(Long id, long startDate, long endDate, double amount, Long accommodationId) {
+    public PriceDTO(Long id, long startDate, long endDate, double amount, Long accommodationId, boolean isPerNight) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.amount = amount;
         this.accommodationId = accommodationId;
+        this.isPerNight = isPerNight;
     }
 
     public Long getId() {
@@ -69,5 +72,13 @@ public class PriceDTO {
 
     public void setAccommodationId(Long accommodationId) {
         this.accommodationId = accommodationId;
+    }
+
+    public boolean isPerNight() {
+        return isPerNight;
+    }
+
+    public void setPerNight(boolean perNight) {
+        isPerNight = perNight;
     }
 }
