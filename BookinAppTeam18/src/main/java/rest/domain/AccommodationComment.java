@@ -1,7 +1,6 @@
 package rest.domain;
 
 import rest.domain.DTO.CommentDTO;
-import rest.domain.enumerations.Page;
 
 import javax.persistence.*;
 
@@ -9,7 +8,7 @@ import javax.persistence.*;
 @Table(name="AccommodationComments")
 public class AccommodationComment extends Comment{
     @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name = "accommodationId")
+    @JoinColumn(name = "accommodationId", insertable = false, updatable = false)
     private Accommodation accommodation;
     public AccommodationComment( ) {
     }

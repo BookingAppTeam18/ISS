@@ -5,9 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import rest.domain.*;
-import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.CommentDTO;
-import rest.domain.enumerations.AccommodationState;
 import rest.domain.enumerations.CommentState;
 import rest.domain.enumerations.Page;
 import rest.repository.AccommodationCommentRepository;
@@ -17,7 +15,10 @@ import rest.repository.AccountRepository;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CommentService implements IService<CommentDTO>{
@@ -145,27 +146,21 @@ public class CommentService implements IService<CommentDTO>{
     @Override
     public CommentDTO delete(Long id) {
 
-
-        CommentDTO found = findOne(id);
-        if(found.getPage()==Page.ACCOUNT){
-            Account account = accountRepository.getOne(found.getWrittenToId());
-
-            AccountComment commentToDelete = new AccountComment(found);
-            commentToDelete.setAccount(account);
-
-            accountCommentRepository.delete(commentToDelete);
-            accountCommentRepository.flush();
-            return found;
+        Optional<AccommodationComment> found = accommodationCommentRepository.findById(id);
+        if(found.isPresent()){
+            AccommodationComment accommodationComment = found.get();
+            accommodationComment.setAccommodation(null);
+            accommodationComment.setWrittenBy(null);
+            accommodationCommentRepository.delete(accommodationComment);
         }
-        Accommodation accommodation = accommodationRepository.getOne(found.getWrittenToId());
-
-        AccommodationComment commentToDelete = new AccommodationComment(found);
-        commentToDelete.setAccommodation(accommodation);
-
-        accommodationCommentRepository.delete(commentToDelete);
-        accommodationCommentRepository.flush();
-        return found;
-
+        Optional<AccountComment> found2 = accountCommentRepository.findById(id);
+        if (found2.isPresent()) {
+            AccountComment accountComment = found2.get();
+            accountComment.setAccount(null);
+            accountComment.setWrittenBy(null);
+            accountCommentRepository.delete(accountComment);
+        }
+        return null;
     }
 
     @Override

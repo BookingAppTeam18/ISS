@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rest.domain.Comment;
-import rest.domain.DTO.AccommodationDTO;
 import rest.domain.DTO.CommentDTO;
 import rest.service.CommentService;
 
@@ -80,9 +79,16 @@ public class CommentController {
     }
 
     //delete comment
-    @PreAuthorize("hasAnyAuthority('GUEST')")
+    @PreAuthorize("hasAnyAuthority('GUEST','OWNER')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Comment> deleteComment(@PathVariable("id") Long id) {
+        commentService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAnyAuthority('GUEST','OWNER')")
+    @GetMapping(value = "delete/{id}")
+    public ResponseEntity<Comment> deleteCommentPost(@PathVariable("id") Long id) {
         commentService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
