@@ -18,7 +18,7 @@ public class Comment {
     private String message;
     private int rate;
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "writtenById", nullable = false)
+    @JoinColumn(name = "writtenById", nullable = false, insertable = false, updatable = false)
     @Cascade(org.hibernate.annotations.CascadeType.REMOVE)
     private Account writtenBy;
 

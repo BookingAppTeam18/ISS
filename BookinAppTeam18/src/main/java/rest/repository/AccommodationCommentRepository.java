@@ -7,6 +7,8 @@ import rest.domain.AccommodationComment;
 import java.util.Collection;
 
 public interface AccommodationCommentRepository extends JpaRepository<AccommodationComment,Long> {
-    @Query("select c from AccommodationComment c where c.accommodation.id= ?1")
+    @Query("select c from AccommodationComment c where c.accommodation.id= ?1 and c.commentState='APPROVED'")
     public Collection<AccommodationComment> FindAccommodationComments(Long id);
+
+
 }
