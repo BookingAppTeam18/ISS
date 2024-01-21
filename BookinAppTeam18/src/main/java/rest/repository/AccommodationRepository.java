@@ -24,4 +24,6 @@ public interface AccommodationRepository extends JpaRepository<Accommodation,Lon
     @Query(value = "DELETE FROM benefits_mapping WHERE accommodation_id = :accommodationId", nativeQuery = true)
     void deleteBenefitsByAccommodationId(@Param("accommodationId") Long accommodationId);
 
+    @Query("SELECT a FROM Accommodation a WHERE a.accommodationState = 'APPROVED'")
+    Collection<Accommodation> findAllApproved();
 }
