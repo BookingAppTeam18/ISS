@@ -1,6 +1,9 @@
 package rest.domain.DTO;
 
+import rest.domain.AccommodationComment;
+import rest.domain.AccountComment;
 import rest.domain.Comment;
+import rest.domain.enumerations.CommentState;
 import rest.domain.enumerations.Page;
 
 public class CommentDTO {
@@ -8,8 +11,12 @@ public class CommentDTO {
     private String message;
     private int rate;
     private long writtenById;
-    private long writtenTo;
+    private String writtenByName;
+    private long writtenToId;
     private Page page;
+    private CommentState commentState;
+    public CommentDTO( ) {
+    }
 
     public Long getId() {
         return id;
@@ -43,12 +50,12 @@ public class CommentDTO {
         this.writtenById = writtenById;
     }
 
-    public long getWrittenTo() {
-        return writtenTo;
+    public long getWrittenToId() {
+        return writtenToId;
     }
 
-    public void setWrittenTo(long writtenTo) {
-        this.writtenTo = writtenTo;
+    public void setWrittenToId(long writtenToId) {
+        this.writtenToId = writtenToId;
     }
 
     public Page getPage() {
@@ -58,13 +65,40 @@ public class CommentDTO {
     public void setPage(Page page) {
         this.page = page;
     }
+    public CommentState getCommentState() {
+        return commentState;
+    }
+    public void setCommentState(CommentState commentState) {
+        this.commentState = commentState;
+    }
 
-    public CommentDTO(Comment comment) {
+    public CommentDTO(AccommodationComment comment) {
         this.id = comment.getId();
         this.message = comment.getMessage();
         this.rate = comment.getRate();
-        this.writtenById = comment.getWrittenById();
-        this.writtenTo = comment.getWrittenTo();
+        this.writtenToId = comment.getAccommodation().getId();
+        this.writtenById = comment.getWrittenBy().getId();
+        this.writtenByName = comment.getWrittenBy().getFirstName() +" " + comment.getWrittenBy().getLastName();
         this.page = comment.getPage();
+        this.commentState = comment.getCommentState();
+    }
+
+    public CommentDTO(AccountComment comment) {
+        this.id = comment.getId();
+        this.message = comment.getMessage();
+        this.rate = comment.getRate();
+        this.writtenById = comment.getAccount().getId();
+        this.writtenById = comment.getWrittenBy().getId();
+        this.writtenByName = comment.getWrittenBy().getFirstName() +" " + comment.getWrittenBy().getLastName();
+        this.page = comment.getPage();
+        this.commentState = comment.getCommentState();
+    }
+
+    public String getWrittenByName() {
+        return writtenByName;
+    }
+
+    public void setWrittenByName(String writtenByName) {
+        this.writtenByName = writtenByName;
     }
 }

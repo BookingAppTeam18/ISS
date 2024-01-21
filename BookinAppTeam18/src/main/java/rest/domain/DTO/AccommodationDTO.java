@@ -1,52 +1,65 @@
 package rest.domain.DTO;
 
 import rest.domain.Accommodation;
+import rest.domain.enumerations.AccommodationState;
 import rest.domain.enumerations.AccommodationType;
 import rest.domain.enumerations.Benefit;
 
 import java.util.ArrayList;
 import java.util.List;
-//@Data
+
 public class AccommodationDTO {
     private Long id;
     private Long ownerId;
     private String name;
+    private double longitude;
+    private double latitude;
     private String location;
-    private double activePrice;
     private int minNumOfGuests;
     private int maxNumOfGuests;
     private List<String> gallery;
     private List<Benefit> benefits;
     private AccommodationType accommodationType;
+    private double rating;
+    private double nextPrice;
+    private boolean isAutomaticallyReserved;
+    private int reservationDeadline;
 
-    public AccommodationDTO(){
+    public double getNextPrice() {
+        return nextPrice;
+    }
+
+    public void setNextPrice(double nextPrice) {
+        this.nextPrice = nextPrice;
+    }
+
+    private String description;
+
+    private AccommodationState accommodationState;
+
+
+    public AccommodationDTO() {
 
     }
 
-    public AccommodationDTO(Accommodation accommodation){
+    public AccommodationDTO(Accommodation accommodation) {
         this.id = accommodation.getId();
-        this.ownerId = accommodation.getOwnerId();
+        this.ownerId = accommodation.getOwner().getId();
         this.name = accommodation.getName();
+        this.longitude = accommodation.getLongitude();
+        this.latitude = accommodation.getLatitude();
         this.location = accommodation.getLocation();
-        this.activePrice = accommodation.getActivePrice();
         this.minNumOfGuests = accommodation.getMinNumOfGuests();
         this.maxNumOfGuests = accommodation.getMaxNumOfGuests();
         this.gallery = new ArrayList<String>();
+        this.gallery = accommodation.getGallery();
         this.benefits = new ArrayList<Benefit>();
+        this.benefits = accommodation.getBenefits();
         this.accommodationType = accommodation.getAccommodetionType();
-    }
-
-    public AccommodationDTO(Long id, Long ownerId, String name, String location, double activePrice, int minNumOfGuests, int maxNumOfGuests, List<String> gallery, List<Benefit> benefits, AccommodationType accommodationType) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.name = name;
-        this.location = location;
-        this.activePrice = activePrice;
-        this.minNumOfGuests = minNumOfGuests;
-        this.maxNumOfGuests = maxNumOfGuests;
-        this.gallery = gallery;
-        this.benefits = benefits;
-        this.accommodationType = accommodationType;
+        this.description = accommodation.getDescription();
+        this.accommodationState = accommodation.getAccommodationState();
+        this.isAutomaticallyReserved = accommodation.isAutomaticallyReserved();
+        this.reservationDeadline = accommodation.getReservationDeadline();
     }
 
     public Long getId() {
@@ -61,12 +74,16 @@ public class AccommodationDTO {
         return name;
     }
 
-    public String getLocation() {
-        return location;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public double getActivePrice() {
-        return activePrice;
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     public int getMinNumOfGuests() {
@@ -89,6 +106,10 @@ public class AccommodationDTO {
         return accommodationType;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -101,12 +122,16 @@ public class AccommodationDTO {
         this.name = name;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public void setActivePrice(double activePrice) {
-        this.activePrice = activePrice;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public void setMinNumOfGuests(int minNumOfGuests) {
@@ -127,5 +152,37 @@ public class AccommodationDTO {
 
     public void setAccommodationType(AccommodationType accommodationType) {
         this.accommodationType = accommodationType;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public void setDescription (String description){
+        this.description = description;
+
+    }
+    public boolean isAutomaticallyReserved() {
+        return isAutomaticallyReserved;
+    }
+    public void setAutomaticallyReserved(boolean automaticallyReserved) {
+        isAutomaticallyReserved = automaticallyReserved;
+    }
+    public AccommodationState getAccommodationState() {
+        return accommodationState;
+    }
+
+    public void setAccommodationState(AccommodationState accommodationState) {
+        this.accommodationState = accommodationState;
+    }
+    public int getReservationDeadline() {
+        return reservationDeadline;
+    }
+    public void setReservationDeadline(int reservationDeadline) {
+        this.reservationDeadline = reservationDeadline;
     }
 }

@@ -1,7 +1,7 @@
 package rest.domain.enumerations;
 
-public enum UserType {
-    OWNER,
+public enum UserTypeDTO {
     ADMIN,
-    GUEST;
+    OWNER,
+    GUEST
 }

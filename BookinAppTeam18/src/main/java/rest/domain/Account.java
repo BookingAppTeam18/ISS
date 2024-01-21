@@ -1,12 +1,23 @@
 package rest.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import rest.domain.DTO.AccountDTO;
 import rest.domain.enumerations.UserState;
-import rest.domain.enumerations.UserType;
 
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class Account {
+@Entity
+@Table(name="accounts")
+public class Account implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="account_id",length = 5)
     private Long id;
     private String firstName;
     private String lastName;
@@ -14,9 +25,32 @@ public class Account {
     private String password;
     private String address;
     private String phone;
+
+    private String profileImage;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="user_role")
     private UserType userType;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "user_state")
     private UserState userState;
+    @Column(name = "last_password_reset_date")
+    private Timestamp lastPasswordResetDate;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "account_favourite_accommodations",
+            joinColumns = @JoinColumn(name = "account_id")
+    )
+    @Column(name = "accommodation_id")
     private List<Long> favouriteAccommodations;
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
 
     public Account(Long id, String firstName, String lastName, String email, String password, String address, String phone, UserType userType, UserState userState, List<Long> favouriteAccommodations) {
         this.id = id;
@@ -35,17 +69,45 @@ public class Account {
 
     }
 
-    public Account(AccountDTO accountDTO) {
-        this(accountDTO.getId(), accountDTO.getFirstName(), accountDTO.getLastName(), accountDTO.getEmail(), accountDTO.getAddress(), accountDTO.getPhone());
+    public Account(AccountDTO accountDTO, UserType userType) {
+        this.userType = userType;
+        this.id = accountDTO.getId();
+        this.firstName = accountDTO.getFirstName();
+        this.lastName = accountDTO.getLastName();
+        this.email = accountDTO.getEmail();
+        this.address = accountDTO.getAddress();
+        this.phone = accountDTO.getPhone();
+        this.password = accountDTO.getPassword();
+        this.userState = accountDTO.getUserState();
+        this.lastPasswordResetDate = accountDTO.getLastPasswordResetDate();
     }
 
-    public Account(Long id, String firstName, String lastName, String email, String address, String phone) {
+    public Account(Long id,
+                   String firstName,
+                   String lastName,
+                   String email,
+                   String address,
+                   String phone,
+                   String password,
+                   UserType userType,
+                   UserState userState) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.address = address;
         this.phone = phone;
+        this.password = password;
+        this.userType = userType;
+        this.userState = userState;
+    }
+
+    public Timestamp getLastPasswordResetDate() {
+        return lastPasswordResetDate;
+    }
+
+    public void setLastPasswordResetDate(Timestamp lastPasswordResetDate) {
+        this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
     public Long getId() {
@@ -80,8 +142,43 @@ public class Account {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<UserType> authorities = new ArrayList<UserType>();
+        authorities.add(this.userType);
+        return  authorities;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return userState == UserState.ACTIVE;
     }
 
     public void setPassword(String password) {

@@ -1,22 +1,38 @@
 package rest.domain;
 
+import rest.domain.DTO.ReservationDTO;
 import rest.domain.enumerations.ReservationStatus;
 
+import javax.persistence.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
+@Entity
+@Table(name="reservations")
 public class Reservation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="reservation_id",length = 5)
     private Long id;
+    @NotNull
+    @Future(message = "Start date must be in the future")
     private Date startDate;
+    @NotNull
+    @Future(message = "End date must be in the future")
     private Date endDate;
     private double price;
     private Long accountId;
     private Long accommodationId;
+    private int numberOfGuests;
+    @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
+
 
     public Reservation(){
 
     }
 
-    public Reservation(Long id, Date startDate, Date endDate, double price, Long accountId, Long accommodationId, ReservationStatus reservationStatus) {
+    public Reservation(Long id, Date startDate, Date endDate, double price, Long accountId, Long accommodationId,int numberOfGuests , ReservationStatus reservationStatus) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -24,8 +40,12 @@ public class Reservation {
         this.accountId = accountId;
         this.accommodationId = accommodationId;
         this.reservationStatus = reservationStatus;
+        this.numberOfGuests = numberOfGuests;
     }
 
+    public Reservation(ReservationDTO reservationDTO){
+        this(reservationDTO.getId(), reservationDTO.getStartDate(), reservationDTO.getEndDate(), reservationDTO.getPrice(), reservationDTO.getAccountId(), reservationDTO.getAccommodationId(),reservationDTO.getNumberOfGuests(), reservationDTO.getReservationStatus());
+    }
     public Long getId() {
         return id;
     }
@@ -82,6 +102,14 @@ public class Reservation {
         this.reservationStatus = reservationStatus;
     }
 
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public void setNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public void copyValues(Reservation reservation){
         this.startDate = reservation.startDate;
         this.endDate = reservation.endDate;
@@ -89,5 +117,28 @@ public class Reservation {
         this.reservationStatus = reservation.reservationStatus;
         this.accountId = reservation.accountId;
         this.accommodationId = reservation.accommodationId;
+        this.numberOfGuests = reservation.numberOfGuests;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Reservation that = (Reservation) obj;
+
+        // Usporedba svih relevantnih polja
+        if (!id.equals(that.id)) return false;
+        if (!startDate.equals(that.startDate)) return false;
+        if (!endDate.equals(that.endDate)) return false;
+        if (!(price==that.price)) return false;
+        if(!accountId.equals(that.accountId)) return false;
+        if(!accommodationId.equals(that.accommodationId)) return false;
+        if(!(numberOfGuests==that.numberOfGuests)) return false;
+        if(!reservationStatus.equals(that.reservationStatus)) return false;
+        // Dodajte ostala polja koja želite usporediti
+
+        return true;
+    }
+
 }

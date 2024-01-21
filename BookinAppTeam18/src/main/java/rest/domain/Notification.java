@@ -2,22 +2,37 @@ package rest.domain;
 
 import rest.domain.DTO.NotificationDTO;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "notifications")
 public class Notification {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id",length = 5)
     private Long id;
     private String message;
-    private long accountId;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "notification_for")
+    private Account account;
+    private Boolean seen;
 
 
-    public Notification(Long id, String message, long accountId) {
+    public Notification(Long id, String message, Account account, Boolean seen) {
         this.id = id;
         this.message = message;
-        this.accountId = accountId;
+        this.account = account;
+        this.seen = seen;
     }
     public Notification(NotificationDTO notificationDTO) {
         this.id = notificationDTO.getId();
         this.message = notificationDTO.getMessage();
-        this.accountId = notificationDTO.getAccountId();
+        this.seen = notificationDTO.getSeen();
+    }
+
+    public Notification() {
+
     }
 
     public Long getId() {
@@ -28,12 +43,12 @@ public class Notification {
         this.id = id;
     }
 
-    public long getAccountId() {
-        return accountId;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public String getMessage() {
@@ -50,5 +65,13 @@ public class Notification {
                 "id=" + id +
                 ", message='" + message + '\'' +
                 '}';
+    }
+
+    public Boolean getSeen() {
+        return seen;
+    }
+
+    public void setSeen(Boolean seen) {
+        this.seen = seen;
     }
 }

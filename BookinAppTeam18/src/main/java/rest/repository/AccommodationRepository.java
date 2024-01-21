@@ -1,55 +1,29 @@
 package rest.repository;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import rest.domain.Accommodation;
+import rest.domain.enumerations.AccommodationType;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
-public class AccommodationRepository implements IRepository<Accommodation>{
+public interface AccommodationRepository extends JpaRepository<Accommodation,Long> {
 
-    private  static AtomicLong counter = new AtomicLong();
-    private final ConcurrentMap<Long, Accommodation> accommodations = new ConcurrentHashMap<Long, Accommodation>();
+    @Query("select a from Accommodation a where a.accommodetionType= ?1")
+    public Collection<Accommodation> findAccommodationType(AccommodationType type);
 
-    @Override
-    public Collection<Accommodation> findAll() {
-        return this.accommodations.values();
-    }
+    @Query("select a from Accommodation a where a.longitude= ?1 and a.latitude = ?2")
+    public Collection<Accommodation> findAccommodationLocation(double laongitude, double latitude);
+    @Query("select a from Accommodation a where a.owner.id=?1")
+    public Collection<Accommodation> findAccommodationsOwned(Long ownerId );
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM benefits_mapping WHERE accommodation_id = :accommodationId", nativeQuery = true)
+    void deleteBenefitsByAccommodationId(@Param("accommodationId") Long accommodationId);
 
-    @Override
-    public Accommodation create(Accommodation accommodation) {
-        Long id = accommodation.getId();
-
-        if(id == null){
-            id = counter.incrementAndGet();
-            accommodation.setId(id);
-        }
-
-        this.accommodations.put(id, accommodation);
-        return accommodation;
-    }
-
-    @Override
-    public Accommodation findOne(Long id) {
-        return this.accommodations.get(id);
-    }
-
-    @Override
-    public Accommodation update(Accommodation accommodation) {
-        Long id = accommodation.getId();
-
-        if(id != null){
-            this.accommodations.put(id, accommodation);
-        }
-        return accommodation;
-
-    }
-
-    @Override
-    public void delete(Long id) {
-        this.accommodations.remove(id);
-    }
+    @Query("SELECT a FROM Accommodation a WHERE a.accommodationState = 'APPROVED'")
+    Collection<Accommodation> findAllApproved();
 }
