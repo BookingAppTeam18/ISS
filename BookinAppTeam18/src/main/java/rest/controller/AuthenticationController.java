@@ -22,6 +22,12 @@ import rest.utils.TokenUtils;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+
+import static java.lang.System.currentTimeMillis;
+
 @CrossOrigin("http://localhost:4200")
 @RestController
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,7 +77,10 @@ public class AuthenticationController {
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         accountRequest.setPassword(encoder.encode(accountRequest.getPassword()));
+        Date currentDate = new Date(currentTimeMillis());
+        accountRequest.setLastPasswordResetDate(new Timestamp(currentDate.getTime()));
         accountService.sendActivationEmail(accountRequest.getEmail());
+
         AccountDTO accountDTO = this.accountService.insert(accountRequest);
 
         return new ResponseEntity<>(accountDTO, HttpStatus.CREATED);
@@ -88,6 +97,11 @@ public class AuthenticationController {
         if (accountDTO.getUserState().equals(UserState.ACTIVE)) {
             return new ResponseEntity<>("Account is already activated", HttpStatus.BAD_REQUEST);
         }
+        if(accountDTO.getLastPasswordResetDate().getTime() + 86400000 < currentTimeMillis()){
+            accountService.delete(accountDTO.getId());
+            return new ResponseEntity<>("Activation link expired", HttpStatus.BAD_REQUEST);
+        }
+
 
         // Postavljanje statusa na aktiviran
         accountDTO.setUserState(UserState.ACTIVE);
