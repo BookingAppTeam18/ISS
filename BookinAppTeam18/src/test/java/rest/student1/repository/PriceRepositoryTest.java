@@ -41,7 +41,7 @@ public class PriceRepositoryTest {
         accommodation.setId(2L);
         Accommodation savedAccommodation = accommodationRepository.save(accommodation);
 
-        Price price = new Price(mockStartDate, mockEndDate, 100);
+        Price price = new Price(mockStartDate, mockEndDate, 100,false);
         price.setAccommodation(savedAccommodation);
         Price savedPrice = priceRepository.save(price);
 
@@ -61,7 +61,7 @@ public class PriceRepositoryTest {
         calendar.add(Calendar.DAY_OF_MONTH, 7);
         mockEndDate = calendar.getTime();
 
-        Price price = new Price(mockStartDate, mockEndDate, 100);
+        Price price = new Price(mockStartDate, mockEndDate, 100,false);
         price.setAccommodation(accommodation);
 
         // Pokušaj čuvanja cene bez smeštaja, očekujemo da će baciti izuzetak
@@ -92,7 +92,7 @@ public class PriceRepositoryTest {
         calendar.add(Calendar.DAY_OF_MONTH, 7);
         mockEndDate = calendar.getTime();
 
-        Price price = new Price(mockStartDate, mockEndDate, 100);
+        Price price = new Price(mockStartDate, mockEndDate, 100,false);
         price.setAccommodation(savedAccommodation);
         Price savedPrice = priceRepository.save(price);
 
@@ -153,7 +153,7 @@ public class PriceRepositoryTest {
         calendar.setTime(startDate);
         calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
         Date endDate = calendar.getTime();
-        return new Price(startDate, endDate, 100, accommodation);
+        return new Price(startDate, endDate, 100, accommodation,false);
     }
 
     @Test
