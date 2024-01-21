@@ -41,6 +41,10 @@ public class AccountService implements IService<AccountDTO> {
 
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private NotificationService notificationService;
+    @Autowired
+    private PriceRepository priceRepository;
 
     @Autowired
     public AccountService(JavaMailSender javaMailSender) {
@@ -170,12 +174,13 @@ public class AccountService implements IService<AccountDTO> {
             }
         }
         if(account.getUserType().getName().equals("OWNER")){
-            if(AccommodationsOwned(id))
+            if(ReservationsExistByOwner(id))
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Owner owns accommodations");
             //Ako ne postoje rezervacije za accommodatione koje poseduje owner, izbrisati sve accommodatione
             // koje poseduje taj owner
             deleteAccommodations(id);
         }
+        deleteAllNotifications(id);
 //        accountCommentRepository.delete
         accountRepository.delete(account);
         accountRepository.flush();
@@ -203,25 +208,48 @@ public class AccountService implements IService<AccountDTO> {
     }
 
     private boolean ReservationsExistByOwner(Long id) {
-        Collection<Reservation> reservations = reservationRepository.findByAccommodationId(id);
-        if(reservations.isEmpty())
-            return false;
-        return true;
+        Collection<Reservation> reservations = reservationRepository.findOwnerReservations(id);
+        Collection<Reservation> approvedReservation = new ArrayList<>();
+        for(Reservation reservation : reservations){
+            if(reservation.getReservationStatus().equals(ReservationStatus.APPROVED))
+                approvedReservation.add(reservation);
+        }
+        return !approvedReservation.isEmpty();
     }
 
     private void deleteAccommodations(Long id){
         Collection<Accommodation> accommodations = accommodationRepository.findAccommodationsOwned(id);
         for(Accommodation accommodation : accommodations){
+            deleteAllPrices(accommodation.getId());
             accommodationRepository.delete(accommodation);
             accommodationRepository.flush();
         }
     }
 
+    private void deleteAllNotifications(Long id){
+        Collection<NotificationDTO> notifications = notificationService.findAccountNotifications(id);
+        for(NotificationDTO notification : notifications){
+            notificationService.delete(notification.getId());
+        }
+    }
+
+    private void deleteAllPrices(Long id){
+        Collection<Price> prices = priceRepository.findPricesForAccommodation(id);
+        for(Price price : prices){
+            priceRepository.delete(price);
+            priceRepository.flush();
+        }
+    }
+
     private boolean ReservationsExist(Long id) {
         Collection<Reservation> reservations = reservationRepository.findGuestReservations(id);
-        if(reservations.isEmpty())
-            return false;
-        return true;
+        Collection<Reservation> approvedReservation = new ArrayList<>();
+        for(Reservation reservation : reservations){
+            System.out.println(reservation.getReservationStatus());
+            if(reservation.getReservationStatus().equals(ReservationStatus.APPROVED))
+                approvedReservation.add(reservation);
+        }
+        return !approvedReservation.isEmpty();
 
     }
 
