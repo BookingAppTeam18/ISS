@@ -79,6 +79,7 @@ public class Account implements UserDetails {
         this.phone = accountDTO.getPhone();
         this.password = accountDTO.getPassword();
         this.userState = accountDTO.getUserState();
+        this.lastPasswordResetDate = accountDTO.getLastPasswordResetDate();
     }
 
     public Account(Long id,

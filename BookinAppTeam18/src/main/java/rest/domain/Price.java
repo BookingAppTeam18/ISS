@@ -16,6 +16,7 @@ public class Price {
     private Date start;
     private Date endDate;
     private double amount;
+    private boolean isPerNight;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -25,19 +26,21 @@ public class Price {
     public Price() {
     }
 
-    public Price(Date start, Date end, double value) {
+    public Price(Date start, Date end, double value, boolean isPerNight) {
         this.id = null;
         this.start = start;
         this.endDate = end;
         this.amount = value;
+        this.isPerNight = isPerNight;
     }
 
-    public Price(Date start, Date end, double value, Accommodation accommodation) {
+    public Price(Date start, Date end, double value, Accommodation accommodation, boolean isPerNight) {
         this.id = null;
         this.start = start;
         this.endDate = end;
         this.amount = value;
         this.accommodation = accommodation;
+        this.isPerNight = isPerNight;
     }
 
     public Price(PriceDTO priceDTO){
@@ -45,6 +48,7 @@ public class Price {
         this.start = priceDTO.getStartDate();
         this.endDate = priceDTO.getEndDate();
         this.amount = priceDTO.getAmount();
+        this.isPerNight = priceDTO.isPerNight();
     }
 
     public Long getId() {
@@ -102,5 +106,13 @@ public class Price {
 
     public float getAccommodationId() {
         return accommodation.getId();
+    }
+
+    public boolean isPerNight() {
+        return isPerNight;
+    }
+
+    public void setPerNight(boolean perNight) {
+        isPerNight = perNight;
     }
 }

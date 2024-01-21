@@ -26,7 +26,7 @@ public class FilterService {
     }
 
     public void FillFilter(){
-        accommodations = accommodationRepository.findAll();
+        accommodations = accommodationRepository.findAllApproved();
     }
     //filter by type
     public void filterAccommodationsType(AccommodationType type){
