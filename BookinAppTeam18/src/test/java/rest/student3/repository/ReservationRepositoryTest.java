@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.testng.AssertJUnit.fail;
 
 
 @DataJpaTest
@@ -36,5 +37,25 @@ public class ReservationRepositoryTest {
 
         assertThat(savedReservation).usingRecursiveComparison().isEqualTo(reservation);
 
+    }
+
+    @Test
+    public void shoudNotSaveReservationWithoutAccommodation () {
+        Date mockStartDate = new Date(2025, 1, 1);
+        Date mockEndDate = new Date(mockStartDate.getTime());
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(mockEndDate);
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        mockEndDate = calendar.getTime();
+
+        Reservation reservation = new Reservation(1L, mockStartDate, mockEndDate, 4000, 1L, null, 2, ReservationStatus.CREATED);
+        try{
+            reservationRepository.save(reservation);
+            fail("Expected an exception, but none was thrown.");
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class)
+                    .hasCauseInstanceOf(org.hibernate.exception.ConstraintViolationException.class);
+        }
     }
 }

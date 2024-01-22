@@ -103,10 +103,10 @@ public class FilterService {
     }
 
 
-    public void filterAccommodationsMinNumberOfGuests(Integer minNumberOfGuests) {
+    public void filterAccommodationsMinNumberOfGuests(Integer numOfGuests) {
         Collection<Accommodation> badAccommodations = new ArrayList<>();
         for(Accommodation a :accommodations){
-            if(a.getMinNumOfGuests() > minNumberOfGuests)
+            if(a.getMinNumOfGuests() > numOfGuests || a.getMaxNumOfGuests() < numOfGuests)
                 badAccommodations.add(a);
         }
         accommodations.removeAll(badAccommodations);
