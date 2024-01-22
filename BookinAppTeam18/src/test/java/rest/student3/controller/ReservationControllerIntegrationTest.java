@@ -10,8 +10,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import rest.domain.DTO.ReservationDTO;
 import rest.domain.enumerations.ReservationStatus;
 import rest.service.ReservationService;
@@ -22,6 +24,7 @@ import java.util.Date;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ReservationControllerIntegrationTest{
@@ -65,6 +68,8 @@ public class ReservationControllerIntegrationTest{
                 ReservationDTO.class
         );
 
+        assertNotNull(responseEntity.getBody());
+
         if (responseEntity.getStatusCodeValue() != HttpStatus.CREATED.value()) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -76,9 +81,48 @@ public class ReservationControllerIntegrationTest{
                 e.printStackTrace();
             }
         }
-
         // Provera HTTP status koda
         assertEquals(201, responseEntity.getStatusCodeValue());
+
+    }
+
+    @Test
+    @DisplayName("Reservation of non existing accommodation")
+    public void shoudNotCreateReservationNonExistingAccommodation(){
+        Date mockStartDate = new Date(2025, 1, 1);
+        Date mockEndDate = new Date(mockStartDate.getTime());
+
+        // Dodajte nedelju dana na datum završetka
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(mockEndDate);
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        mockEndDate = calendar.getTime();
+
+        ReservationDTO reservationDTO = new ReservationDTO(null, mockStartDate, mockEndDate, 4000, 1L, null, 2, ReservationStatus.CREATED);
+
+        // Postavljanje zaglavlja HTTP zahteva
+        String username = "guest@gmail.com";
+
+        String jwtToken = tokenUtils.generateToken(username);
+
+        // Postavljanje tokena u zaglavlje
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtToken);
+
+        HttpEntity<ReservationDTO> request = new HttpEntity<>(reservationDTO, headers);
+
+        ParameterizedTypeReference<ReservationDTO> responseType = new ParameterizedTypeReference<ReservationDTO>() {};
+
+        ResponseEntity<ReservationDTO> response = restTemplate.exchange(
+                "/api/reservations",
+                HttpMethod.POST,
+                request,
+                responseType
+        );
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+
+        SecurityContextHolder.clearContext();
 
     }
 
